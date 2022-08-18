@@ -5,8 +5,6 @@ const jwt = require("jsonwebtoken");
 
 const params_validator = require("../helpers/params-validator");
 const jwt_validator = require("../helpers/user-jwt-validate");
-const { errorLogger } = require("../helpers/logger");
-
 const Joi = require("joi");
 
 const User = require("../models/user");
