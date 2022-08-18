@@ -3,20 +3,21 @@ const router = express.Router();
 const passport = require("passport");
 const jwt = require("jsonwebtoken");
 
-const config = require("../config/config");
 const params_validator = require("../helpers/params-validator");
 const jwt_validator = require("../helpers/user-jwt-validate");
+const { errorLogger } = require("../helpers/logger");
 
 const Joi = require("joi");
+
 const User = require("../models/user");
 
 router.post(
   "/signup",
   params_validator.validateParams({
-    username: Joi.string()
-      .pattern(/^(?=.{8,20}$)(?:[a-zA-Z\d]+(?:(?:\.|_)[a-zA-Z\d])*)+$/)
-      .min(8)
-      .max(20)
+    email: Joi.string()
+      .pattern(
+        /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      )
       .required(),
     password: Joi.string()
       .pattern(
@@ -24,61 +25,40 @@ router.post(
       )
       .max(20)
       .required(),
-    name: Joi.string()
-      .pattern(/^[A-Za-z]+(?:\s[A-Za-z]+)+$/)
-      .min(2)
-      .max(40)
-      .required(),
-    email: Joi.string()
-      .pattern(
-        /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-      )
-      .required(),
-    contact: Joi.string()
-      .pattern(/^[0-9]{7,10}$/)
-      .required(),
+    name: Joi.string().min(2).max(40).required(),
   }),
   (req, res, next) => {
     let newUser = new User({
-      username: req.body.username,
+      email: req.body.email,
       password: req.body.password,
       name: req.body.name,
-      email: req.body.email,
-      contact: req.body.contact,
     });
 
-    User.getUserByUsername(newUser.username, (err, user) => {
+    User.getUserByEmail(newUser.email, (err, user) => {
       if (err) {
-        return res.json({ success: false, msg: "Something went wrong." });
+        errorLogger.error(err);
+        return res
+          .status(422)
+          .json({ success: false, msg: "Something went wrong." });
       }
       if (user) {
-        return res.json({
+        return res.status(422).json({
           success: false,
-          msg: "Username has already been registered with us.",
+          msg: "Email has already been registered with us.",
         });
       }
-      User.getUserByEmail(newUser.email, (err, user) => {
-        if (err) {
-          return res.json({ success: false, msg: "Something went wrong." });
-        }
-        if (user) {
-          return res.json({
-            success: false,
-            msg: "Email has already been registered with us.",
-          });
-        }
 
-        User.addUser(newUser, (err) => {
-          if (err) {
-            return res.json({
-              success: false,
-              msg: "Something went wrong.",
-            });
-          }
-          res.json({
+      User.addUser(newUser, (err) => {
+        if (err) {
+          errorLogger.error(err);
+          return res.status(422).json({
             success: false,
-            msg: "User registered successfully.",
+            msg: "Something went wrong.",
           });
+        }
+        res.status(200).json({
+          success: true,
+          msg: "User registered successfully.",
         });
       });
     });
@@ -88,11 +68,7 @@ router.post(
 router.post(
   "/login",
   params_validator.validateParams({
-    username: Joi.string()
-      .pattern(/^(?=.{8,20}$)(?:[a-zA-Z\d]+(?:(?:\.|_)[a-zA-Z\d])*)+$/)
-      .min(8)
-      .max(20)
-      .required(),
+    email: Joi.string().min(8).max(20).required(),
     password: Joi.string()
       .pattern(
         /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&(=)<>.,/])[A-Za-z\d@$!%*#?&(=)<>.,/]{6,}$/
@@ -101,55 +77,46 @@ router.post(
       .required(),
   }),
   (req, res, next) => {
-    const username = req.body.username;
+    const email = req.body.email;
     const password = req.body.password;
 
-    if (!username || !password) {
-      return res.json({ success: false, msg: "Fill in all the fields." });
-    }
-
-    User.getUserByUsername(username, (err, user) => {
-      let finalUser;
+    User.getUserByEmail(email, (err, emailUser) => {
       if (err) {
-        return res.json({ success: false, msg: "Something went wrong." });
+        errorLogger.error(err);
+        return res
+          .status(422)
+          .json({ success: false, msg: "Something went wrong." });
       }
-      if (user) {
-        finalUser = user;
+      if (!emailUser) {
+        return res
+          .status(422)
+          .json({ success: false, msg: "Invalid credentials." });
       }
-      User.getUserByEmail(username, (err, emailUser) => {
+      let finalUser = emailUser;
+      User.comparePassword(password, finalUser.password, (err, isMatch) => {
         if (err) {
-          return res.json({ success: false, msg: "Something went wrong." });
+          errorLogger.error(err);
+          return res
+            .status(422)
+            .json({ success: false, msg: "Something went wrong." });
         }
-        if (!user) {
-          if (!emailUser) {
-            return res.json({ success: false, msg: "Invalid Credentials." });
-          }
-          finalUser = emailUser;
+        if (!isMatch) {
+          return res
+            .status(422)
+            .json({ success: false, msg: "Invalid credentials." });
         }
-        User.comparePassword(password, finalUser.password, (err, isMatch) => {
-          if (err) {
-            return res.json({ success: false, msg: "Something went wrong." });
-          }
-          if (!isMatch) {
-            return res.json({ success: false, msg: "Invalid Credentials." });
-          }
 
-          const token = jwt.sign(
-            { data: finalUser },
-            process.env.JWT_SECRET,
-            {}
-          );
-          res.json({
-            msg: "Logged in Successfully.",
-            success: true,
-            token: "JWT " + token,
-            user: {
-              id: finalUser._id,
-              username: finalUser.username,
-              name: finalUser.studentName,
-              admin: finalUser.admin,
-            },
-          });
+        const token = jwt.sign({ data: finalUser }, process.env.JWT_SECRET, {});
+        res.status(200).json({
+          msg: "Logged in Successfully.",
+          success: true,
+          token: "JWT " + token,
+          user: {
+            id: finalUser._id,
+            email: finalUser.email,
+            name: finalUser.studentName,
+            admin: finalUser.admin,
+          },
         });
       });
     });
@@ -160,14 +127,14 @@ router.get(
   "/profile",
   passport.authenticate("user", { session: false }),
   (req, res, next) => {
-    res.json({ success: true, user: req.user });
+    res.status(200).json({ success: true, user: req.user });
   }
 );
 
 router.post(
   "/update-password",
   params_validator.validateParams({
-    username: Joi.string().max(20).required(),
+    email: Joi.string().max(20).required(),
     currentPassword: Joi.string().max(20).required(),
     newPassword: Joi.string()
       .pattern(
@@ -179,51 +146,65 @@ router.post(
   }),
   (req, res, next) => {
     let user = jwt_validator.validateUserJWTToken(req.headers.authorization);
-    if (!user) return res.json({ success: false, msg: "Invalid Token." });
+    if (!user)
+      return res.status(422).json({ success: false, msg: "Invalid token." });
 
     const newUser = {
-      username: req.body.username,
+      email: req.body.email,
       currentPassword: req.body.currentPassword,
       newPassword: req.body.newPassword,
       newConfirmPassword: req.body.newConfirmPassword,
     };
 
     if (newUser.newPassword != newUser.newConfirmPassword) {
-      return res.json({
+      return res.status(422).json({
         success: false,
-        msg: "Both Password Fields Do Not Match.",
+        msg: "Both password fields do not match.",
       });
     }
 
     if (newUser.currentPassword == newUser.newPassword) {
-      return res.json({
+      return res.status(422).json({
         success: false,
-        msg: "Current Password Matches With The New Password.",
+        msg: "Current password matches with the new password.",
       });
     }
 
-    User.getUserByUsername(newUser.username, (err, user) => {
+    User.getUserByEmail(newUser.email, (err, user) => {
       if (err) {
-        return res.json({ success: false, msg: "Something went wrong." });
+        return res
+          .status(422)
+          .json({ success: false, msg: "Something went wrong." });
       }
       if (!user) {
-        return res.json({ success: false, msg: "User Not Found." });
+        return res.status(404).json({ success: false, msg: "User not found." });
       }
       User.comparePassword(
         newUser.currentPassword,
         user.password,
         (err, isMatch) => {
           if (err) {
-            return res.json({ success: false, msg: "Something went wrong." });
+            errorLogger.error(err);
+
+            return res
+              .status(422)
+              .json({ success: false, msg: "Something went wrong." });
           }
           if (!isMatch) {
-            return res.json({ success: false, msg: "Incorrect Password." });
+            return res
+              .status(422)
+              .json({ success: false, msg: "Incorrect password." });
           }
           User.updatePassword(newUser, (err) => {
             if (err) {
-              return res.json({ success: false, msg: "Something went wrong." });
+              errorLogger.error(err);
+              return res
+                .status(422)
+                .json({ success: false, msg: "Something went wrong." });
             }
-            return res.json({ success: true, msg: "Password Updated." });
+            return res
+              .status(200)
+              .json({ success: true, msg: "Password updated." });
           });
         }
       );
