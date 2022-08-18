@@ -1,11 +1,4 @@
-//
-//
-//
 const jwt = require("jsonwebtoken");
-//
-//
-
-//
 
 module.exports.validateUserJWTToken = function (user_token) {
   if (!user_token) return false;
