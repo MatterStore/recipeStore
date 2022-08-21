@@ -1,19 +1,15 @@
 import { Link } from "react-router-dom";
 
-import "./Home.css";
-
-function Home() {
+export default function Home() {
   return (
     <div className="text-center">
       <main>
-        <h1 class="mt-4 mb-2">Welcome to the Home Page!</h1>
-        <p>You can do this, I believe in you.</p>
+        <h1>Recipe Store App</h1>
       </main>
       <nav>
-        <Link to="/about">About</Link>
+        <Link to="/login">Login</Link>
+        <Link to="/register">Register</Link>
       </nav>
     </div>
   );
 }
-
-export default Home;
