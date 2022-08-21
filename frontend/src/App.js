@@ -1,20 +1,20 @@
-import { Routes, Route, NavLink } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import "./App.css";
+import Recipe from "./components/Recipe";
 import Home from "./containers/Home/Home";
-import About from "./containers/About/About";
+import Listing from "./containers/Listing/Listing";
+import Login from "./containers/Login/Login";
+import Register from "./containers/Register/Register";
 
 function App() {
   return (
     <div>
-      <div>
-        <NavLink exact activeClassName="active" to="/about">
-          About
-        </NavLink>
-      </div>
-
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="about" element={<About />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/listing" element={<Listing />} />
+        <Route path="/recipe/:recipeId" element={<Recipe />} />
       </Routes>
     </div>
   );
