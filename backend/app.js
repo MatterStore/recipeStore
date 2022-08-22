@@ -27,6 +27,10 @@ const users_route = require("./routes/user");
 
 app.use("/user", users_route);
 
+const recipes_route = require("./routes/recipe");
+
+app.use("/recipes", recipes_route);
+
 // default case for unmatched routes
 app.use(function (req, res) {
   res.status(404).send();
