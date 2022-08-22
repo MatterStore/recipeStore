@@ -3,7 +3,6 @@ const Joi = require("joi");
 const passport = require("passport");
 
 const params_validator = require("../helpers/params-validator");
-const jwt_validator = require("../helpers/user-jwt-validate");
 
 const Recipe = require("../models/recipe");
 
@@ -13,6 +12,7 @@ router.post(
     "/new",
     passport.authenticate("user", { session: false }),
     params_validator.validateParams({
+        title: Joi.string().required(),
         cooking_time: Joi.string(),
         servings: Joi.number(),
         ingredients: Joi.array().items(
@@ -30,6 +30,7 @@ router.post(
     (req, res, next) => {
         let recipe = new Recipe({
             user: req.user.id,
+            title: req.body.title,
             cooking_time: req.body.cooking_time,
             servings: req.body.servings,
             ingredients: req.body.ingredients,
@@ -76,19 +77,19 @@ router.get(
     (req, res, next) => {
         Recipe.getById(req.params.id, (err, recipe) => {
             if (err) {
-                return res
+                res
                     .status(422)
                     .json({ success: false, msg: "Something went wrong." });
             } else if (!recipe) {
-                return res
+                res
                     .status(404)
                     .json({ success: false, msg: "Recipe not found." });
             } else if (recipe.public || req.user.id == recipe.user) {
-                return res
+                res
                     .status(200)
                     .json({ success: true, msg: "Recipe found.", recipe });
             }  else {
-                return res
+                res
                     .status(403)
                     .json({
                         success: false,
