@@ -29,7 +29,7 @@ router.post(
     }),
     (req, res, next) => {
         let recipe = new Recipe({
-            user: req.user._id,
+            user: req.user.id,
             cooking_time: req.body.cooking_time,
             servings: req.body.servings,
             ingredients: req.body.ingredients,
@@ -72,6 +72,7 @@ router.get(
 
 router.get(
     "/:id",
+    passport.authenticate("user", { session: false }),
     (req, res, next) => {
         Recipe.getById(req.params.id, (err, recipe) => {
             if (err) {
@@ -82,30 +83,17 @@ router.get(
                 return res
                     .status(404)
                     .json({ success: false, msg: "Recipe not found." });
-            } else if (recipe.public) {
+            } else if (recipe.public || req.user.id == recipe.user) {
                 return res
                     .status(200)
                     .json({ success: true, msg: "Recipe found.", recipe });
-            } else {
-                let user = jwt_validator.validateUserJWTToken(
-                    req.headers.authorization
-                );
-                if (!user) {
-                    return res
-                        .status(422)
-                        .json({ success: false, msg: "Invalid token." });
-                } else if (recipe.user === user._id) {
-                    return res
-                        .status(200)
-                        .json({ success: true, msg: "Recipe found.", recipe });
-                } else {
-                    return res
-                        .status(403)
-                        .json({
-                            success: false,
-                            msg: "Permission not granted."
-                        });
-                }
+            }  else {
+                return res
+                    .status(403)
+                    .json({
+                        success: false,
+                        msg: "Permission not granted."
+                    });
             }
         })
     }
