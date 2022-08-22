@@ -43,7 +43,7 @@ router.post(
             if (err) {
                 res
                     .status(422)
-                    .json({ success: false, msg: "AA Something went wrong." });
+                    .json({ success: false, msg: "Something went wrong." });
             } else {
                 res
                     .status(200)
