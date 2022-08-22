@@ -29,7 +29,7 @@ app.use("/user", users_route);
 
 // default case for unmatched routes
 app.use(function (req, res) {
-  res.status(404);
+  res.status(404).send();
 });
 
 const port = process.env.SERVER_PORT;
