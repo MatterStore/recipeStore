@@ -5,6 +5,10 @@ const recipeSchema = mongoose.Schema({
         type: mongoose.ObjectId,
         required: true,
     },
+    title: {
+        type: String,
+        required: true,
+    },
     cooking_time: {
         type: String,
         required: false,
