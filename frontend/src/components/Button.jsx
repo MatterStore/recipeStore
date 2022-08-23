@@ -4,7 +4,7 @@ export default function Button(props) {
     return (
         <Link 
             to={props.to}
-            className={`py-3 px-6 m-8 ml-0 text-xl text-white rounded-md ${
+            className={`py-3 px-6 m-8 ml-0 text-xl text-white rounded-md whitespace-nowrap ${
                 props.primary ?
                     `text-white bg-indigo-600`
                 :
