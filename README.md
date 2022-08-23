@@ -2,8 +2,7 @@
 
 ### Requirements
 
-1. Docker - [Install](https://docs.docker.com/engine/install/)
-2. NodeJS - [Install](https://nodejs.org/en/download/)
+1. NodeJS - [Install](https://nodejs.org/en/download/)
 
 ### Technologies Used
 
@@ -12,7 +11,6 @@
 - Express (v4)
 - MongoDB (latest)
 - Nginx (v1.23.0)
-- Docker (v20.10.7)
 
 ### Folder Structure
 
@@ -23,8 +21,7 @@
   └── frontend/
   │   ├── docker-setup/
   │   └── ...
-  ├── docker-compose.yml
-  ├── docker-compose.production.yml
+  ├── index.js
 ```
 
 ## Features

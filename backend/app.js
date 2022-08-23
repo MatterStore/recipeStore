@@ -1,8 +1,9 @@
-require("dotenv").config({
-  path: `./.env.${process.env.NODE_ENV}`,
-});
+// require("dotenv").config({
+//   path: `./.env.${process.env.NODE_ENV}`,
+// });
 require("./config/db-connection");
 
+const path = require('path');
 const express = require("express");
 const expressSession = require("express-session");
 const cors = require("cors");
@@ -23,6 +24,14 @@ app.use(passport.initialize());
 app.use(passport.session());
 require("./config/passport")(passport);
 
+
+// if (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "staging") {
+  app.use(express.static("/../frontend/build"));
+  app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname + '/../frontend/build/index.html'));
+  });
+//  }
+
 const users_route = require("./routes/user");
 
 app.use("/user", users_route);
@@ -32,7 +41,7 @@ app.use(function (req, res) {
   res.status(404);
 });
 
-const port = process.env.SERVER_PORT;
+const port = process.env.PORT || 5000;
 
 app.listen(port, () => {
   console.log(`\nServer Started on ${port}`);
