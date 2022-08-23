@@ -1,13 +1,14 @@
 import Button from "../../components/Button";
+import Header from "../../components/Header";
 import Textfield from "../../components/Textfield";
 
-export default function Register() {
+export default function Signup() {
   return (
     <div>
-      <h1>Register Page</h1>
+      <Header>Signup Page</Header>
       <Textfield></Textfield>
       <Textfield></Textfield>
-      <Button to="/listing">Register</Button>
+      <Button to="/listing">Signup</Button>
     </div>
   );
 };
