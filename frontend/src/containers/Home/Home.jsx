@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 export default function Home() {
   return (
-    <div className="text-center">
+    <div>
       <main>
         <h1>Recipe Store App</h1>
       </main>
