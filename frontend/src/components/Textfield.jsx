@@ -1,5 +1,5 @@
 export default function Textfield(props) {
     return (
-        <textfield>{props.children}</textfield>
+        <input type="text">{props.children}</input>
     );
 }
