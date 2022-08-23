@@ -1,4 +1,5 @@
 import Button from "../../components/Button";
+import Header from "../../components/Header";
 
 export default function Home() {
   return (
@@ -6,7 +7,7 @@ export default function Home() {
       <main className="min-h-screen w-screen flex flex-column items-center max-w-screen-2xl">
         <div className="flex flex-col md:flex-row justify-around flex-grow">
           <div className="p-8 self-center md:mb-32">
-            <h1 className="text-5xl mb-5 mt-8 md:mt-0 subpixel-antialiased">Recipe Store App</h1>
+            <Header>Recipe Store App</Header>
             <nav className="flex justify-center md:justify-start">
               <Button primary={true} to="/signup">Sign Up</Button>
               <Button primary={false} to="/login">Login</Button>
