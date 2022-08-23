@@ -2,9 +2,11 @@
   "name": "recipestore-backend",
   "version": "1.0.0",
   "description": "Backend for MERN application",
-  "main": "app.js",
+  "main": "backend/app.js",
   "scripts": {
-    "test": "echo \\\"Error: No test specified\\\" && exit 1"
+    "test": "echo \\\"Error: No test specified\\\" && exit 1",
+    "start": "node backend/app.js",
+    "heroku-postbuild": "cd frontend && npm install && npm run build"
   },
   "author": "MatterStore",
   "license": "MIT",
