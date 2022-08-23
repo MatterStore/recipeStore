@@ -2,8 +2,8 @@ import Button from "../../components/Button";
 
 export default function Home() {
   return (
-    <div>
-      <main className="min-h-screen w-screen flex flex-column items-center">
+    <div className="flex row min-w-screen justify-center">
+      <main className="min-h-screen w-screen flex flex-column items-center max-w-screen-2xl">
         <div className="flex flex-col md:flex-row justify-around flex-grow">
           <div className="p-8 self-center md:mb-32">
             <h1 className="text-5xl mb-5 mt-8 md:mt-0 subpixel-antialiased">Recipe Store App</h1>
