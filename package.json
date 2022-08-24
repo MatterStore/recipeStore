@@ -1,13 +1,14 @@
 {
+  "type": "module",
   "name": "recipestore-backend",
   "version": "1.0.0",
   "description": "Backend for MERN application",
-  "main": "dist/app.js",
+  "main": "backend/dist/app.js",
   "scripts": {
     "test": "echo \\\"Error: No test specified\\\" && exit 1",
-    "start": "node dist/app.js",
+    "start": "node backend/dist/app.js",
     "postinstall": "tsc",
-    "watch-node": "nodemon dist/index.js",
+    "watch-node": "nodemon backend/dist/index.js",
     "watch-ts": "tsc -w",
     "heroku-postbuild": "cd frontend && npm install && npm run build"
   },
@@ -26,6 +27,7 @@
     "mongoose": "^6.5.2",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.0",
+    "replace-require-with-import": "^2.1.0",
     "ts-node": "^10.9.1"
   },
   "devDependencies": {
