@@ -19,6 +19,7 @@
   └── frontend/
   │   └── ...
 ```
+
 ## Features
 
 ### Security
@@ -45,17 +46,25 @@
 2. Axios enabled and configured as an custom interceptor that can send requests with a JWT token.
 3. React-Tostify used for showing success / error messages. ??? Maybe
 
-
 ## Local Development
 
-1. Run the following command in both `frontend` & `backend` directories:
+1. Run the following command to update all dependencies
 
 ```bash
 npm install
 ```
-2. To build the frontend run `cd frontend && npm install && npm run build` 
 
-3. Run the server with `npm start` 
+2. Run the frontend with
+
+```bash
+npm frontend
+```
+
+3. Run the backend with
+
+```bash
+npm backend
+```
 
 3. The Backend APIs can be triggered by hitting the following URL:
 
@@ -65,4 +74,4 @@ http://localhost:5000
 
 4. [WIP] You can also run the frontend seperately with `cd frontend && npm start`
 
-You are all set! 
+You are all set!
