@@ -1,6 +1,13 @@
+import express from "express";
 const router = express.Router();
-const params_validator = require("../helpers/params-validator");
-const jwt_validator = require("../helpers/user-jwt-validate");
+import passport from "passport";
+import jwt from "jsonwebtoken";
+
+import * as params_validator from "../helpers/params-validator.js";
+import * as jwt_validator from "../helpers/user-jwt-validate.js";
+import Joi from "joi";
+
+import * as User from "../models/user.js";
 
 const errorLogger = {
   error: (err) => console.log(err)
@@ -23,7 +30,7 @@ router.post(
     name: Joi.string().min(2).max(40).required(),
   }),
   (req, res, next) => {
-    let newUser = new User({
+    let newUser = new User.User({
       email: req.body.email,
       password: req.body.password,
       name: req.body.name,
@@ -121,7 +128,7 @@ router.post(
 router.get(
   "/profile",
   passport.authenticate("user", { session: false }),
-  (req, res, next) => {
+  (req : any, res, next) => {
     res.status(200).json({ success: true, user: req.user });
   }
 );
@@ -207,4 +214,4 @@ router.post(
   }
 );
 
-module.exports = router;
+export {router}
