@@ -1,9 +1,11 @@
 {
     "compilerOptions": {
-        "outDir": "./dist",
+        "outDir": "./backend/dist",
         "allowJs": true,
         "target": "ES6",
-        "moduleResolution":"node"
+        "moduleResolution":"node",
+        "lib": ["es6"],
+        "allowSyntheticDefaultImports" : true
     },
         "include": [
         "./backend/**/*"

@@ -1,5 +1,5 @@
-const Joi = require("joi");
-const lodash = require("lodash");
+import Joi from "joi";
+import lodash from "lodash";
 
 const validateParams = function (paramSchema) {
   return async (req, res, next) => {
@@ -21,6 +21,6 @@ const validateParams = function (paramSchema) {
   };
 };
 
-module.exports = {
-  validateParams: validateParams,
+export {
+  validateParams,
 };

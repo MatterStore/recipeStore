@@ -1,6 +1,6 @@
-const jwt = require("jsonwebtoken");
+import jwt from "jsonwebtoken";
 
-module.exports.validateUserJWTToken = function (user_token) {
+export function validateUserJWTToken (user_token) {
   if (!user_token) return false;
   if (user_token.length <= 4) return false;
   let token = user_token.substr(4, user_token.length);
