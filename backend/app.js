@@ -3,7 +3,7 @@
 // });
 require("./config/db-connection");
 
-const path = require("path");
+const path = require('path');
 const express = require("express");
 const expressSession = require("express-session");
 const cors = require("cors");
@@ -24,15 +24,13 @@ app.use(passport.initialize());
 app.use(passport.session());
 require("./config/passport")(passport);
 
-if (
-  process.env.NODE_ENV === "production" ||
-  process.env.NODE_ENV === "staging"
-) {
+
+if (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "staging") {
   app.use(express.static("frontend/build"));
-  app.get("*", (req, res) => {
-    const buildPath = path.join(__dirname + "/../frontend/build/index.html");
+  app.get('*', (req, res) => {
+    const buildPath = path.join(__dirname + '/../frontend/build/index.html')
     res.sendFile(buildPath);
-    console.log(buildPath);
+    console.log(buildPath)
   });
 }
 
