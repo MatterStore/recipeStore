@@ -1,0 +1,29 @@
+{
+  "name": "recipestore-backend",
+  "version": "1.0.0",
+  "description": "Backend for MERN application",
+  "main": "backend/app.js",
+  "scripts": {
+    "test": "echo \\\"Error: No test specified\\\" && exit 1",
+    "start": "node backend/app.js",
+    "heroku-postbuild": "cd frontend && npm install && npm run build"
+  },
+  "author": "MatterStore",
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "express-session": "^1.17.3",
+    "joi": "^17.6.0",
+    "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.21",
+    "mongoose": "^6.5.2",
+    "passport": "^0.6.0",
+    "passport-jwt": "^4.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.19"
+  }
+}
