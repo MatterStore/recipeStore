@@ -70,9 +70,7 @@ router.post(
   params_validator.validateParams({
     email: Joi.string().min(8).max(20).required(),
     password: Joi.string()
-      .pattern(
-        /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&(=)<>.,/])[A-Za-z\d@$!%*#?&(=)<>.,/]{6,}$/
-      )
+      .min(8)
       .max(20)
       .required(),
   }),
