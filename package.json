@@ -10,7 +10,8 @@
     "postinstall": "tsc",
     "watch-node": "nodemon backend/dist/index.js",
     "watch-ts": "tsc -w",
-    "heroku-postbuild": "cd frontend && npm install && npm run build"
+    "heroku-postbuild": "cd frontend && npm install && npm run build",
+    "dev" : "npm run postinstall && npm start & cd frontend && npm start"
   },
   "author": "MatterStore",
   "license": "MIT",
