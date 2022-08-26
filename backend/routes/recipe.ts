@@ -1,10 +1,12 @@
-const express = require("express");
-const Joi = require("joi");
-const passport = require("passport");
+import express from "express";
+import Joi from "joi";
+import passport from "passport";
 
-const params_validator = require("../helpers/params-validator");
+import * as params_validator from "../helpers/params-validator.js";
 
-const Recipe = require("../models/recipe");
+import * as Recipe from "../models/recipe.js";
+
+import User from "../models/user.js";
 
 const router = express.Router();
 
@@ -28,8 +30,8 @@ router.post(
         public: Joi.boolean()
     }),
     (req, res, next) => {
-        let recipe = new Recipe({
-            user: req.user.id,
+        let recipe = new Recipe.Recipe({
+            user: (req as any).user.id,
             title: req.body.title,
             cooking_time: req.body.cooking_time,
             servings: req.body.servings,
@@ -57,7 +59,7 @@ router.get(
     "/all",
     passport.authenticate("user", { session: false }),
     (req, res, next) => {
-        Recipe.getByUser(req.user.id, (err, list) => {
+        Recipe.getByUser((req as any).user.id, (err, list) => {
             if (err) {
                 res
                     .status(422)
@@ -84,7 +86,7 @@ router.get(
                 res
                     .status(404)
                     .json({ success: false, msg: "Recipe not found." });
-            } else if (recipe.public || req.user.id == recipe.user) {
+            } else if (recipe.public || (req as any).user.id == recipe.user) {
                 res
                     .status(200)
                     .json({ success: true, msg: "Recipe found.", recipe });
@@ -100,4 +102,4 @@ router.get(
     }
 );
 
-module.exports = router;
+export default router;

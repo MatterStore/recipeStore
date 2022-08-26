@@ -1,8 +1,8 @@
-const mongoose = require("mongoose");
+import {Schema, Types, model} from "mongoose";
 
-const recipeSchema = mongoose.Schema({
+const recipeSchema = new Schema({
     user: {
-        type: mongoose.ObjectId,
+        type: Types.ObjectId,
         required: true,
     },
     title: {
@@ -53,12 +53,16 @@ const recipeSchema = mongoose.Schema({
     }
 });
 
-const Recipe = (module.exports = mongoose.model("Recipe", recipeSchema));
+const Recipe = model("Recipe", recipeSchema);
 
-module.exports.getById = function (id, callback) {
+export {
+    Recipe
+}
+
+export function getById(id, callback) {
     Recipe.findOne({ _id: id }, callback)
 };
 
-module.exports.getByUser = function (user, callback) {
+export function getByUser (user, callback) {
     Recipe.find({ user }, callback)
 };

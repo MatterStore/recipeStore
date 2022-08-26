@@ -1,7 +1,7 @@
-const mongoose = require("mongoose");
-const bcrypt = require("bcryptjs");
+import mongoose from "mongoose";
+import bcrypt from "bcryptjs";
 
-const userSchema = mongoose.Schema({
+const userSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
@@ -24,22 +24,24 @@ const userSchema = mongoose.Schema({
   },
 });
 
-const User = (module.exports = mongoose.model("User", userSchema));
+const User = mongoose.model("User", userSchema);
 
-module.exports.getUserById = function (id, callback) {
+export default User
+
+export function getUserById (id, callback) {
   User.findById({ _id: id }, callback);
 };
 
-module.exports.authenticateUser = function (email, callback) {
+export function authenticateUser (email, callback) {
   User.updateOne({ email: email }, { $set: { authenticated: true } }, callback);
 };
 
-module.exports.getUserByEmail = function (email, callback) {
+export function getUserByEmail (email, callback) {
   const query = { email: email };
   User.findOne(query, callback);
 };
 
-module.exports.addUser = function (newUser, callback) {
+export function addUser (newUser, callback) {
   bcrypt.genSalt(10, (err, salt) => {
     bcrypt.hash(newUser.password, salt, (err, hash) => {
       if (err) throw err;
@@ -49,7 +51,7 @@ module.exports.addUser = function (newUser, callback) {
   });
 };
 
-module.exports.comparePassword = function (candidatePassword, hash, callback) {
+export function comparePassword (candidatePassword, hash, callback) {
   if (!candidatePassword) {
     return false;
   }
@@ -59,7 +61,7 @@ module.exports.comparePassword = function (candidatePassword, hash, callback) {
   });
 };
 
-module.exports.updatePassword = function (newUser, callback) {
+export function updatePassword (newUser, callback) {
   bcrypt.genSalt(10, (err, salt) => {
     if (err) throw err;
     bcrypt.hash(newUser.newPassword, salt, (err, hash) => {
