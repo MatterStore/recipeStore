@@ -1,5 +1,5 @@
-import {Schema, Types, model} from "mongoose";
-
+import pkg from 'mongoose';
+const { Schema, Types, model } = pkg;
 const recipeSchema = new Schema({
     user: {
         type: Types.ObjectId,
