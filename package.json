@@ -5,7 +5,7 @@
   "description": "Backend for MERN application",
   "main": "backend/dist/app.js",
   "scripts": {
-    "test": "tsc && DB_PASSWORD=manu354 DB_USER=manu354 JWT_SECRET=ABC NODE_ENV=testing mocha 'backend/dist/tests/**/*.js' --recursive --exit --timeout 10000",
+    "test": "tsc && NODE_ENV=testing mocha 'backend/dist/tests/**/*.js' --recursive --exit --timeout 10000",
     "start": "node backend/dist/app.js",
     "postinstall": "tsc",
     "watch-node": "nodemon backend/dist/index.js",
