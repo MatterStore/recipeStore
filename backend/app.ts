@@ -1,14 +1,14 @@
 // require("dotenv").config({
 //   path: `./.env.${process.env.NODE_ENV}`,
 // });
-require("./config/db-connection");
+import "./config/db-connection.js";
+import path from 'path';
+import express from "express";
+import expressSession from "express-session";
+import cors from "cors";
+import passport from "passport";
 
-const path = require('path');
-const express = require("express");
-const expressSession = require("express-session");
-const cors = require("cors");
-const passport = require("passport");
-
+import * as users_route from "./routes/user.js";
 const app = express();
 
 app.use(cors());
@@ -22,8 +22,8 @@ app.use(
 );
 app.use(passport.initialize());
 app.use(passport.session());
-require("./config/passport")(passport);
-
+import execPassport from "./config/passport.js";
+execPassport(passport)
 
 if (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "staging") {
   app.use(express.static("frontend/build"));
@@ -34,11 +34,10 @@ if (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "staging")
   });
 }
 
-const users_route = require("./routes/user");
 
-app.use("/user", users_route);
+app.use("/user", users_route.router);
 
-const recipes_route = require("./routes/recipe");
+import recipes_route from "./routes/recipe.js";
 
 app.use("/recipes", recipes_route);
 
