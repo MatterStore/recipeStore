@@ -37,7 +37,7 @@ if (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "staging")
 
 app.use("/user", users_route.router);
 
-const recipes_route = require("./routes/recipe");
+import recipes_route from "./routes/recipe.js";
 
 app.use("/recipes", recipes_route);
 
