@@ -1,13 +1,17 @@
-const express = require("express");
+import express from "express";
 const router = express.Router();
-const passport = require("passport");
-const jwt = require("jsonwebtoken");
+import passport from "passport";
+import jwt from "jsonwebtoken";
 
-const params_validator = require("../helpers/params-validator");
-const jwt_validator = require("../helpers/user-jwt-validate");
-const Joi = require("joi");
+import * as params_validator from "../helpers/params-validator.js";
+import * as jwt_validator from "../helpers/user-jwt-validate.js";
+import Joi from "joi";
 
-const User = require("../models/user");
+import User, { addUser, comparePassword, getUserByEmail, updatePassword } from "../models/user.js";
+
+const errorLogger = {
+  error: (err) => console.log(err)
+} 
 
 router.post(
   "/signup",
@@ -30,7 +34,7 @@ router.post(
       name: req.body.name,
     });
 
-    User.getUserByEmail(newUser.email, (err, user) => {
+    getUserByEmail(newUser.email, (err, user) => {
       if (err) {
         errorLogger.error(err);
         return res
@@ -44,7 +48,7 @@ router.post(
         });
       }
 
-      User.addUser(newUser, (err) => {
+      addUser(newUser, (err) => {
         if (err) {
           errorLogger.error(err);
           return res.status(422).json({
@@ -66,9 +70,7 @@ router.post(
   params_validator.validateParams({
     email: Joi.string().min(8).max(20).required(),
     password: Joi.string()
-      .pattern(
-        /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&(=)<>.,/])[A-Za-z\d@$!%*#?&(=)<>.,/]{6,}$/
-      )
+      .min(8)
       .max(20)
       .required(),
   }),
@@ -76,7 +78,7 @@ router.post(
     const email = req.body.email;
     const password = req.body.password;
 
-    User.getUserByEmail(email, (err, emailUser) => {
+    getUserByEmail(email, (err, emailUser) => {
       if (err) {
         errorLogger.error(err);
         return res
@@ -89,7 +91,7 @@ router.post(
           .json({ success: false, msg: "Invalid credentials." });
       }
       let finalUser = emailUser;
-      User.comparePassword(password, finalUser.password, (err, isMatch) => {
+      comparePassword(password, finalUser.password, (err, isMatch) => {
         if (err) {
           errorLogger.error(err);
           return res
@@ -122,7 +124,7 @@ router.post(
 router.get(
   "/profile",
   passport.authenticate("user", { session: false }),
-  (req, res, next) => {
+  (req : any, res, next) => {
     res.status(200).json({ success: true, user: req.user });
   }
 );
@@ -166,7 +168,7 @@ router.post(
       });
     }
 
-    User.getUserByEmail(newUser.email, (err, user) => {
+    getUserByEmail(newUser.email, (err, user) => {
       if (err) {
         return res
           .status(422)
@@ -175,7 +177,7 @@ router.post(
       if (!user) {
         return res.status(404).json({ success: false, msg: "User not found." });
       }
-      User.comparePassword(
+      comparePassword(
         newUser.currentPassword,
         user.password,
         (err, isMatch) => {
@@ -191,7 +193,7 @@ router.post(
               .status(422)
               .json({ success: false, msg: "Incorrect password." });
           }
-          User.updatePassword(newUser, (err) => {
+          updatePassword(newUser, (err) => {
             if (err) {
               errorLogger.error(err);
               return res
@@ -208,4 +210,4 @@ router.post(
   }
 );
 
-module.exports = router;
+export {router}
