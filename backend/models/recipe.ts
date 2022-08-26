@@ -1,8 +1,8 @@
-import mongoose from "mongoose";
+import {Schema, Types, model} from "mongoose";
 
-const recipeSchema = new mongoose.Schema({
+const recipeSchema = new Schema({
     user: {
-        type: (mongoose as any).ObjectId,
+        type: Types.ObjectId,
         required: true,
     },
     title: {
@@ -53,7 +53,7 @@ const recipeSchema = new mongoose.Schema({
     }
 });
 
-const Recipe = mongoose.model("Recipe", recipeSchema);
+const Recipe = model("Recipe", recipeSchema);
 
 export {
     Recipe

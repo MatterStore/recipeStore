@@ -26,9 +26,7 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model("User", userSchema);
 
-export {
-  User
-}
+export default User
 
 export function getUserById (id, callback) {
   User.findById({ _id: id }, callback);
