@@ -1,5 +1,10 @@
 import mongoose from "mongoose";
+import dotenv from "dotenv"
 export default {};
+
+dotenv.config({
+  path: `.env`,
+});
 
 const DB_USER = process.env.DB_USER;
 const DB_PASSWORD = process.env.DB_PASSWORD;

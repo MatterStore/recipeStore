@@ -1,6 +1,11 @@
-// require("dotenv").config({
-//   path: `./.env.${process.env.NODE_ENV}`,
-// });
+import dotenv from "dotenv"
+const result = dotenv.config({
+  path: `.env`,
+});
+if (result.error) {
+  throw result.error;
+}
+
 import "./config/db-connection.js";
 import path from 'path';
 import express from "express";
