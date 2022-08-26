@@ -37,9 +37,13 @@ if (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "staging")
 
 app.use("/user", users_route.router);
 
+const recipes_route = require("./routes/recipe");
+
+app.use("/recipes", recipes_route);
+
 // default case for unmatched routes
 app.use(function (req, res) {
-  res.status(404);
+  res.status(404).send();
 });
 
 const port = process.env.PORT || 5000;
