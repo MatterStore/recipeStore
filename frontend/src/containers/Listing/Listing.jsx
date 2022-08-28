@@ -23,10 +23,10 @@ export default function Listing() {
 
   return (
     <div>
-      <main className="p-16">
+      <main className="p-16 mx-auto max-w-screen-sm lg:max-w-screen-2xl flex flex-col">
         <Header>
           Recipes
-          <span className="float-right">
+          <span className="block mt-8 lg:mt-0 lg:inline-block lg:float-right">
             <Button
               to="/recipe/new"
               primary={true}
@@ -37,20 +37,22 @@ export default function Listing() {
         </Header>
         {
           Object.entries(collections).map(([collectionName, collectionRecipes], i) => { return ( 
-            <div className="mt-12 mb-16" key={i}>
+            <div className="mt-4 mb-12 self-center lg:self-start w-full" key={i}>
               <Subheader>
                 {collectionName}
                 <Link
                   to={`/collection/${collectionName}`}
-                  className={`ml-8 text-lg underline subpixel-antialiased text-purple-600`}
+                  className={`ml-8 text-lg underline subpixel-antialiased text-purple-600 whitespace-pre-wrap`}
                 >
                   View All
                 </Link>
               </Subheader>
-              <div>
+              <div className="self-center lg:self-start">
                 {
                   collectionRecipes.map(index => recipes[index-1]).map((recipe, j) => { return (
-                    <Recipe {...recipe} key={j} />
+                    <div className="mx-auto inline-block">
+                      <Recipe {...recipe} key={j} />
+                    </div>
                   )})
                 }
               </div>
