@@ -4,8 +4,13 @@ import Home from "./containers/Home/Home";
 import Listing from "./containers/Listing/Listing";
 import Login from "./containers/Login/Login";
 import Signup from "./containers/Signup/Signup";
+import { useEffect } from "react";
 
 function App() {
+  useEffect(() => {
+    document.title = "Recipe Store"
+  });
+
   return (
     <div>
       <Routes>
