@@ -1,5 +1,7 @@
+import { Link } from "react-router-dom";
 import Header from "../../components/Header";
 import Recipe from "../../components/Recipe";
+import Subheader from "../../components/Subheader";
 
 export default function Listing() {
   const collections = {
@@ -26,8 +28,16 @@ export default function Listing() {
         <Header>Recipes</Header>
         {
           Object.entries(collections).map(([collectionName, recipes], i) => { return ( 
-            <div className="" key={i}>
-              <Header>{collectionName}</Header>
+            <div className="mt-12 mb-16" key={i}>
+              <Subheader>
+                {collectionName}
+                <Link
+                  to={`/collection/${collectionName}`}
+                  className={`ml-8 text-lg underline subpixel-antialiased text-purple-600`}
+                >
+                  View All
+                </Link>
+              </Subheader>
               <div>
                 {
                   recipes.map((recipe, j) => { return (
