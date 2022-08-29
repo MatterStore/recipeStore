@@ -26,5 +26,10 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
+      env: # Or as an environment variable
+        JWT_SECRET: ${{ secrets.JWT_SECRET }}
+        DB_USER : ${{ secrets.DB_USER }}
+        DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
     - run: npm install
     - run: npm run test
+        
