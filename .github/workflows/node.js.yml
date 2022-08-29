@@ -27,4 +27,9 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
     - run: npm install
-    - run: npm run test
+    - name: Run our backend tests!
+      env: # Or as an environment variable
+        JWT_SECRET: ${{ secrets.JWT_SECRET }}
+        DB_USER : ${{ secrets.DB_USER }}
+        DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      run: npm run test
