@@ -1,4 +1,9 @@
 import mongoose from "mongoose";
+import dotenv from "dotenv"
+
+dotenv.config({
+  path: `.env`,
+});
 
 export default function connect() {
   const DB_USER = process.env.DB_USER;
