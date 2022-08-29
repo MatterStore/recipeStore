@@ -6,7 +6,7 @@ if (result.error) {
   throw result.error;
 }
 
-import "./config/db-connection.js";
+import connect from "./config/db-connection.js";
 import path from 'path';
 import express from "express";
 import expressSession from "express-session";
@@ -14,6 +14,9 @@ import cors from "cors";
 import passport from "passport";
 
 import * as users_route from "./routes/user.js";
+
+connect(); // Connect to database
+
 const app = express();
 
 app.use(cors());
@@ -56,3 +59,5 @@ const port = process.env.PORT || 5000;
 app.listen(port, () => {
   console.log(`\nServer Started on ${port}`);
 });
+
+export default app;
