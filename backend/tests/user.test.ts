@@ -5,8 +5,9 @@ import app from '../app.js';
 import User from "../models/user.js";
 
 // Clear users collection of test DB before and after tests
-before(() => User.deleteMany({}));
-after(() => User.deleteMany({}));
+const clearTestUser = () => User.deleteOne({ email: "test@test.domain"});
+before(clearTestUser);
+after(clearTestUser);
 
 describe("POST /user/signup", () => {
     it("Should register a new user", () => request(app)
@@ -16,7 +17,7 @@ describe("POST /user/signup", () => {
             name: "testuser",
             password: "testpassword"
         })
-        .then((res) => {
+        .then(res => {
             assert(res.body.success, "Signup failed.");
             assert(res.status === 200, "Signup not 200 OK.");
         })
@@ -29,7 +30,7 @@ describe("POST /user/signup", () => {
             name: "testuser",
             password: "testpassword"
         })
-        .then((res) => {
+        .then(res => {
             assert(!res.body.success, "Duplicate email allowed.");
             assert(res.status === 422, "Signup not error code.");
         })
@@ -43,7 +44,7 @@ describe("POST /user/login", () => {
             email: "missing@weird.domain",
             password: "missinguserspassword"
         })
-        .then((res) => {
+        .then(res => {
             assert(!res.body.success, "Missing user login succeeded.");
             assert(res.status >= 400, "Incorrect status.");
         })
@@ -55,7 +56,7 @@ describe("POST /user/login", () => {
             email: "test@test.domain",
             password: "wrongpassword"
         })
-        .then((res) => {
+        .then(res => {
             assert(!res.body.success, "Incorrect password allowed.");
             assert(res.status >= 400, "Incorrect status.");
         })
@@ -67,7 +68,7 @@ describe("POST /user/login", () => {
             email: "test@test.domain",
             password: "testpassword"
         })
-        .then((res) => {
+        .then(res => {
             assert(res.body.success, "Correct login rejected.");
             assert(res.status == 200, "Status not 200 OK.");
         })
@@ -78,7 +79,7 @@ describe("GET /user/profile", () => {
     it("Should fail if unauthenticated", () => request(app)
         .get("/user/profile")
         .send()
-        .then((res) => {
+        .then(res => {
             assert(res.status == 401, "Not unauthorised.");
         })
     );
@@ -86,7 +87,7 @@ describe("GET /user/profile", () => {
     it("Should return the logged-in users's profile", () => request(app)
         .post("/user/login")
         .send({ email: "test@test.domain", password: "testpassword"})
-        .then((res) => {
+        .then(res => {
             assert(res.body.token, "Missing authorization token.");
             assert(res.status == 200, "Failed to log in");
 
@@ -95,7 +96,7 @@ describe("GET /user/profile", () => {
                 .get("/user/profile")
                 .set("Authorization", token)
                 .send()
-                .then((res) => {
+                .then(res => {
                     assert(res.body.success, "Profile request failed.");
                     assert(res.body.status == 200, "Status not 200 OK.");
                     assert(res.body.user?.name == "testuser", "Bad profile.");
