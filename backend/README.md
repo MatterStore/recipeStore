@@ -1,6 +1,6 @@
 # API Specification
 
-See *Design Documentation > Backend > API Documentation* on Confluenc for a
+See *Design Documentation > Backend > API Documentation* on Confluence for a
 diagram.
 
 ## Format
@@ -23,10 +23,12 @@ e.g. authorization, should also be specified.
                 cooking_time: string,
                 servings: number,
                 ingredients: [
-                    text: string,
-                    name: string?,
-                    quantity: string?,
-                    unit: string?
+                    {
+                        text: string,
+                        name: string?,
+                        quantity: string?,
+                        unit: string?
+                    }
                 ],
                 steps: [string],
                 tags: [string],
@@ -45,10 +47,12 @@ e.g. authorization, should also be specified.
                     cooking_time: string?,
                     servings: number?,
                     ingredients: [
-                        text: string,
-                        name: string?,
-                        quantity: string?,
-                        unit: string?
+                        {
+                            text: string,
+                            name: string?,
+                            quantity: string?,
+                            unit: string?
+                        }
                     ],
                     steps: [string],
                     tags: [string],
