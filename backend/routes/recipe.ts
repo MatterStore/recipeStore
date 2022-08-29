@@ -6,8 +6,6 @@ import * as params_validator from "../helpers/params-validator.js";
 
 import * as Recipe from "../models/recipe.js";
 
-import User from "../models/user.js";
-
 const router = express.Router();
 
 router.post(
