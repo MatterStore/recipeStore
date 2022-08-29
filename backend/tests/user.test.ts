@@ -73,3 +73,33 @@ describe("POST /user/login", () => {
         })
     );
 });
+
+describe("GET /user/profile", () => {
+    it("Should fail if unauthenticated", () => request(app)
+        .get("/user/profile")
+        .send()
+        .then((res) => {
+            assert(res.status == 401, "Not unauthorised.");
+        })
+    );
+
+    it("Should return the logged-in users's profile", () => request(app)
+        .post("/user/login")
+        .send({ email: "test@test.domain", password: "testpassword"})
+        .then((res) => {
+            assert(res.body.token, "Missing authorization token.");
+            assert(res.status == 200, "Failed to log in");
+
+            let token = res.body.token;
+            request(app)
+                .get("/user/profile")
+                .set("Authorization", token)
+                .send()
+                .then((res) => {
+                    assert(res.body.success, "Profile request failed.");
+                    assert(res.body.status == 200, "Status not 200 OK.");
+                    assert(res.body.user?.name == "testuser", "Bad profile.");
+                });
+        })
+    );
+});
