@@ -3,10 +3,10 @@ import Joi from 'joi';
 import mongoose from 'mongoose';
 import passport from 'passport';
 
-import validateParams from '../helpers/params-validator';
+import validateParams from '../helpers/params-validator.js';
 
-import Collection, { deleteById, getById, getByUser } from '../models/collection';
-import Tag from '../models/tag';
+import Collection, { deleteById, getById, getByUser } from '../models/collection.js';
+import Tag from '../models/tag.js';
 
 const router = express.Router();
 export default router;
@@ -136,4 +136,4 @@ router.post(
             }
         });
     }
-)
+);
