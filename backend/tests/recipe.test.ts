@@ -166,14 +166,17 @@ describe("GET /recipes/:id", async () => {
         })
     );
 
-    whenLoggedInIt("Shouldn't work for other user", token => request(app)
-        .get("/recipes/" + id)
-        .set("Authorization", token)
-        .send()
-        .then(res => {
-            assert(!res.body.success, "Was able to access private recipe.");
-            assert(res.status >= 400, "Status indicates success (shouldn't)");
-        })
+    whenLoggedInIt(
+        "Shouldn't work for other user",
+        token => request(app)
+            .get("/recipes/" + id)
+            .set("Authorization", token)
+            .send()
+            .then(res => {
+                assert(!res.body.success, "Was able to access private recipe.");
+                assert(res.status >= 400, "Status indicates success (shouldn't)");
+            }),
+        USER_B_DETAILS
     );
 
     it("Should not work if unauthenticated", () => request(app)
