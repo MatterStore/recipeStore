@@ -4,12 +4,18 @@ import { assert } from "chai";
 import app from '../app.js';
 import Recipe from "../models/recipe.js";
 
-import { doLoggedIn, whenLoggedInIt, prepareTestUsers, TestUsers } from './helpers.js';
+import {
+    TestRecipes, TestUsers, doLoggedIn, whenLoggedInIt, prepareTestData
+} from './helpers.js';
+
+const FLAG_TAG = "TESTRECIPE";
 
 before(async () => {
-    await Recipe.deleteMany({}); // Clear recipes collection
-    await prepareTestUsers();
+    await Recipe.deleteMany({ tags: FLAG_TAG }); // Clear test recipes
+    await prepareTestData();
 });
+
+after(() => Recipe.deleteMany({ tags: FLAG_TAG }));
 
 describe("POST /recipes/new", () => {
     it("Should require authorization", () => request(app)
@@ -32,42 +38,12 @@ describe("POST /recipes/new", () => {
         })
     );
 
+    let recipe = Object.assign({}, TestRecipes.Pancakes);
+    recipe.tags = recipe.tags.concat([FLAG_TAG]);
     whenLoggedInIt("Should allow creation of recipes", token => request(app)
         .post("/recipes/new")
         .set("Authorization", token)
-        .send({
-            title: "Pancakes",
-            cooking_time: "15 minutes",
-            servings: 4,
-            ingredients: [
-                { text: "2 eggs", name: "eggs", quantity: "2" },
-                {
-                    text: "1 3/4 cup milk",
-                    name: "milk",
-                    quantity: "1.75",
-                    unit: "cups"
-                },
-                {
-                    text: "2 cups plain flour",
-                    name: "plain flour",
-                    quantity: "2",
-                    unit: "cups"
-                },
-                { text: "Butter for the pan" }
-            ],
-            steps: [
-                "Whisk eggs, milk and flour together in a large bowl.",
-                "Heat a frying pan to a medium heat and grease with butter.",
-                (
-                    "Pour a small amount of batter and cook until bubbles "
-                    + "appear, then flip and cook until set. Remove from pan "
-                    + "and repeat until all batter used."
-                ),
-                "Serve with maple syrup or lemon and sugar."
-            ],
-            tags: [ "breakfast", "quick", "sweet" ],
-            public: false
-        })
+        .send(recipe)
         .then(res => {
             assert(
                 res.body.success,

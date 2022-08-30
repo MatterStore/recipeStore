@@ -2,20 +2,14 @@ import app from '../app.js';
 
 import { assert } from 'chai';
 import request from 'supertest';
+import Recipe from '../models/recipe.js';
 
 interface UserDetails {
     email: string,
     password: string
 };
 
-// Note: the /user tests delete @test.domain users as part of the tests, so
-// best not to use these for other tests.
 export const TestUsers = {
-    Alfred: {
-        email: "test@test.domain",
-        name: "alfred",
-        password: "testpassword"
-    }, // Used for /user
     Beatrice: {
         email: "beatrice@sushi.kitchen",
         name: "beatrice",
@@ -26,11 +20,42 @@ export const TestUsers = {
         name: "chef",
         password: "recipesrgr8",
     }, // Used for /recipes and /collections
-    Dominguez: {
-        email: "testuserwithoverlylongemail@test.domain",
-        name: "longnametestuser",
-        password: "testpassword0"
-    }, // Used for /user
+};
+
+export const TestRecipes = {
+    Pancakes: {
+        title: "Pancakes",
+        cooking_time: "15 minutes",
+        servings: 4,
+        ingredients: [
+            { text: "2 eggs", name: "eggs", quantity: "2" },
+            {
+                text: "1 3/4 cup milk",
+                name: "milk",
+                quantity: "1.75",
+                unit: "cups"
+            },
+            {
+                text: "2 cups plain flour",
+                name: "plain flour",
+                quantity: "2",
+                unit: "cups"
+            },
+            { text: "Butter for the pan" }
+        ],
+        steps: [
+            "Whisk eggs, milk and flour together in a large bowl.",
+            "Heat a frying pan to a medium heat and grease with butter.",
+            (
+                "Pour a small amount of batter and cook until bubbles "
+                + "appear, then flip and cook until set. Remove from pan "
+                + "and repeat until all batter used."
+            ),
+            "Serve with maple syrup or lemon and sugar."
+        ],
+        tags: [ "breakfast", "quick", "sweet" ],
+        public: false
+    }
 };
 
 export async function doLoggedIn(
@@ -55,11 +80,26 @@ export function whenLoggedInIt(
     it(msg, () => doLoggedIn(cb, as));
 }
 
-export async function prepareTestUsers() {
+export async function prepareTestData() {
     // Create test users, just returns failure if they already exist, so no
     // need to check for that.
     for (let details of Object.values(TestUsers)) {
         await request(app).post("/user/signup").send(details);
     }
+
+    await doLoggedIn(token => request(app)
+        .get("/user/profile")
+        .set("Authorization", token)
+        .send()
+        .then(async (res) => {
+            let recipe = await Recipe.findOne({ user: res.body.user.id });
+            if (!recipe) {
+                await request(app)
+                    .post("/recipes/new")
+                    .set("Authorization", token)
+                    .send(TestRecipes.Pancakes);
+            }
+        })
+    );
 }
 
