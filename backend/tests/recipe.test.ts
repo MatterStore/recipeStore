@@ -2,55 +2,13 @@ import request from "supertest";
 import { assert } from "chai";
 
 import app from '../app.js';
-import { Recipe } from "../models/recipe.js";
+import Recipe from "../models/recipe.js";
 
-
-interface UserDetails {
-    email: string,
-    password: string
-};
-
-const USER_A_DETAILS = {
-    email: "chef@kitchen.table",
-    name: "chef",
-    password: "recipesrgr8",
-};
-
-const USER_B_DETAILS = {
-    email: "beatrice@sushi.kitchen",
-    name: "beatrice",
-    password: "1<3fish4dinner"
-};
-
-async function doLoggedIn(
-    cb: (token: string) => any,
-    details: UserDetails = USER_A_DETAILS
-) {
-    await request(app)
-        .post("/user/login")
-        .send(details)
-        .then(res => {
-            assert(res.body.success, "Login failed");
-            assert(res.body.token.startsWith("JWT"), "Bad token.");
-            cb(res.body.token);
-        });
-}
-
-// Log in as the test recipe user and sets up a test case with the given
-// message, passing in an authorization token to the callback.
-function whenLoggedInIt(
-    msg: string, cb: (token: string) => any, as: UserDetails = USER_A_DETAILS
-) {
-    it(msg, () => doLoggedIn(cb, as));
-}
+import { doLoggedIn, whenLoggedInIt, prepareTestUsers, TestUsers } from './helpers.js';
 
 before(async () => {
-    Recipe.deleteMany({}); // Clear recipes collection
-
-    // Create test users, just returns failure if they already exist, so no
-    // need to check for that.
-    await request(app).post("/user/signup").send(USER_A_DETAILS);
-    await request(app).post("/user/signup").send(USER_B_DETAILS);
+    await Recipe.deleteMany({}); // Clear recipes collection
+    await prepareTestUsers();
 });
 
 describe("POST /recipes/new", () => {
@@ -176,7 +134,7 @@ describe("GET /recipes/:id", async () => {
                 assert(!res.body.success, "Was able to access private recipe.");
                 assert(res.status >= 400, "Status indicates success (shouldn't)");
             }),
-        USER_B_DETAILS
+        TestUsers.Beatrice
     );
 
     it("Should not work if unauthenticated", () => request(app)
