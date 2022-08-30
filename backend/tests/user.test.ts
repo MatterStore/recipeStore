@@ -5,7 +5,9 @@ import app from '../app.js';
 import User from "../models/user.js";
 
 // Clear users collection of test DB before and after tests
-const clearTestUser = () => User.deleteOne({ email: "test@test.domain"});
+const clearTestUser = () => User.deleteMany(
+    { email: { $regex: /.*@test\.domain$/ } }
+);
 before(clearTestUser);
 after(clearTestUser);
 
@@ -34,7 +36,20 @@ describe("POST /user/signup", () => {
             assert(!res.body.success, "Duplicate email allowed.");
             assert(res.status === 422, "Signup not error code.");
         })
-    )
+    );
+
+    it("Should work with long emails", () => request(app)
+        .post("/user/signup")
+        .send({
+            email: "testuserwithoverlylongemail@test.domain",
+            name: "longnametestuser",
+            password: "testpassword0"
+        })
+        .then(res => {
+            assert(res.body.success, "Long email signup failed.");
+            assert(res.status === 200, "Signup not 200 OK.");
+        })
+    );
 });
 
 describe("POST /user/login", () => {
@@ -71,6 +86,18 @@ describe("POST /user/login", () => {
         .then(res => {
             assert(res.body.success, "Correct login rejected.");
             assert(res.status == 200, "Status not 200 OK.");
+        })
+    );
+
+    it("Should allow long emails", () => request(app)
+        .post("/user/login")
+        .send({
+            email: "testuserwithoverlylongemail@test.domain",
+            password: "testpassword0"
+        })
+        .then(res => {
+            assert(res.body.success, "Long email login rejected.");
+            assert(res.status === 200, "Status not 200 OK.");
         })
     );
 });
