@@ -6,7 +6,7 @@ if (result.error) {
   throw result.error;
 }
 
-import connect from "./config/db-connection.js";
+import "./config/db-connection.js";
 import path from 'path';
 import express from "express";
 import expressSession from "express-session";
@@ -14,8 +14,6 @@ import cors from "cors";
 import passport from "passport";
 
 import * as users_route from "./routes/user.js";
-
-connect(); // Connect to database
 
 const app = express();
 
