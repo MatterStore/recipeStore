@@ -11,20 +11,15 @@ import User, { addUser, comparePassword, getUserByEmail, updatePassword } from "
 
 const errorLogger = {
   error: (err) => console.log(err)
-} 
+};
+
+const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 router.post(
   "/signup",
   params_validator.validateParams({
-    email: Joi.string()
-      .pattern(
-        /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-      )
-      .required(),
-    password: Joi.string()
-      .min(8)
-      .max(20)
-      .required(),
+    email: Joi.string().pattern(emailRegex).required(),
+    password: Joi.string().min(8).max(20).required(),
     name: Joi.string().min(2).max(40).required(),
   }),
   (req, res, next) => {
@@ -68,11 +63,8 @@ router.post(
 router.post(
   "/login",
   params_validator.validateParams({
-    email: Joi.string().min(8).max(20).required(),
-    password: Joi.string()
-      .min(8)
-      .max(20)
-      .required(),
+    email: Joi.string().pattern(emailRegex).required(),
+    password: Joi.string().min(8).max(20).required(),
   }),
   (req, res, next) => {
     const email = req.body.email;
