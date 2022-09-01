@@ -9,7 +9,7 @@ export default function Button(props) {
                     `text-white bg-indigo-600`
                 :
                     `text-indigo-900 ring-inset ring-indigo-400 ring-2`
-            }`}
+            } ${props.className}`}
         >
             {props.children}
         </Link>
