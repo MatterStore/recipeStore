@@ -40,7 +40,7 @@
 2. [Mongoose](https://www.npmjs.com/package/mongoose) is used as an object modelling framework for MongoDB.
 3. [Nodemon](https://www.npmjs.com/package/nodemon) is used to serve the Node application on the local environment for automatic reloading.
 
-### Frontend
+### Frontend.
 
 1. React-Router enabled.
 2. Axios enabled and configured as an custom interceptor that can send requests with a JWT token.
