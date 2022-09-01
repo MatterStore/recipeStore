@@ -11,7 +11,9 @@
     "watch-node": "nodemon backend/dist/index.js",
     "watch-ts": "tsc -w",
     "heroku-postbuild": "cd frontend && npm install && npm run build",
-    "dev": "npm run postinstall && npm start & cd frontend && npm start"
+    "dev": "npm run postinstall && npm start & cd frontend && npm start",
+    "prepare": "husky install",
+    "pretty-quick": "pretty-quick"
   },
   "author": "MatterStore",
   "license": "MIT",
@@ -28,6 +30,7 @@
     "mongoose": "^6.5.2",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.0",
+    "prettier": "^2.7.1",
     "replace-require-with-import": "^2.1.0",
     "ts-node": "^10.9.1"
   },
@@ -39,8 +42,10 @@
     "@types/mongoose": "^5.11.97",
     "@types/supertest": "^2.0.12",
     "chai": "^4.3.6",
+    "husky": "^8.0.0",
     "mocha": "^10.0.0",
     "nodemon": "^2.0.19",
+    "pretty-quick": "^3.1.3",
     "supertest": "^6.2.4",
     "typescript": "^4.7.4"
   }
