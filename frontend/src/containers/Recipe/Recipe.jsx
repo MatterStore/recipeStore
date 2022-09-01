@@ -1,6 +1,8 @@
 import { useParams } from "react-router-dom";
 import Header from "../../components/Header";
 import Subheader from "../../components/Subheader";
+import Button from "../../components/Button";
+import Tag from "../../components/Tag";
 
 export default function Recipe(props) {
   let params = useParams();
@@ -9,7 +11,7 @@ export default function Recipe(props) {
     {
       id: "1",
       name: "Gnocchi",
-      primaryImage: "https://unsplash.com/photos/Zmhi-OMDVbw/download?ixid=MnwxMjA3fDB8MXxzZWFyY2h8MXx8Z25vY2NoaXxlbnwwfHx8fDE2NjE2NzU5NjQ&w=400",
+      primaryImage: "https://unsplash.com/photos/Zmhi-OMDVbw/download?ixid=MnwxMjA3fDB8MXxzZWFyY2h8MXx8Z25vY2NoaXxlbnwwfHx8fDE2NjE2NzU5NjQ&w=600",
       ingredients: [
         "100g Flour",
         "1tspn Sugar"
@@ -20,11 +22,13 @@ export default function Recipe(props) {
       ],
       tags: [
         "Vegetarian"
-      ]
+      ],
+      time: "3 hours",
+      servings: 4
     },{
       id: "2",
       name: "Ratatouille",
-      primaryImage: "https://unsplash.com/photos/3vDJ--i7w88/download?ixid=MnwxMjA3fDB8MXxzZWFyY2h8M3x8cmF0YXRvdWlsbGV8ZW58MHx8fHwxNjYxNjc2MDY0&w=400",
+      primaryImage: "https://unsplash.com/photos/3vDJ--i7w88/download?ixid=MnwxMjA3fDB8MXxzZWFyY2h8M3x8cmF0YXRvdWlsbGV8ZW58MHx8fHwxNjYxNjc2MDY0&w=600",
       ingredients: [
         "250g Pumpkin",
         "500mL Water"
@@ -35,7 +39,9 @@ export default function Recipe(props) {
       ],
       tags: [
         "Gluten Free"
-      ]
+      ],
+      time: "15 minutes",
+      servings: 8
     }
   ];
 
@@ -46,44 +52,54 @@ export default function Recipe(props) {
   const recipe = getRecipe(params.recipeId);
 
   return (
-    <div className="p-16">
-      <Header>{recipe.name}</Header>
-      <div>
-        <ul>
-          {
-            recipe.tags.map((tag, i) => (
-              <span key={i}>{tag}</span>
-            ))
-          }
-        </ul>
-      </div>
-      <div>
-        <Subheader>Ingredients</Subheader>
-        <ul>
-          {
-            recipe.ingredients.map((ingredient, i) => (
-              <li key={i}>{ingredient}</li>
-            ))
-          }
-        </ul>
-      </div>
-      <div>
-        <Subheader>Steps</Subheader>
-        <ol>
-          {
-            recipe.steps.map((step, i) => (
-              <li key={i}>{step}</li>
-            ))
-          }
-        </ol>
-      </div>
-      <div>
-        <img
-          src={recipe.primaryImage}
-          alt=""
-          className="object-cover w-96 pb-12 mt-4 rounded"
-        />
-      </div>
+    <div className="px-16 lg:px-32 py-16 mx-auto max-w-screen-sm lg:max-w-screen-2xl">
+      <Header inline>
+        {recipe.name}
+      </Header>
+      <span>{recipe.time} — Serves {recipe.servings}</span>
+      <span className="inline-block float-right">
+        <Button primary={false} to="/edit">Edit</Button>
+      </span>
+      <span className="block mt-4 lg:mt-0 lg:inline lg:float-right">
+        {
+          recipe.tags.map((tag, i) => (
+            <Tag key={i}>{tag}</Tag>
+          ))
+        }
+      </span>
+
+      <hr className="my-8"/>
+      <main className="grid grid-cols-1 lg:grid-cols-2">
+        <article>
+          <section className="mb-12">
+            <h3 className="text-xl font-bold mb-4">Ingredients</h3>
+            <ul className="list-disc ml-5 leading-relaxed text-xl">
+              {
+                recipe.ingredients.map((ingredient, i) => (
+                  <li key={i}>{ingredient}</li>
+                ))
+              }
+            </ul>
+          </section>
+          <section className="mb-12">
+            <h3 className="text-xl font-bold mb-4">Steps</h3>
+            <ol className="list-decimal ml-5 leading-relaxed text-xl">
+              {
+                recipe.steps.map((step, i) => (
+                  <li key={i}>{step}</li>
+                ))
+              }
+            </ol>
+          </section>
+        </article>
+        <div>
+          <img
+            src={recipe.primaryImage}
+            alt=""
+            className="object-cover w-full max-h-96 pb-12 mt-4 rounded"
+          />
+        </div>
+      </main>
     </div>
   );
 };
