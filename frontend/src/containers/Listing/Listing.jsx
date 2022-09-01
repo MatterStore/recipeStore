@@ -38,7 +38,7 @@ export default function Listing() {
         {
           Object.entries(collections).map(([collectionName, collectionRecipes], i) => { return ( 
             <div className="mt-4 mb-12 self-center lg:self-start w-full" key={i}>
-              <Subheader>
+              <Subheader key={i}>
                 {collectionName}
                 <Link
                   to={`/collection/${collectionName}`}
@@ -50,8 +50,8 @@ export default function Listing() {
               <div className="self-center lg:self-start">
                 {
                   collectionRecipes.map(index => recipes[index-1]).map((recipe, j) => { return (
-                    <div className="mx-auto inline-block">
-                      <Recipe {...recipe} key={j} />
+                    <div className="mx-auto inline-block" key={recipe.name + ` ${i} ${j}`}>
+                      <Recipe {...recipe} />
                     </div>
                   )})
                 }
