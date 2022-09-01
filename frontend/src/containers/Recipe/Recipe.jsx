@@ -38,6 +38,7 @@ export default function Recipe(props) {
         "Serve and enjoy!"
       ],
       tags: [
+        "Anton Ego Approved",
         "Gluten Free"
       ],
       time: "15 minutes",
@@ -57,8 +58,8 @@ export default function Recipe(props) {
         {recipe.name}
       </Header>
       <span>{recipe.time} — Serves {recipe.servings}</span>
-      <span className="inline-block float-right">
-        <Button primary={false} to="/edit">Edit</Button>
+      <span className="float-right">
+        <Button primary={false} to="edit" className="leading-3">Edit</Button>
       </span>
       <span className="block mt-4 lg:mt-0 lg:inline lg:float-right">
         {
