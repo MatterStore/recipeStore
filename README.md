@@ -19,6 +19,7 @@
   └── frontend/
   │   └── ...
 ```
+
 ## Features
 
 ### Security
@@ -33,7 +34,7 @@
 1. Mounted volumes for both Frontend and the Backend for ease of development.
 2. TODO
 
-### Backend
+### Backend.
 
 1. Environment files have been setup separately for development and production using [Dotenv](https://www.npmjs.com/package/dotenv).
 2. [Mongoose](https://www.npmjs.com/package/mongoose) is used as an object modelling framework for MongoDB.
@@ -45,7 +46,6 @@
 2. Axios enabled and configured as an custom interceptor that can send requests with a JWT token.
 3. React-Tostify used for showing success / error messages. ??? Maybe
 
-
 ## Local Development
 
 1. Run the following command in both `frontend` & `backend` directories:
@@ -53,11 +53,12 @@
 ```bash
 npm install
 ```
-2. To build the frontend run `cd frontend && npm install && npm run build` 
 
-3. Run the server with `npm start` 
+2. To build the frontend run `cd frontend && npm install && npm run build`
 
-3. The Backend APIs can be triggered by hitting the following URL:
+3. Run the server with `npm start`
+
+4. The Backend APIs can be triggered by hitting the following URL:
 
 ```
 http://localhost:5000
@@ -65,4 +66,4 @@ http://localhost:5000
 
 4. [WIP] You can also run the frontend seperately with `cd frontend && npm start`
 
-You are all set! 
+You are all set!
