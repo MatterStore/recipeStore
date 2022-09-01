@@ -10,6 +10,7 @@ export default function Button(props) {
                 :
                     `text-indigo-900 ring-inset ring-indigo-400 ring-2`
             }`}
+            {...props}
         >
             {props.children}
         </Link>
