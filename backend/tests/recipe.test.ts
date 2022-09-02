@@ -2,56 +2,20 @@ import request from "supertest";
 import { assert } from "chai";
 
 import app from '../app.js';
-import { Recipe } from "../models/recipe.js";
+import Recipe from "../models/recipe.js";
 
+import {
+    TestRecipes, TestUsers, doLoggedIn, whenLoggedInIt, prepareTestData
+} from './helpers.js';
 
-interface UserDetails {
-    email: string,
-    password: string
-};
-
-const USER_A_DETAILS = {
-    email: "chef@kitchen.table",
-    name: "chef",
-    password: "recipesrgr8",
-};
-
-const USER_B_DETAILS = {
-    email: "beatrice@sushi.kitchen",
-    name: "beatrice",
-    password: "1<3fish4dinner"
-};
-
-async function doLoggedIn(
-    cb: (token: string) => any,
-    details: UserDetails = USER_A_DETAILS
-) {
-    await request(app)
-        .post("/user/login")
-        .send(details)
-        .then(res => {
-            assert(res.body.success, "Login failed");
-            assert(res.body.token.startsWith("JWT"), "Bad token.");
-            cb(res.body.token);
-        });
-}
-
-// Log in as the test recipe user and sets up a test case with the given
-// message, passing in an authorization token to the callback.
-function whenLoggedInIt(
-    msg: string, cb: (token: string) => any, as: UserDetails = USER_A_DETAILS
-) {
-    it(msg, () => doLoggedIn(cb, as));
-}
+const FLAG_TAG = "TESTRECIPE";
 
 before(async () => {
-    Recipe.deleteMany({}); // Clear recipes collection
-
-    // Create test users, just returns failure if they already exist, so no
-    // need to check for that.
-    await request(app).post("/user/signup").send(USER_A_DETAILS);
-    await request(app).post("/user/signup").send(USER_B_DETAILS);
+    await Recipe.deleteMany({ tags: FLAG_TAG }); // Clear test recipes
+    await prepareTestData();
 });
+
+after(() => Recipe.deleteMany({ tags: FLAG_TAG }));
 
 describe("POST /recipes/new", () => {
     it("Should require authorization", () => request(app)
@@ -74,42 +38,12 @@ describe("POST /recipes/new", () => {
         })
     );
 
+    let recipe = Object.assign({}, TestRecipes.Pancakes);
+    recipe.tags = recipe.tags.concat([FLAG_TAG]);
     whenLoggedInIt("Should allow creation of recipes", token => request(app)
         .post("/recipes/new")
         .set("Authorization", token)
-        .send({
-            title: "Pancakes",
-            cooking_time: "15 minutes",
-            servings: 4,
-            ingredients: [
-                { text: "2 eggs", name: "eggs", quantity: "2" },
-                {
-                    text: "1 3/4 cup milk",
-                    name: "milk",
-                    quantity: "1.75",
-                    unit: "cups"
-                },
-                {
-                    text: "2 cups plain flour",
-                    name: "plain flour",
-                    quantity: "2",
-                    unit: "cups"
-                },
-                { text: "Butter for the pan" }
-            ],
-            steps: [
-                "Whisk eggs, milk and flour together in a large bowl.",
-                "Heat a frying pan to a medium heat and grease with butter.",
-                (
-                    "Pour a small amount of batter and cook until bubbles "
-                    + "appear, then flip and cook until set. Remove from pan "
-                    + "and repeat until all batter used."
-                ),
-                "Serve with maple syrup or lemon and sugar."
-            ],
-            tags: [ "breakfast", "quick", "sweet" ],
-            public: false
-        })
+        .send(recipe)
         .then(res => {
             assert(
                 res.body.success,
@@ -176,7 +110,7 @@ describe("GET /recipes/:id", async () => {
                 assert(!res.body.success, "Was able to access private recipe.");
                 assert(res.status >= 400, "Status indicates success (shouldn't)");
             }),
-        USER_B_DETAILS
+        TestUsers.Beatrice
     );
 
     it("Should not work if unauthenticated", () => request(app)

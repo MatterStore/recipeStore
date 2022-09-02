@@ -1,5 +1,6 @@
 import pkg from 'mongoose';
 const { Schema, Types, model } = pkg;
+
 const recipeSchema = new Schema({
     user: {
         type: Types.ObjectId,
@@ -55,14 +56,12 @@ const recipeSchema = new Schema({
 
 const Recipe = model("Recipe", recipeSchema);
 
-export {
-    Recipe
-}
+export default Recipe;
 
 export function getById(id, callback) {
-    Recipe.findOne({ _id: id }, callback)
-};
+    Recipe.findOne({ _id: id }, callback);
+}
 
 export function getByUser (user, callback) {
-    Recipe.find({ user }, callback)
-};
+    Recipe.find({ user }, callback);
+}
