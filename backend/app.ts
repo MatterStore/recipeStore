@@ -11,6 +11,8 @@ import cors from "cors";
 import passport from "passport";
 
 import * as users_route from "./routes/user.js";
+import collectionsRoute from "./routes/collection.js";
+import recipesRoute from "./routes/recipe.js";
 
 connect(); // Connect to database
 
@@ -41,10 +43,9 @@ if (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "staging")
 
 
 app.use("/user", users_route.router);
+app.use("/collections", collectionsRoute);
+app.use("/recipes", recipesRoute);
 
-import recipes_route from "./routes/recipe.js";
-
-app.use("/recipes", recipes_route);
 
 // default case for unmatched routes
 app.use(function (req, res) {
