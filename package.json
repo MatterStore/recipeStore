@@ -5,13 +5,12 @@
   "description": "Backend for MERN application",
   "main": "backend/dist/app.js",
   "scripts": {
-    "test": "tsc && NODE_ENV=testing mocha 'backend/dist/tests/**/*.js' --recursive --exit --timeout 10000",
     "start": "node backend/dist/app.js",
-    "postinstall": "tsc",
-    "watch-node": "nodemon backend/dist/index.js",
-    "watch-ts": "tsc -w",
-    "heroku-postbuild": "cd frontend && npm install && npm run build",
+    "test": "tsc && NODE_ENV=testing mocha 'backend/dist/tests/**/*.js' --recursive --exit --timeout 10000",
     "dev": "npm run postinstall && npm start & cd frontend && npm start",
+    "preinstall": "cd frontend && npm install",
+    "postinstall": "tsc",
+    "heroku-postbuild": "cd frontend && npm install && npm run build",
     "prepare": "husky install",
     "pretty-quick": "pretty-quick"
   },
