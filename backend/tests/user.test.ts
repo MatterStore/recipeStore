@@ -4,21 +4,32 @@ import { assert } from "chai";
 import app from '../app.js';
 import User from "../models/user.js";
 
+// Note: the /user tests delete @test.domain users as part of the tests, so
+// best not to use these for other tests.
+const TestUsers = {
+    Alfred: {
+        email: "test@test.domain",
+        name: "alfred",
+        password: "testpassword"
+    }, // Used for /user
+    Dominguez: {
+        email: "testuserwithoverlylongemail@test.domain",
+        name: "longnametestuser",
+        password: "testpassword0"
+    }, // Used for /user
+};
+
 // Clear users collection of test DB before and after tests
-const clearTestUser = () => User.deleteMany(
-    { email: { $regex: /.*@test\.domain$/ } }
-);
-before(clearTestUser);
-after(clearTestUser);
+const clearTestUsers = () => User.deleteMany({
+    email: { $regex: /.*@test\.domain$/ }
+});
+before(clearTestUsers);
+after(clearTestUsers);
 
 describe("POST /user/signup", () => {
     it("Should register a new user", () => request(app)
         .post("/user/signup")
-        .send({
-            email: "test@test.domain",
-            name: "testuser",
-            password: "testpassword"
-        })
+        .send(TestUsers.Alfred)
         .then(res => {
             assert(res.body.success, "Signup failed.");
             assert(res.status === 200, "Signup not 200 OK.");
@@ -27,11 +38,7 @@ describe("POST /user/signup", () => {
 
     it("Should prevent duplicate emails", () => request(app)
         .post("/user/signup")
-        .send({
-            email: "test@test.domain",
-            name: "testuser",
-            password: "testpassword"
-        })
+        .send(TestUsers.Alfred)
         .then(res => {
             assert(!res.body.success, "Duplicate email allowed.");
             assert(res.status === 422, "Signup not error code.");
@@ -40,11 +47,7 @@ describe("POST /user/signup", () => {
 
     it("Should work with long emails", () => request(app)
         .post("/user/signup")
-        .send({
-            email: "testuserwithoverlylongemail@test.domain",
-            name: "longnametestuser",
-            password: "testpassword0"
-        })
+        .send(TestUsers.Dominguez)
         .then(res => {
             assert(res.body.success, "Long email signup failed.");
             assert(res.status === 200, "Signup not 200 OK.");
@@ -68,7 +71,7 @@ describe("POST /user/login", () => {
     it("Should fail for incorrect password", () => request(app)
         .post("/user/login")
         .send({
-            email: "test@test.domain",
+            email: TestUsers.Alfred.email,
             password: "wrongpassword"
         })
         .then(res => {
@@ -79,10 +82,7 @@ describe("POST /user/login", () => {
 
     it("Should allow a valid login", () => request(app)
         .post("/user/login")
-        .send({
-            email: "test@test.domain",
-            password: "testpassword"
-        })
+        .send(TestUsers.Alfred)
         .then(res => {
             assert(res.body.success, "Correct login rejected.");
             assert(res.status == 200, "Status not 200 OK.");
@@ -91,10 +91,7 @@ describe("POST /user/login", () => {
 
     it("Should allow long emails", () => request(app)
         .post("/user/login")
-        .send({
-            email: "testuserwithoverlylongemail@test.domain",
-            password: "testpassword0"
-        })
+        .send(TestUsers.Dominguez)
         .then(res => {
             assert(res.body.success, "Long email login rejected.");
             assert(res.status === 200, "Status not 200 OK.");
@@ -113,7 +110,7 @@ describe("GET /user/profile", () => {
 
     it("Should return the logged-in users's profile", () => request(app)
         .post("/user/login")
-        .send({ email: "test@test.domain", password: "testpassword"})
+        .send(TestUsers.Alfred)
         .then(res => {
             assert(res.body.token, "Missing authorization token.");
             assert(res.status == 200, "Failed to log in");
