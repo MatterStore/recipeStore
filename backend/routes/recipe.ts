@@ -2,16 +2,18 @@ import express from "express";
 import Joi from "joi";
 import passport from "passport";
 
-import * as params_validator from "../helpers/params-validator.js";
+import validateParams from "../helpers/params-validator.js";
 
-import * as Recipe from "../models/recipe.js";
+import Recipe, { getById, getByUser } from "../models/recipe.js";
+import Tag from "../models/tag.js";
 
 const router = express.Router();
+export default router;
 
 router.post(
     "/new",
     passport.authenticate("user", { session: false }),
-    params_validator.validateParams({
+    validateParams({
         title: Joi.string().required(),
         cooking_time: Joi.string(),
         servings: Joi.number(),
@@ -24,11 +26,11 @@ router.post(
             })
         ).required(),
         steps: Joi.array().items(Joi.string()).required(),
-        tags: Joi.array().items(Joi.string()).required(),
+        tags: Joi.array().items(Tag.validator).required(),
         public: Joi.boolean()
     }),
     (req, res, next) => {
-        let recipe = new Recipe.Recipe({
+        let recipe = new Recipe({
             user: (req as any).user.id,
             title: req.body.title,
             cooking_time: req.body.cooking_time,
@@ -57,7 +59,7 @@ router.get(
     "/all",
     passport.authenticate("user", { session: false }),
     (req, res, next) => {
-        Recipe.getByUser((req as any).user.id, (err, list) => {
+        getByUser((req as any).user.id, (err, list) => {
             if (err) {
                 res
                     .status(422)
@@ -75,7 +77,7 @@ router.get(
     "/:id",
     passport.authenticate("user", { session: false }),
     (req, res, next) => {
-        Recipe.getById(req.params.id, (err, recipe) => {
+        getById(req.params.id, (err, recipe) => {
             if (err) {
                 res
                     .status(422)
@@ -99,5 +101,3 @@ router.get(
         })
     }
 );
-
-export default router;
