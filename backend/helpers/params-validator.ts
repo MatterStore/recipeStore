@@ -1,7 +1,7 @@
 import Joi from "joi";
 import lodash from "lodash";
 
-const validateParams = function (paramSchema) {
+export default function validateParams (paramSchema) {
   return async (req, res, next) => {
     const schema = Joi.object().keys(paramSchema);
     const paramSchemaKeys = Object.keys(paramSchema);
@@ -19,8 +19,4 @@ const validateParams = function (paramSchema) {
     }
     next();
   };
-};
-
-export {
-  validateParams,
-};
+}
