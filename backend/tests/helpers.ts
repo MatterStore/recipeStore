@@ -14,16 +14,18 @@ export const TestUsers = {
         email: "beatrice@sushi.kitchen",
         name: "beatrice",
         password: "1<3fish4dinner"
-    }, // Used for /recipes and /collections
+    }, // Beatrice is a secondary test user
     Chef: {
         email: "chef@kitchen.table",
         name: "chef",
         password: "recipesrgr8",
-    }, // Used for /recipes and /collections
+    }, // Chef is the author of the test recipes
 };
 
 export const TestRecipes = {
     Pancakes: {
+        id: null,
+        user: null,
         title: "Pancakes",
         cooking_time: "15 minutes",
         servings: 4,
@@ -55,6 +57,35 @@ export const TestRecipes = {
         ],
         tags: [ "breakfast", "quick", "sweet" ],
         public: false
+    },
+    Rice: {
+        id: null,
+        user: null,
+        title: "Plain Rice",
+        cooking_time: "10 minutes",
+        servings: 4,
+        ingredients: [
+            {
+                text: "1 cup white rice",
+                name: "white rice",
+                unit: "cups",
+                quantity: "1"
+            },
+            {
+                text: "2 cups water",
+                name: "water",
+                unit: "cups",
+                quantity: "2"
+            }
+        ],
+        steps: [
+            "Place water and rice in a pot over a high heat.",
+            "Bring to boil then turn heat to low and cover with lid.",
+            "Cook for 10 minutes or until water is fully absorbed.",
+            "Remove from heat and serve."
+        ],
+        tags: [ "side", "quick", "savoury" ],
+        public: true
     }
 };
 
@@ -92,14 +123,72 @@ export async function prepareTestData() {
         .set("Authorization", token)
         .send()
         .then(async (res) => {
-            let recipe = await Recipe.findOne({ user: res.body.user.id });
-            if (!recipe) {
-                await request(app)
-                    .post("/recipes/new")
-                    .set("Authorization", token)
-                    .send(TestRecipes.Pancakes);
+            let user = res.body.user.id;
+
+            for (let recipe of Object.values(TestRecipes)) {
+                let existing = await Recipe.findOne(
+                    { user, title: recipe.title }
+                );
+
+                if (!existing) {
+                    await request(app)
+                        .post("/recipes/new")
+                        .set("Authorization", token)
+                        .send(recipe);
+                }
             }
+
+            request(app)
+                .get("/recipes/all")
+                .set("Authorization", token)
+                .then(res => {
+                    for (let recipe of res.body.list) {
+                        for (let obj of Object.values(TestRecipes)) {
+                            if (
+                                recipe.user == user
+                                && recipe.title == obj.title
+                            ) {
+                                obj.user = user;
+                                obj.id = recipe.id;
+                            }
+                        }
+                    }
+                });
         })
     );
 }
 
+export function itShouldRequireAuthentication(
+    endpoint: string,
+    method: string = "post",
+    body?: string | object
+) {
+    it("Should require authentication", () => request(app)[method](endpoint)
+        .send(body)
+        .then(res => assert(res.status == 401, "Didn't return 401."))
+    );
+}
+
+/**
+ * Assert that a request was successful. Checks res.body.success is true and
+ * that the status is 200.
+ * 
+ * @param res Request response. 
+ * @param msg Failure message.
+ */
+export function assertSucceeded(res, msg: string) {
+    assert(res.body.success, msg);
+    assert(res.status == 200, "Status not 200 OK.");
+}
+
+/**
+ * Assert that a request failed. Checks res.body.success is false and that the
+ * status is at least 400.
+ * 
+ * @param res Request response.
+ * @param msg Failure message.
+ */
+export function assertFailed(res, msg: string) {
+    assert(!res.body.success, msg);
+    assert(res.status >= 400, "Status indicates success (shouldn't).");
+}

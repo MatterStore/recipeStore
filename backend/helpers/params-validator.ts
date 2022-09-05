@@ -1,5 +1,6 @@
 import Joi from "joi";
 import lodash from "lodash";
+import mongoose from "mongoose";
 
 export default function validateParams (paramSchema) {
   return async (req, res, next) => {
@@ -19,4 +20,16 @@ export default function validateParams (paramSchema) {
     }
     next();
   };
+}
+
+export function objectId() {
+    return Joi.string().custom((value, helper) => {
+        if (mongoose.isValidObjectId(value)) {
+            return helper.message({
+                custom: `${value} is not a valid MongoDB ObjectID.`
+            });
+        } else {
+            return true;
+        }
+    });
 }
