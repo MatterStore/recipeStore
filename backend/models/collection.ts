@@ -1,6 +1,15 @@
 import pkg from 'mongoose';
 const { Schema, Types, model } = pkg;
 
+export interface ICollection {
+    id: string,
+    user: string,
+    name: string,
+    tags: Array<string>,
+    recipes: Array<string>,
+    public?: boolean
+}
+
 const collectionSchema = new Schema({
     user: {
         type: Types.ObjectId,
@@ -32,7 +41,10 @@ export function getByUser(user: string, callback) {
     Collection.find({ user }, callback);
 }
 
-export function getById(id: string, callback) {
+export function getById(
+    id: string,
+    callback: (err: any, collection?: ICollection) => void
+) {
     Collection.find({ _id: id }, callback);
 }
 
