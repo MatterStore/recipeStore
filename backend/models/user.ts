@@ -1,6 +1,15 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 
+export interface IUser {
+    id: string,
+    email: string,
+    password: string,
+    name: string,
+    emailVerified: boolean,
+    admin: boolean
+}
+
 const userSchema = new mongoose.Schema({
   email: {
     type: String,

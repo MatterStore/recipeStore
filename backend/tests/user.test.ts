@@ -3,6 +3,7 @@ import { assert } from "chai";
 
 import app from '../app.js';
 import User from "../models/user.js";
+import { assertFailed, assertSucceeded } from "./helpers.js";
 
 // Note: the /user tests delete @test.domain users as part of the tests, so
 // best not to use these for other tests.
@@ -30,28 +31,19 @@ describe("POST /user/signup", () => {
     it("Should register a new user", () => request(app)
         .post("/user/signup")
         .send(TestUsers.Alfred)
-        .then(res => {
-            assert(res.body.success, "Signup failed.");
-            assert(res.status === 200, "Signup not 200 OK.");
-        })
+        .then(res => assertSucceeded(res, "Signup failed."))
     );
 
     it("Should prevent duplicate emails", () => request(app)
         .post("/user/signup")
         .send(TestUsers.Alfred)
-        .then(res => {
-            assert(!res.body.success, "Duplicate email allowed.");
-            assert(res.status === 422, "Signup not error code.");
-        })
+        .then(res => assertFailed(res, "Duplicate email allowed."))
     );
 
     it("Should work with long emails", () => request(app)
         .post("/user/signup")
         .send(TestUsers.Dominguez)
-        .then(res => {
-            assert(res.body.success, "Long email signup failed.");
-            assert(res.status === 200, "Signup not 200 OK.");
-        })
+        .then(res => assertSucceeded(res, "Long email signup failed."))
     );
 });
 
@@ -62,10 +54,7 @@ describe("POST /user/login", () => {
             email: "missing@weird.domain",
             password: "missinguserspassword"
         })
-        .then(res => {
-            assert(!res.body.success, "Missing user login succeeded.");
-            assert(res.status >= 400, "Incorrect status.");
-        })
+        .then(res => assertFailed(res, "Missing user login succeeded."))
     );
 
     it("Should fail for incorrect password", () => request(app)
@@ -74,28 +63,19 @@ describe("POST /user/login", () => {
             email: TestUsers.Alfred.email,
             password: "wrongpassword"
         })
-        .then(res => {
-            assert(!res.body.success, "Incorrect password allowed.");
-            assert(res.status >= 400, "Incorrect status.");
-        })
+        .then(res => assertFailed(res, "Incorrect password allowed."))
     );
 
     it("Should allow a valid login", () => request(app)
         .post("/user/login")
         .send(TestUsers.Alfred)
-        .then(res => {
-            assert(res.body.success, "Correct login rejected.");
-            assert(res.status == 200, "Status not 200 OK.");
-        })
+        .then(res => assertSucceeded(res, "Correct login rejected."))
     );
 
     it("Should allow long emails", () => request(app)
         .post("/user/login")
         .send(TestUsers.Dominguez)
-        .then(res => {
-            assert(res.body.success, "Long email login rejected.");
-            assert(res.status === 200, "Status not 200 OK.");
-        })
+        .then(res => assertSucceeded(res, "Long email login rejected."))
     );
 });
 
@@ -121,8 +101,7 @@ describe("GET /user/profile", () => {
                 .set("Authorization", token)
                 .send()
                 .then(res => {
-                    assert(res.body.success, "Profile request failed.");
-                    assert(res.body.status == 200, "Status not 200 OK.");
+                    assertSucceeded(res, "Profile request failed.");
                     assert(res.body.user?.name == "testuser", "Bad profile.");
                 });
         })

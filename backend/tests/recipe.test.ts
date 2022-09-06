@@ -5,7 +5,13 @@ import app from '../app.js';
 import Recipe from "../models/recipe.js";
 
 import {
-    TestRecipes, TestUsers, doLoggedIn, whenLoggedInIt, prepareTestData
+    TestRecipes,
+    TestUsers,
+    whenLoggedInIt,
+    prepareTestData,
+    itShouldRequireAuthentication,
+    assertFailed,
+    assertSucceeded
 } from './helpers.js';
 
 const FLAG_TAG = "TESTRECIPE";
@@ -18,11 +24,7 @@ before(async () => {
 after(() => Recipe.deleteMany({ tags: FLAG_TAG }));
 
 describe("POST /recipes/new", () => {
-    it("Should require authorization", () => request(app)
-        .post("/recipes/new")
-        .send()
-        .then(res => assert(res.status == 401, "Didn't reply 401."))
-    );
+    itShouldRequireAuthentication("/recipes/new");
 
     whenLoggedInIt("Should require necessary fields", token => request(app)
         .post("/recipes/new")
@@ -32,10 +34,7 @@ describe("POST /recipes/new", () => {
             cooking_time: "15 minutes",
             servings: 4
         })
-        .then(res => {
-            assert(!res.body.success, "Bad recipe succeeded.");
-            assert(res.status >= 400, "Bad request succeeded.");
-        })
+        .then(res => assertFailed(res, "Bad recipe succeeded."))
     );
 
     let recipe = Object.assign({}, TestRecipes.Pancakes);
@@ -44,59 +43,39 @@ describe("POST /recipes/new", () => {
         .post("/recipes/new")
         .set("Authorization", token)
         .send(recipe)
-        .then(res => {
-            assert(
-                res.body.success,
-                `Recipe creation failed. msg: ${res.body.msg}`
-            );
-            assert(res.status == 200, "Status not 200 OK.");
-        })
+        .then(res => assertSucceeded(res, "Recipe creation failed."))
     );
 });
 
 describe("GET /recipes/all", () => {
-    it("Should require authorization", () => request(app)
-        .post("/recipes/new")
-        .send()
-        .then(res => assert(res.status == 401, "Didn't reply 401."))
-    );
+    itShouldRequireAuthentication("/recipes/all", "get");
 
     whenLoggedInIt("Should be able to list user recipes", token => request(app)
         .get("/recipes/all")
         .set("Authorization", token)
         .send()
         .then(res => {
-            assert(res.body.success, "Recipe list not retrieved.");
-            assert(res.status == 200, "Status not 200 OK.");
+            assertSucceeded(res, "Recipe list not retrieved");
             assert(res.body.list?.length >= 1, "Recipe not in list.");
         })
     );
 });
 
 describe("GET /recipes/:id", async () => {
-    // Note; this is supposed to find a private recipe
-    let id = null;
-    before(async () => await doLoggedIn(token => request(app)
-        .get("/recipes/all")
-        .set("Authorization", token)
-        .send()
-        .then(res => {
-            assert(res.body.list?.length >= 1, "Recipe not in list.");
-            id = res.body.recipes[0].id;
-        })
-    ));
+    let id = TestRecipes.Pancakes.id;
+
+    itShouldRequireAuthentication("/recipes/" + id, "get");
 
     whenLoggedInIt("Should work author user", token => request(app)
         .get("/recipes/" + id)
         .set("Authorization", token)
         .send()
         .then(res => {
-            assert(res.body.success, "Failed to get recipe.");
+            assertSucceeded(res, "Failed to get recipe.");
             assert(
                 res.body.recipe?.id == id,
                 "Response didn't have recipe."
             );
-            assert(res.status == 200, "Status not 200 OK.");
         })
     );
 
@@ -106,18 +85,7 @@ describe("GET /recipes/:id", async () => {
             .get("/recipes/" + id)
             .set("Authorization", token)
             .send()
-            .then(res => {
-                assert(!res.body.success, "Was able to access private recipe.");
-                assert(res.status >= 400, "Status indicates success (shouldn't)");
-            }),
+            .then(res => assertFailed(res, "Able to access private recipe.")),
         TestUsers.Beatrice
-    );
-
-    it("Should not work if unauthenticated", () => request(app)
-        .get("/recipes/" + id)
-        .send()
-        .then(res => assert(
-            res.status == 401, "Allowed unauthenticated user."
-        ))
     );
 });

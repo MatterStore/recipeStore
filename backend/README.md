@@ -121,6 +121,22 @@ here to avoid duplication.
         * Requires authentication.
         * Deletes a collection owned by the authenticated user.
         * Returns a **Simple Response**.
+    * `POST /collections/:id/add`
+        * Requires authentication.
+        * Adds recipes to the collection. Recipes specified in a JSON body with
+            an array of recipe IDs.
+            ```
+            { recipes: [string] }
+            ```
+        * Returns a **Simple Response**.
+    * `POST /collections/:id/remove`
+        * Requires authentication.
+        * Removes recipes to the collection. Recipes specified in a JSON body
+            with an array of recipe IDs.
+            ```
+            { recipes: [string] }
+            ```
+        * Returns a **Simple Response**.
 * `/recipes`
     * `POST /recipes/new`
         * Requires authentication.
