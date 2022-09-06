@@ -45,9 +45,9 @@ export default function Recipe(props) {
     <div className="px-16 lg:px-32 py-16 mx-auto max-w-screen-sm lg:max-w-screen-2xl">
       {
         editing ? (
-          <span className="w-96">
-            <Textfield inline value={recipe.name}></Textfield>
-          </span>
+          <div className="max-w-xl">
+            <Textfield value={recipe.name} className="text-3xl"></Textfield>
+          </div>
         ) : (
           <Header inline>{recipe.name}</Header>
         )
@@ -57,7 +57,7 @@ export default function Recipe(props) {
           <span>
             <label className="">
               <ClockIcon size={16} />
-              <select name="time" id="time" className="bg-slate-100 appearance-none inline-block w-48 px-3 py-1.5 border border-solid rounded ml-2">
+              <select name="time" id="time" className="bg-slate-100 appearance-none inline-block w-40 px-3 py-1.5 border border-solid rounded ml-2">
                 <option value="Under 10 Minutes">Under 10 Minutes</option>
                 <option value="10 Minutes">10 Minutes</option>
                 <option value="15 Minutes">15 Minutes</option>
@@ -75,7 +75,7 @@ export default function Recipe(props) {
             <label className="ml-4">
               <PersonIcon size={16} />
 
-              <select name="serves" id="serves" className="bg-slate-100 appearance-none inline-block w-36 px-3 py-1.5 border border-solid rounded ml-2">
+              <select name="serves" id="serves" className="bg-slate-100 appearance-none inline-block w-40 px-3 py-1.5 border border-solid rounded ml-2">
                 <option value="1">Serves 1</option>
                 <option value="2">Serves 2</option>
                 <option value="3">Serves 3</option>
@@ -87,7 +87,7 @@ export default function Recipe(props) {
             <label className="ml-4">
               { props.public ? (<GlobeIcon size={16} />) : (<LockIcon size={16} />)}
               
-              <select name="publicity" id="publicity" className="bg-slate-100 appearance-none inline-block w-36 px-3 py-1.5 border border-solid rounded ml-2">
+              <select name="publicity" id="publicity" className="bg-slate-100 appearance-none inline-block w-40 px-3 py-1.5 border border-solid rounded ml-2">
                 <option value="public">Public</option>
                 <option value="private">Private</option>
               </select>
