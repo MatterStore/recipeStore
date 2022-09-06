@@ -46,7 +46,7 @@ export default function Recipe(props) {
       {
         editing ? (
           <div className="max-w-xl mt-4">
-            <Textfield value={recipe.name} className="text-3xl"></Textfield>
+            <Textfield params={{value: recipe.name, onChange: ()=>{}}} className="text-3xl"></Textfield>
           </div>
         ) : (
           <Header inline>{recipe.name}</Header>
@@ -133,7 +133,7 @@ export default function Recipe(props) {
               {editing ? (
                 recipe.ingredients.map((ingredient, i) => (
                   <li key={i} className="list-item max-w-xl px-5 py-1.5 ">
-                    <textarea type="text" initialValue={ingredient} rows={1} className="align-top w-full max-h-32 min-h-[3rem] bg-slate-100 rounded p-2" />
+                    <textarea type="text" value={ingredient} onChange={()=>{}} rows={1} className="align-top w-full max-h-32 min-h-[3rem] bg-slate-100 rounded p-2" />
                   </li>
                 ))
               ) : (
@@ -142,6 +142,11 @@ export default function Recipe(props) {
                 ))
               )}
             </ul>
+            {editing ? (
+              <span className={"block mt-2 py-3 text-lg whitespace-nowrap cursor-pointer select-none font-bold text-gray-700 hover:text-gray-900"}>
+                Add Ingredient
+              </span>
+            ) : null}
           </section>
           <section className="mb-12">
             <h3 className="text-xl font-bold mb-4">Steps</h3>
@@ -149,7 +154,7 @@ export default function Recipe(props) {
               {editing ? (
                 recipe.steps.map((step, i) => (
                   <li key={i} className="list-item max-w-xl px-5 py-1.5 ">
-                    <textarea type="text" initialValue={step} rows={1} className="align-top w-full max-h-32 min-h-[3rem] bg-slate-100 rounded p-2" />
+                    <textarea type="text" value={step} onChange={()=>{}} rows={1} className="align-top w-full max-h-32 min-h-[3rem] bg-slate-100 rounded p-2" />
                   </li>
                 ))
               ) : (
@@ -158,14 +163,34 @@ export default function Recipe(props) {
                 ))
               )}
             </ol>
+            {editing ? (
+              <span className={"block mt-2 py-3 text-lg whitespace-nowrap cursor-pointer select-none font-bold text-gray-700 hover:text-gray-900"}>
+                Add Step
+              </span>
+            ) : null}
           </section>
         </article>
         <div>
-          <img
-            src={recipe.primaryImage}
-            alt=""
-            className="object-cover w-full max-h-96 pb-12 mt-4 rounded"
-          />
+          {editing ? (
+            <div>
+              <div className="relative group">
+                <img
+                  src={recipe.primaryImage}
+                  alt=""
+                  className="object-cover w-full max-h-96 pb-12 mt-4 rounded group-hover:opacity-40"
+                />
+                <div className="hidden group-hover:block absolute top-4 right-4">
+                  <TrashIcon size={32} className="box-content text-white cursor-pointer rounded-full bg-slate-800 hover:bg-red-900 p-5"/>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <img
+              src={recipe.primaryImage}
+              alt=""
+              className="object-cover w-full max-h-96 pb-12 mt-4 rounded"
+            />
+          )}
         </div>
       </main>
     </div>
