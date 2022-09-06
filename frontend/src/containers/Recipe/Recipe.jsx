@@ -3,7 +3,7 @@ import Header from "../../components/Header";
 import Button from "../../components/Button";
 import Tag from "../../components/Tag";
 import Textfield from "../../components/Textfield";
-import {ClockIcon, PersonIcon, LockIcon, GlobeIcon} from '@primer/octicons-react'
+import {ClockIcon, PersonIcon, LockIcon, GlobeIcon, TrashIcon} from '@primer/octicons-react'
 
 export default function Recipe(props) {
   let params = useParams();
@@ -45,7 +45,7 @@ export default function Recipe(props) {
     <div className="px-16 lg:px-32 py-16 mx-auto max-w-screen-sm lg:max-w-screen-2xl">
       {
         editing ? (
-          <div className="max-w-xl">
+          <div className="max-w-xl mt-4">
             <Textfield value={recipe.name} className="text-3xl"></Textfield>
           </div>
         ) : (
@@ -95,24 +95,33 @@ export default function Recipe(props) {
             
           </span>
         ) : (
-          <span className="appearance-none inline-block w-96 px-5 py-1.5"> {recipe.time} — Serves {recipe.servings}</span>
+          <span className="appearance-none inline-block w-96 py-1.5"> {recipe.time} — Serves {recipe.servings}</span>
         )}
       </span>
       <span className="float-right">
         { editing ? (
-          <Button primary={false} to={`/recipe/${params.recipeId}/`} className="leading-3">
+          <Button primary={false} to={`/recipe/${params.recipeId}/`} className="leading-3 w-24">
             Save
           </Button>
         ) : (
-          <Button primary={false} to="edit" className="leading-3">
+          <Button primary={false} to="edit" className="leading-3 min-w-96">
             Edit
           </Button>
         )}
       </span>
       <span className="block mt-4 lg:mt-0 lg:inline lg:float-right">
-        {recipe.tags.map((tag, i) => (
-          <Tag key={i}>{tag}</Tag>
-        ))}
+        {editing ? (
+          recipe.tags.map((tag, i) => (
+            <Tag key={i} className="cursor-pointer select-none">
+              <TrashIcon size={24} className={`pt-1.5 pb-0.5`}/>  
+              {tag}
+            </Tag>
+          ))
+        ) : (
+          recipe.tags.map((tag, i) => (
+            <Tag key={i}>{tag}</Tag>
+          ))
+        )}
       </span>
 
       <hr className="my-8" />
@@ -121,17 +130,33 @@ export default function Recipe(props) {
           <section className="mb-12">
             <h3 className="text-xl font-bold mb-4">Ingredients</h3>
             <ul className="list-disc ml-5 leading-relaxed text-xl">
-              {recipe.ingredients.map((ingredient, i) => (
-                <li key={i}>{ingredient}</li>
-              ))}
+              {editing ? (
+                recipe.ingredients.map((ingredient, i) => (
+                  <li key={i} className="list-item max-w-xl px-5 py-1.5 ">
+                    <textarea type="text" initialValue={ingredient} rows={1} className="align-top w-full max-h-32 min-h-[3rem] bg-slate-100 rounded p-2" />
+                  </li>
+                ))
+              ) : (
+                recipe.ingredients.map((ingredient, i) => (
+                  <li key={i}>{ingredient}</li>
+                ))
+              )}
             </ul>
           </section>
           <section className="mb-12">
             <h3 className="text-xl font-bold mb-4">Steps</h3>
             <ol className="list-decimal ml-5 leading-relaxed text-xl">
-              {recipe.steps.map((step, i) => (
-                <li key={i}>{step}</li>
-              ))}
+              {editing ? (
+                recipe.steps.map((step, i) => (
+                  <li key={i} className="list-item max-w-xl px-5 py-1.5 ">
+                    <textarea type="text" initialValue={step} rows={1} className="align-top w-full max-h-32 min-h-[3rem] bg-slate-100 rounded p-2" />
+                  </li>
+                ))
+              ) : (
+                recipe.steps.map((step, i) => (
+                  <li key={i}>{step}</li>
+                ))
+              )}
             </ol>
           </section>
         </article>
