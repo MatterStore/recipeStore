@@ -3,6 +3,7 @@ import Header from "../../components/Header";
 import Button from "../../components/Button";
 import Tag from "../../components/Tag";
 import Textfield from "../../components/Textfield";
+import {ClockIcon, PersonIcon, LockIcon, GlobeIcon} from '@primer/octicons-react'
 
 export default function Recipe(props) {
   let params = useParams();
@@ -54,32 +55,44 @@ export default function Recipe(props) {
       <span>
         { editing ? (
           <span>
-            <select name="time" id="time" className="bg-slate-100 appearance-none inline-block w-48 px-3 py-1.5 border border-solid rounded">
-              <option value="Under 10 Minutes">Under 10 Minutes</option>
-              <option value="10 Minutes">10 Minutes</option>
-              <option value="15 Minutes">15 Minutes</option>
-              <option value="20 Minutes">20 Minutes</option>
-              <option value="30 Minutes">30 Minutes</option>
-              <option value="45 Minutes">45 Minutes</option>
-              <option value="1 hour">1 hour</option>
-              <option value="1 hour 15 minutes">1 hour 15 minutes</option>
-              <option value="1 hour 30 minutes">1 hour 30 minutes</option>
-              <option value="1 hour 45 minutes">1 hour 45 minutes</option>
-              <option value="2 hours">2 hours</option>
-              <option value="Over 2 hours">Over 2 hours</option>
-            </select>
-            <select name="serves" id="serves" className="bg-slate-100 appearance-none inline-block w-36 px-3 py-1.5 border border-solid rounded ml-4">
-              <option value="1">Serves 1</option>
-              <option value="2">Serves 2</option>
-              <option value="3">Serves 3</option>
-              <option value="4">Serves 4</option>
-              <option value="5">Serves 5</option>
-              <option value="6">Serves 6</option>
-            </select>
-            <select name="publicity" id="publicity" className="bg-slate-100 appearance-none inline-block w-36 px-3 py-1.5 border border-solid rounded ml-4">
-              <option value="public">Public</option>
-              <option value="private">Private</option>
-            </select>
+            <label className="">
+              <ClockIcon size={16} />
+              <select name="time" id="time" className="bg-slate-100 appearance-none inline-block w-48 px-3 py-1.5 border border-solid rounded ml-2">
+                <option value="Under 10 Minutes">Under 10 Minutes</option>
+                <option value="10 Minutes">10 Minutes</option>
+                <option value="15 Minutes">15 Minutes</option>
+                <option value="20 Minutes">20 Minutes</option>
+                <option value="30 Minutes">30 Minutes</option>
+                <option value="45 Minutes">45 Minutes</option>
+                <option value="1 hour">1 hour</option>
+                <option value="1 hour 15 minutes">1 hour 15 minutes</option>
+                <option value="1 hour 30 minutes">1 hour 30 minutes</option>
+                <option value="1 hour 45 minutes">1 hour 45 minutes</option>
+                <option value="2 hours">2 hours</option>
+                <option value="Over 2 hours">Over 2 hours</option>
+              </select>
+            </label>
+            <label className="ml-4">
+              <PersonIcon size={16} />
+
+              <select name="serves" id="serves" className="bg-slate-100 appearance-none inline-block w-36 px-3 py-1.5 border border-solid rounded ml-2">
+                <option value="1">Serves 1</option>
+                <option value="2">Serves 2</option>
+                <option value="3">Serves 3</option>
+                <option value="4">Serves 4</option>
+                <option value="5">Serves 5</option>
+                <option value="6">Serves 6</option>
+              </select>
+            </label>
+            <label className="ml-4">
+              { props.public ? (<GlobeIcon size={16} />) : (<LockIcon size={16} />)}
+              
+              <select name="publicity" id="publicity" className="bg-slate-100 appearance-none inline-block w-36 px-3 py-1.5 border border-solid rounded ml-2">
+                <option value="public">Public</option>
+                <option value="private">Private</option>
+              </select>
+            </label>
+            
           </span>
         ) : (
           <span className="appearance-none inline-block w-96 px-5 py-1.5"> {recipe.time} — Serves {recipe.servings}</span>
