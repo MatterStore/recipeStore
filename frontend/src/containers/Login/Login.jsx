@@ -6,7 +6,7 @@ import validator from "validator";
 import axios from "../../api/axios";
 import { loginRoute } from "../../api/routes";
 
-import Button from "../../components/Button";
+import SubmitButton from "../../components/SubmitButton";
 import Header from "../../components/Header";
 import Formfield from "../../components/Formfield";
 
@@ -18,7 +18,7 @@ export default function Login() {
   const [loginError, setloginError] = useState("");
   const [formValid, setFormValid] = useState(false);
 
-  const { setIsLoggedIn, setUser } = useContext(AuthContext);
+  // const { setIsLoggedIn, setUser } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleValidation = (event) => {
@@ -65,8 +65,8 @@ export default function Login() {
           password: password,
         })
         .then(function (response) {
-          setIsLoggedIn(true);
-          setUser(response.data.user);
+          // setIsLoggedIn(true);
+          // setUser(response.data.user);
           localStorage.setItem("token", response.data.token);
           navigate("/");
         })
@@ -100,10 +100,10 @@ export default function Login() {
                 <small id="passworderror" className="text-danger form-text">
                   {passwordError}
                 </small>
-                <Button primary={true} type="submit">
+                <SubmitButton primary={true} type="submit">
                   Login
-                </Button>
-                <small id="loginerror" classNAme="text-danger form-text">
+                </SubmitButton>
+                <small id="loginerror" className="text-danger form-text">
                   {loginError}
                 </small>
               </div>
