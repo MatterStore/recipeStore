@@ -9,8 +9,12 @@ export default function Home() {
           <div className="p-8 self-center md:mb-32">
             <Header>Recipe Store App</Header>
             <nav className="flex justify-center md:justify-start">
-              <Button primary={true} to="/signup">Sign Up</Button>
-              <Button primary={false} to="/login">Login</Button>
+              <Button primary={true} to="/signup">
+                Sign Up
+              </Button>
+              <Button primary={false} to="/login">
+                Login
+              </Button>
             </nav>
           </div>
           <div className="p-8 self-center">
