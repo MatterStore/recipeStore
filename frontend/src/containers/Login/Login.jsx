@@ -18,7 +18,7 @@ export default function Login() {
   const [loginError, setloginError] = useState("");
   const [formValid, setFormValid] = useState(false);
 
-  // const { setIsLoggedIn, setUser } = useContext(AuthContext);
+  const { setIsLoggedIn, setUser } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleValidation = (event) => {
@@ -36,10 +36,10 @@ export default function Login() {
     if (
       !validator.isStrongPassword(password, {
         minLength: 8,
-        minLowercase: 1,
-        minUppercase: 1,
-        minNumbers: 1,
-        minSymbols: 1,
+        minLowercase: 0,
+        minUppercase: 0,
+        minNumbers: 0,
+        minSymbols: 0,
       })
     ) {
       formIsValid = false;
@@ -65,10 +65,10 @@ export default function Login() {
           password: password,
         })
         .then(function (response) {
-          // setIsLoggedIn(true);
-          // setUser(response.data.user);
+          setIsLoggedIn(true);
+          setUser(response.data.user);
           localStorage.setItem("token", response.data.token);
-          navigate("/");
+          navigate("/listing/");
         })
         .catch(function (error) {
           setloginError("Invalid Password or Email");
