@@ -1,10 +1,10 @@
-import express from "express";
+import express, { Router } from "express";
 import Joi from "joi";
 import passport from "passport";
 
 import validateParams from "../helpers/params-validator.js";
 
-import Recipe, { getById, getByUser } from "../models/recipe.js";
+import Recipe, { deleteById, getById, getByUser } from "../models/recipe.js";
 import Tag from "../models/tag.js";
 
 const router = express.Router();
@@ -97,6 +97,49 @@ router.get(
                         success: false,
                         msg: "Permission not granted."
                     });
+            }
+        })
+    }
+);
+
+router.delete(
+    "/:id",
+    passport.authenticate("user", { session: false }),
+    (req, res, next) => {
+        deleteById(req.params.id, (err, recipe) => {
+            if (err) {
+                res
+                    .status(422)
+                    .json({ success: false, msg: "Something went wrong." });
+            } else if (!recipe) {
+                res
+                    .status(404)
+                    .json({ success: false, msg: "Recipe not found." });
+            } else if ((req as any).user.id != recipe.user) {
+                res
+                    .status(403)
+                    .json({
+                        success: false,
+                        msg: "Recipe belongs to another user."
+                    });
+            } else {
+                deleteById(req.params.id, err => {
+                    if (err) {
+                        res
+                            .status(500)
+                            .json({
+                                success: false,
+                                msg: "Something went wrong."
+                            });
+                    } else {
+                        res
+                            .status(200)
+                            .json({
+                                success: true,
+                                msg: "Recipe deleted."
+                            });
+                    }
+                })
             }
         })
     }

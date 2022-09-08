@@ -89,3 +89,37 @@ describe("GET /recipes/:id", async () => {
         TestUsers.Beatrice
     );
 });
+
+
+describe("DELETE /recipes/:id", async () => {
+    let id = TestRecipes.Pancakes.id;
+
+    itShouldRequireAuthentication("/recipes/" + id, "delete");
+
+    whenLoggedInIt("Should work author user", token => request(app)
+        .delete("/recipes/" + id)
+        .set("Authorization", token)
+        .send()
+        .then(res => {
+            assertSucceeded(res, "Failed to delete recipe.");
+        }).then( _ =>
+            request(app)
+            .get("/recipes/" + id)
+            .set("Authorization", token)
+            .send().then(res => {
+                assertFailed(res, "Able to access deleted recipe.")
+            })
+        )
+    );
+
+    whenLoggedInIt(
+        "Shouldn't work for other user",
+        token => request(app)
+            .delete("/recipes/" + id)
+            .set("Authorization", token)
+            .send()
+            .then(res => assertFailed(res, "Able to delete private recipe.")),
+        TestUsers.Beatrice
+    );
+    
+});
