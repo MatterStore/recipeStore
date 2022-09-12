@@ -11,6 +11,9 @@ export default function Formfield(props) {
         placeholder={placeholder}
         onChange={(event) => setFunc(event.target.value)}
       />
+      <small id="emailHelp" className="text-danger form-text mt-2">
+        {props.error}
+      </small>
     </label>
   );
 }

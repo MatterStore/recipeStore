@@ -8,14 +8,14 @@ import { loginRoute } from "../../api/routes";
 
 import SubmitButton from "../../components/SubmitButton";
 import Header from "../../components/Header";
-import Formfield from "../../components/Formfield";
+import Formfield from "../../components/FormField";
 
 export default function Login() {
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
-  const [passwordError, setpasswordError] = useState("");
-  const [emailError, setemailError] = useState("");
-  const [loginError, setloginError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [loginError, setLoginError] = useState("");
   const [formValid, setFormValid] = useState(false);
 
   const { setIsLoggedIn, setUser } = useContext(AuthContext);
@@ -26,10 +26,10 @@ export default function Login() {
 
     if (!validator.isEmail(email)) {
       formIsValid = false;
-      setemailError("Email Not Valid");
+      setEmailError("Email Not Valid");
       return false;
     } else {
-      setemailError("");
+      setEmailError("");
       formIsValid = true;
     }
 
@@ -43,12 +43,10 @@ export default function Login() {
       })
     ) {
       formIsValid = false;
-      setpasswordError(
-        "Must contain 8 characters, one uppercase letter, one lowercase letter, one number, and one special symbol"
-      );
+      setPasswordError("Must contain 8 characters");
       return false;
     } else {
-      setpasswordError("");
+      setPasswordError("");
       formIsValid = true;
     }
     setFormValid(formIsValid);
@@ -71,7 +69,7 @@ export default function Login() {
           navigate("/listing/");
         })
         .catch(function (error) {
-          setloginError("Invalid Password or Email");
+          setLoginError("Invalid Password or Email");
         });
     }
   };
@@ -88,24 +86,17 @@ export default function Login() {
                   type="email"
                   placeholder="Enter Email"
                   setFunc={setEmail}
+                  error={emailError}
                 />
-                <small id="emailHelp" className="text-danger form-text mt-2">
-                  {emailError}
-                </small>
                 <Formfield
                   type="password"
                   placeholder="Enter Password"
                   setFunc={setPassword}
+                  error={loginError || passwordError}
                 />
-                <small id="passworderror" className="text-danger form-text">
-                  {passwordError}
-                </small>
                 <SubmitButton primary={true} type="submit">
                   Login
                 </SubmitButton>
-                <small id="loginerror" className="text-danger form-text">
-                  {loginError}
-                </small>
               </div>
             </form>
           </div>
