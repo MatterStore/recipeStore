@@ -75,6 +75,10 @@ describe("GET /recipes/all/public", () => {
         .then((res) => {
           assertSucceeded(res, "Recipe list not retrieved.");
           assert(res.body.list?.length >= 1, "Recipe not in list.");
+
+          res.body.list.forEach(element => {
+                assert(element.public == true, "Recipe list has a non-public recipe ");
+          });
         })
     );
   });
