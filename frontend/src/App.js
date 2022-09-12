@@ -8,7 +8,7 @@ import { useEffect } from "react";
 
 function App() {
   useEffect(() => {
-    document.title = "Recipe Store"
+    document.title = "Recipe Store";
   });
 
   return (
