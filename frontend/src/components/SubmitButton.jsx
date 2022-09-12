@@ -7,6 +7,7 @@ export default function SubmitButton(props) {
           : `text-indigo-900 ring-inset ring-indigo-400 ring-2`
       } ${props.className}`}
     >
+      <input className="hidden" type="submit" />
       {props.children}
     </button>
   );
