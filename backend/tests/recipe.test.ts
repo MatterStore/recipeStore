@@ -92,3 +92,37 @@ describe("GET /recipes/:id", async () => {
     TestUsers.Beatrice
   );
 });
+
+describe("DELETE /recipes/:id", async () => {
+    itShouldRequireAuthentication("/recipes/" + TestRecipes.Pancakes.id, "delete");
+  
+    whenLoggedInIt("Should work author user",  (token) =>
+      request(app)
+        .delete("/recipes/" + TestRecipes.Pancakes.id)
+        .set("Authorization", token)
+        .send()
+        .then(async (res) => {
+          assertSucceeded(res, "Failed to get recipe.");
+          //shouldn't be able to get recipe after its been deleted
+          await request(app)
+            .get("/recipes/" + TestRecipes.Pancakes.id)
+            .set("Authorization", token)
+            .send()
+            .then((res) => {
+                assertFailed(res, "Could still access recipe.");
+            });
+        })
+        
+    );
+  
+    whenLoggedInIt(
+      "Shouldn't work for other user",
+      (token) =>
+        request(app)
+          .get("/recipes/" + TestRecipes.Pancakes.id)
+          .set("Authorization", token)
+          .send()
+          .then((res) => assertFailed(res, "Able to delete private recipe.")),
+      TestUsers.Beatrice
+    );
+  });

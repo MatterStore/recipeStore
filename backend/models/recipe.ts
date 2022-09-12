@@ -62,6 +62,10 @@ export function getById(id, callback) {
     Recipe.findOne({ _id: id }, callback);
 }
 
+export function deleteById(id: string, callback) {
+    Recipe.deleteOne({ _id: id }, callback);
+}
+
 export function getByUser (user, callback) {
     Recipe.find({ user }, callback);
 }
