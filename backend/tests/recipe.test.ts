@@ -96,21 +96,20 @@ describe("GET /recipes/:id", async () => {
 describe("DELETE /recipes/:id", async () => {
     itShouldRequireAuthentication("/recipes/" + TestRecipes.Pancakes.id, "delete");
   
-    whenLoggedInIt("Should work author user", (token) =>
+    whenLoggedInIt("Should work author user",  (token) =>
       request(app)
         .delete("/recipes/" + TestRecipes.Pancakes.id)
         .set("Authorization", token)
         .send()
-        .then((res) => {
+        .then(async (res) => {
           assertSucceeded(res, "Failed to get recipe.");
           //shouldn't be able to get recipe after its been deleted
-          request(app)
+          await request(app)
             .get("/recipes/" + TestRecipes.Pancakes.id)
             .set("Authorization", token)
             .send()
-            .then((res2) => {
-                console.log(res2.body)
-                assertFailed(res2, "Could still access recipe.");
+            .then((res) => {
+                assertFailed(res, "Could still access recipe.");
             });
         })
         
