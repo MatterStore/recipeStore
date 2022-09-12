@@ -8,7 +8,7 @@ import { signupRoute } from "../../api/routes";
 
 import SubmitButton from "../../components/SubmitButton";
 import Header from "../../components/Header";
-import Formfield from "../../components/FormField";
+import FormField from "../../components/FormField";
 
 export default function Signup() {
   const [email, setEmail] = useState("");
@@ -92,19 +92,19 @@ export default function Signup() {
             <form id="loginform" onSubmit={loginSubmit} className="login-form">
               <Header>Sign Up</Header>
               <div className="flex flex-col min-w-full">
-                <Formfield
+                <FormField
                   type="name"
                   placeholder="Enter Name"
                   setFunc={setName}
                   error={nameError}
                 />
-                <Formfield
+                <FormField
                   type="email"
                   placeholder="Enter Email"
                   setFunc={setEmail}
                   error={emailError}
                 />
-                <Formfield
+                <FormField
                   type="password"
                   placeholder="Enter Password"
                   setFunc={setPassword}

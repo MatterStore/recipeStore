@@ -1,4 +1,4 @@
-export default function Formfield(props) {
+export default function FormField(props) {
   const { type, placeholder, setFunc } = props;
   return (
     <label className="mt-2 mb-2">
