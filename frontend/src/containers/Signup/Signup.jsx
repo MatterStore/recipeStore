@@ -8,7 +8,7 @@ import { signupRoute } from "../../api/routes";
 
 import SubmitButton from "../../components/SubmitButton";
 import Header from "../../components/Header";
-import Formfield from "../../components/Formfield";
+import Formfield from "../../components/FormField";
 
 export default function Signup() {
   const [email, setEmail] = useState("");
@@ -16,8 +16,8 @@ export default function Signup() {
   const [password, setPassword] = useState("");
 
   const [nameError, setNameError] = useState("");
-  const [emailError, setemailError] = useState("");
-  const [passwordError, setpasswordError] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
   const [signupError, setSignupError] = useState("");
 
   const [formValid, setFormValid] = useState(false);
@@ -38,10 +38,10 @@ export default function Signup() {
 
     if (!validator.isEmail(email)) {
       formIsValid = false;
-      setemailError("Email is Not Valid");
+      setEmailError("Email is Not Valid");
       return false;
     } else {
-      setemailError("");
+      setEmailError("");
       formIsValid = true;
     }
 
@@ -55,10 +55,10 @@ export default function Signup() {
       })
     ) {
       formIsValid = false;
-      setpasswordError("Must contain 8 characters");
+      setPasswordError("Must contain 8 characters");
       return false;
     } else {
-      setpasswordError("");
+      setPasswordError("");
       formIsValid = true;
     }
     setFormValid(formIsValid);
@@ -96,32 +96,23 @@ export default function Signup() {
                   type="name"
                   placeholder="Enter Name"
                   setFunc={setName}
+                  error={nameError}
                 />
-                <small id="nameHelp" className="text-danger form-text mt-2">
-                  {nameError}
-                </small>
                 <Formfield
                   type="email"
                   placeholder="Enter Email"
                   setFunc={setEmail}
+                  error={emailError}
                 />
-                <small id="emailHelp" className="text-danger form-text mt-2">
-                  {emailError}
-                </small>
                 <Formfield
                   type="password"
                   placeholder="Enter Password"
                   setFunc={setPassword}
+                  error={signupError || passwordError}
                 />
-                <small id="passwordError" className="text-danger form-text">
-                  {passwordError}
-                </small>
                 <SubmitButton primary={true} type="submit">
                   Sign Up
                 </SubmitButton>
-                <small id="signupError" className="text-danger form-text">
-                  {signupError}
-                </small>
               </div>
             </form>
           </div>
