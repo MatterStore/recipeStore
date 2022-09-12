@@ -2,9 +2,28 @@ import { useState } from "react"
 import { NoteIcon } from "@primer/octicons-react"
 
 export default function ListTextArea(props) {
+    const toggleMode = () => {
+        if (props.listMode) {
+            // list mode to free text
+            if (props.ordered) {
+                setFreeText(props.items.map((item, index) => `${index+1}. ${item}`).join("\n"))
+            } else {
+                setFreeText(props.items.map((item, index) => ` - ${item}`).join("\n"))
+            }
+        } else {
+            const lines = freeText
+                .split("\n")
+                .filter(line => line.trim() !== "")
+                .map(line => line.replace(new RegExp('^([0-9]+|-| -)(.| |:)( )*'), "")); // Remove list prefixes
+            props.setItems(lines)
+        }
+
+        props.setListMode(!props.listMode)
+    }
+
     const ModeToggleButton = (props) => {
         return (
-            <span className="cursor-pointer" onClick={() => props.setListMode(!props.listMode)}>
+            <span className="cursor-pointer" onClick={toggleMode}>
             {
                 props.listMode ? (
                     props.listElementsIcon

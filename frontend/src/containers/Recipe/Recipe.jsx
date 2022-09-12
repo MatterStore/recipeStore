@@ -165,6 +165,7 @@ export default function Recipe(props) {
             items={recipe.ingredients}
             setItems={setIngredients}
             editing={editing}
+            ordered={false}
           />
           <ListTextArea
             title={"Steps"}
@@ -174,6 +175,7 @@ export default function Recipe(props) {
             items={recipe.steps}
             setItems={setSteps}
             editing={editing}
+            ordered={true}
           />
         </article>
         <div>
