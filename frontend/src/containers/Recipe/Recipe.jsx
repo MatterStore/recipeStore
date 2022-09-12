@@ -4,14 +4,23 @@ import Header from "../../components/Header";
 import Button from "../../components/Button";
 import Tag from "../../components/Tag";
 import Textfield from "../../components/Textfield";
-import {ClockIcon, PersonIcon, LockIcon, GlobeIcon, TrashIcon} from '@primer/octicons-react'
+import {
+  ClockIcon,
+  PersonIcon,
+  LockIcon,
+  GlobeIcon,
+  TrashIcon,
+  ListOrderedIcon,
+  ListUnorderedIcon
+} from '@primer/octicons-react'
+import ListTextArea from "../../components/ListTextArea";
 
 export default function Recipe(props) {
   let params = useParams();
 
   const editing = props.edit;
 
-  const [recipes, setRecipes] = useState([
+  const recipeDummyData = [
     {
       id: "1",
       name: "Gnocchi",
@@ -34,37 +43,31 @@ export default function Recipe(props) {
       time: "15 minutes",
       servings: 8,
     },
-  ]);
+  ];
 
   const cloneRecipe = () => {
     return JSON.parse(JSON.stringify(recipe));
   }
 
-  const addIngredient = () => {
+  const setIngredients = (ingredients) => {
     let clone = cloneRecipe();
-    clone.ingredients.push("");
+    clone.ingredients = ingredients;
     setRecipe(clone);
   }
-  const addStep = () => {
+  const setSteps = (steps) => {
     let clone = cloneRecipe();
-    clone.steps.push("");
+    clone.steps = steps;
     setRecipe(clone);
   }
-  const setIngredient = (index, ingredient) => {
-    let clone = cloneRecipe();
-    clone.ingredients[index] = ingredient;
-    setRecipe(clone);
-  }
-  const setStep = (index, step) => {
-    let clone = cloneRecipe();
-    clone.steps[index] = step;
-    setRecipe(clone);
-  }
-
 
   const getRecipe = (recipeId) => {
-    return recipes[recipeId - 1];
+    return recipeDummyData[recipeId - 1];
   };
+
+  let [stepMode, setStepMode] = useState(true);
+  let [ingredientMode, setIngredientMode] = useState(true);
+
+  const [ingredientText, setIngredientText] = useState("");
 
   const [recipe, setRecipe] = useState(getRecipe(params.recipeId));
 
@@ -154,59 +157,24 @@ export default function Recipe(props) {
       <hr className="my-8" />
       <main className="grid grid-cols-1 lg:grid-cols-2">
         <article>
-          <section className="mb-12">
-            <h3 className="text-xl font-bold mb-4">Ingredients</h3>
-            <ul className="list-disc ml-5 leading-relaxed text-xl">
-              {editing ? (
-                recipe.ingredients.map((ingredient, i) => (
-                  <li key={i} className="list-item max-w-xl px-5 py-1.5 ">
-                    <textarea
-                      onChange={(e) => setIngredient(i, e.target.value)}
-                      type="text" value={ingredient}
-                      rows={1}
-                      className="align-top w-full max-h-32 min-h-[3rem] bg-slate-100 rounded p-2"
-                    />
-                  </li>
-                ))
-              ) : (
-                recipe.ingredients.map((ingredient, i) => (
-                  <li key={i}>{ingredient}</li>
-                ))
-              )}
-            </ul>
-            {editing ? (
-              <span onClick={addIngredient} className={"block mt-2 py-3 text-lg whitespace-nowrap cursor-pointer select-none font-bold text-gray-700 hover:text-gray-900"}>
-                Add Ingredient
-              </span>
-            ) : null}
-          </section>
-          <section className="mb-12">
-            <h3 className="text-xl font-bold mb-4">Steps</h3>
-            <ol className="list-decimal ml-5 leading-relaxed text-xl">
-              {editing ? (
-                recipe.steps.map((step, i) => (
-                  <li key={i} className="list-item max-w-xl px-5 py-1.5 ">
-                    <textarea
-                      type="text"
-                      value={step}
-                      onChange={(e) => setStep(i, e.target.value)}
-                      rows={1}
-                      className="align-top w-full max-h-32 min-h-[3rem] bg-slate-100 rounded p-2"
-                    />
-                  </li>
-                ))
-              ) : (
-                recipe.steps.map((step, i) => (
-                  <li key={i}>{step}</li>
-                ))
-              )}
-            </ol>
-            {editing ? (
-              <span onClick={addStep} className={"block mt-2 py-3 text-lg whitespace-nowrap cursor-pointer select-none font-bold text-gray-700 hover:text-gray-900"}>
-                Add Step
-              </span>
-            ) : null}
-          </section>
+          <ListTextArea
+            title={"Ingredients"}
+            listElementsIcon={(<ListUnorderedIcon size={24} />)}
+            listMode={ingredientMode}
+            setListMode={setIngredientMode}
+            items={recipe.ingredients}
+            setItems={setIngredients}
+            editing={editing}
+          />
+          <ListTextArea
+            title={"Steps"}
+            listElementsIcon={(<ListOrderedIcon size={24} />)}
+            listMode={stepMode}
+            setListMode={setStepMode}
+            items={recipe.steps}
+            setItems={setSteps}
+            editing={editing}
+          />
         </article>
         <div>
           {editing ? (
