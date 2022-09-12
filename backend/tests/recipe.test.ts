@@ -64,6 +64,21 @@ describe("GET /recipes/all", () => {
   );
 });
 
+describe("GET /recipes/all/public", () => {
+    itShouldRequireAuthentication("/recipes/all/public", "get");
+  
+    whenLoggedInIt("Should be able to list user recipes", (token) =>
+      request(app)
+        .get("/recipes/all/public")
+        .set("Authorization", token)
+        .send()
+        .then((res) => {
+          assertSucceeded(res, "Recipe list not retrieved.");
+          assert(res.body.list?.length >= 1, "Recipe not in list.");
+        })
+    );
+  });
+
 describe("GET /recipes/:id", async () => {
   itShouldRequireAuthentication("/recipes/" + TestRecipes.Pancakes.id, "get");
 

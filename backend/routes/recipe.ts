@@ -6,7 +6,7 @@ import { AuthenticatedRequest } from "../helpers/authenticated-request.js";
 import validateParams from "../helpers/params-validator.js";
 import { cmpObjectIds } from "../helpers/utils.js";
 
-import Recipe, { deleteById, getById, getByUser } from "../models/recipe.js";
+import Recipe, { deleteById, getAllPublic, getById, getByUser } from "../models/recipe.js";
 import Tag from "../models/tag.js";
 
 const router = express.Router();
@@ -68,6 +68,20 @@ router.get(
     });
   }
 );
+
+router.get(
+    "/all/public",
+    passport.authenticate("user", { session: false }),
+    (req: AuthenticatedRequest, res, next) => {
+      getAllPublic( (err, list) => {
+        if (err) {
+          res.status(422).json({ success: false, msg: "Something went wrong." });
+        } else {
+          res.status(200).json({ success: true, msg: "Recipes found.", list });
+        }
+      });
+    }
+  );
 
 router.get(
   "/:id",

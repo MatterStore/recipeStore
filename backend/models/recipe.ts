@@ -69,3 +69,7 @@ export function deleteById(id: string, callback) {
 export function getByUser (user, callback) {
     Recipe.find({ user }, callback);
 }
+
+export function getAllPublic (callback) {
+    Recipe.find({ public : true }, callback);
+}
