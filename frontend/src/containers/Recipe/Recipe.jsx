@@ -36,14 +36,28 @@ export default function Recipe(props) {
     },
   ]);
 
+  const cloneRecipe = () => {
+    return JSON.parse(JSON.stringify(recipe));
+  }
+
   const addIngredient = () => {
-    let clone = JSON.parse(JSON.stringify(recipe));
+    let clone = cloneRecipe();
     clone.ingredients.push("");
     setRecipe(clone);
   }
   const addStep = () => {
-    let clone = JSON.parse(JSON.stringify(recipe));
+    let clone = cloneRecipe();
     clone.steps.push("");
+    setRecipe(clone);
+  }
+  const setIngredient = (index, ingredient) => {
+    let clone = cloneRecipe();
+    clone.ingredients[index] = ingredient;
+    setRecipe(clone);
+  }
+  const setStep = (index, step) => {
+    let clone = cloneRecipe();
+    clone.steps[index] = step;
     setRecipe(clone);
   }
 
@@ -146,7 +160,12 @@ export default function Recipe(props) {
               {editing ? (
                 recipe.ingredients.map((ingredient, i) => (
                   <li key={i} className="list-item max-w-xl px-5 py-1.5 ">
-                    <textarea type="text" value={ingredient} onChange={()=>{}} rows={1} className="align-top w-full max-h-32 min-h-[3rem] bg-slate-100 rounded p-2" />
+                    <textarea
+                      onChange={(e) => setIngredient(i, e.target.value)}
+                      type="text" value={ingredient}
+                      rows={1}
+                      className="align-top w-full max-h-32 min-h-[3rem] bg-slate-100 rounded p-2"
+                    />
                   </li>
                 ))
               ) : (
@@ -167,7 +186,13 @@ export default function Recipe(props) {
               {editing ? (
                 recipe.steps.map((step, i) => (
                   <li key={i} className="list-item max-w-xl px-5 py-1.5 ">
-                    <textarea type="text" value={step} onChange={()=>{}} rows={1} className="align-top w-full max-h-32 min-h-[3rem] bg-slate-100 rounded p-2" />
+                    <textarea
+                      type="text"
+                      value={step}
+                      onChange={(e) => setStep(i, e.target.value)}
+                      rows={1}
+                      className="align-top w-full max-h-32 min-h-[3rem] bg-slate-100 rounded p-2"
+                    />
                   </li>
                 ))
               ) : (
