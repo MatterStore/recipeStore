@@ -1,3 +1,4 @@
+import { useState } from "react"
 import { useParams } from "react-router-dom";
 import Header from "../../components/Header";
 import Button from "../../components/Button";
@@ -10,7 +11,7 @@ export default function Recipe(props) {
 
   const editing = props.edit;
 
-  const recipes = [
+  const [recipes, setRecipes] = useState([
     {
       id: "1",
       name: "Gnocchi",
@@ -33,13 +34,25 @@ export default function Recipe(props) {
       time: "15 minutes",
       servings: 8,
     },
-  ];
+  ]);
+
+  const addIngredient = () => {
+    let clone = JSON.parse(JSON.stringify(recipe));
+    clone.ingredients.push("");
+    setRecipe(clone);
+  }
+  const addStep = () => {
+    let clone = JSON.parse(JSON.stringify(recipe));
+    clone.steps.push("");
+    setRecipe(clone);
+  }
+
 
   const getRecipe = (recipeId) => {
     return recipes[recipeId - 1];
   };
 
-  const recipe = getRecipe(params.recipeId);
+  const [recipe, setRecipe] = useState(getRecipe(params.recipeId));
 
   return (
     <div className="px-16 lg:px-32 py-16 mx-auto max-w-screen-sm lg:max-w-screen-2xl">
@@ -143,7 +156,7 @@ export default function Recipe(props) {
               )}
             </ul>
             {editing ? (
-              <span className={"block mt-2 py-3 text-lg whitespace-nowrap cursor-pointer select-none font-bold text-gray-700 hover:text-gray-900"}>
+              <span onClick={addIngredient} className={"block mt-2 py-3 text-lg whitespace-nowrap cursor-pointer select-none font-bold text-gray-700 hover:text-gray-900"}>
                 Add Ingredient
               </span>
             ) : null}
@@ -164,7 +177,7 @@ export default function Recipe(props) {
               )}
             </ol>
             {editing ? (
-              <span className={"block mt-2 py-3 text-lg whitespace-nowrap cursor-pointer select-none font-bold text-gray-700 hover:text-gray-900"}>
+              <span onClick={addStep} className={"block mt-2 py-3 text-lg whitespace-nowrap cursor-pointer select-none font-bold text-gray-700 hover:text-gray-900"}>
                 Add Step
               </span>
             ) : null}
