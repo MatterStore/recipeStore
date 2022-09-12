@@ -93,42 +93,27 @@ router.get(
 router.delete(
     "/:id",
     passport.authenticate("user", { session: false }),
-    (req, res, next) => {
-        deleteById(req.params.id, (err, recipe) => {
+    (req: AuthenticatedRequest, res, next) => {
+        getById(req.params.id, (err, recipe) => {
             if (err) {
-                res
-                    .status(422)
-                    .json({ success: false, msg: "Something went wrong." });
+              res.status(422).json({ success: false, msg: "Something went wrong." });
             } else if (!recipe) {
-                res
-                    .status(404)
-                    .json({ success: false, msg: "Recipe not found." });
-            } else if ((req as any).user.id != recipe.user) {
-                res
-                    .status(403)
-                    .json({
-                        success: false,
-                        msg: "Recipe belongs to another user."
-                    });
-            } else {
-                deleteById(req.params.id, err => {
-                    if (err) {
-                        res
-                            .status(500)
-                            .json({
-                                success: false,
-                                msg: "Something went wrong."
-                            });
+              res.status(404).json({ success: false, msg: "Recipe not found." });
+            } else if (recipe.public || cmpObjectIds(req.user._id, recipe.user)) {
+                //recipe found and user has permissions to delete it,
+                deleteById(req.params.id, (err, resp) => {
+                    if (err || !resp) {
+                      res.status(422).json({ success: false, msg: "Something went wrong." });
                     } else {
-                        res
-                            .status(200)
-                            .json({
-                                success: true,
-                                msg: "Recipe deleted."
-                            });
+                      res.status(200).json({ success: true, msg: "Recipe deleted." });
                     }
-                })
+                  });
+            } else {
+              res.status(403).json({
+                success: false,
+                msg: "Permission not granted.",
+              });
             }
-        })
+          });
     }
-);
+  );
