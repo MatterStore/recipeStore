@@ -8,7 +8,7 @@ import { loginRoute } from "../../api/routes";
 
 import SubmitButton from "../../components/SubmitButton";
 import Header from "../../components/Header";
-import Formfield from "../../components/FormField";
+import FormField from "../../components/FormField";
 
 export default function Login() {
   const [password, setPassword] = useState("");
@@ -82,13 +82,13 @@ export default function Login() {
             <form id="loginform" onSubmit={loginSubmit} className="login-form">
               <Header>Login</Header>
               <div className="flex flex-col min-w-full">
-                <Formfield
+                <FormField
                   type="email"
                   placeholder="Enter Email"
                   setFunc={setEmail}
                   error={emailError}
                 />
-                <Formfield
+                <FormField
                   type="password"
                   placeholder="Enter Password"
                   setFunc={setPassword}
