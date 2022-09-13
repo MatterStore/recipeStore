@@ -1,4 +1,5 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
+import axios from "axios";
 import { Link } from "react-router-dom";
 
 import { AuthContext } from "../../contexts/AuthContext";
@@ -20,9 +21,24 @@ export default function Listing() {
 
   const { user } = useContext(AuthContext);
 
-  const recipes = fetch(usersRecipesRoute)
-    .then((response) => response.json())
-    .then((data) => console.log(data));
+  useEffect(() => {
+    async function fetchRecipes() {
+      axios
+        .get(usersRecipesRoute)
+        .then((response) => {
+          setRecipesData(response.data);
+          setRecipesLoading(false);
+        })
+        .catch((error) => setRecipesError(error));
+    }
+    fetchRecipes();
+  }, []);
+
+  console.log(recipesData);
+
+  // const recipes = fetch(usersRecipesRoute)
+  //   .then((response) => response.json())
+  //   .then((data) => console.log(data));
   // const recipes = [
   //   {
   //     id: "1",
