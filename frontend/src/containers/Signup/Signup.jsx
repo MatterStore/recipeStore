@@ -27,7 +27,7 @@ export default function Signup() {
   const handleValidation = (event) => {
     let formIsValid = true;
 
-    if (!validator.isAlpha(name)) {
+    if (!validator.isAscii(name)) {
       formIsValid = false;
       setNameError("Name is Not Valid");
       return false;
