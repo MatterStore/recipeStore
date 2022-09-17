@@ -18,7 +18,7 @@ export default function Nav(props) {
                                 navigationRoutes.map(([title, path]) =>
                                     <li>
                                         <a href={`${path}`}
-                                            class={`${location.pathname == path
+                                            class={`${location.pathname === path
                                                 ? `block py-2 pr-4 pl-3 rounded bg-transparent text-blue-700 p-0 `
                                                 : `block py-2 pr-4 pl-3 rounded p-0 hover:text-white text-blue-400 `
                                                 }`}
