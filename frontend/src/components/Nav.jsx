@@ -7,7 +7,7 @@ export default function Nav(props) {
         ["Home", "/listing"],
         ["My Recipes", "/collection/Your%20Recipe%20Collection"],
         ["Sign Out", "/"]]
-    const doNotDisplayNavOn = ["/", "/login"]
+    const doNotDisplayNavOn = ["/", "/login", "/signup"]
 
     if (!doNotDisplayNavOn.includes(location.pathname)) {
         return (
