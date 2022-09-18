@@ -17,7 +17,7 @@ export default function Nav(props) {
                         <ul className="flex p-2 mt-4 flex-row space-x-8 mt-0 text-sm font-medium border-0 bg-blue-100">
                             {
                                 navigationRoutes.map(([title, path]) =>
-                                    <li>
+                                    <li key={path}>
                                         <a href={`${path}`}
                                             className={`${location.pathname === path
                                                 ? `block py-2 pr-4 pl-3 rounded bg-blue-200 text-blue-500 p-0 `
