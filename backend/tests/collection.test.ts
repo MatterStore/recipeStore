@@ -133,18 +133,18 @@ describe("POST /collections/:id/add", () => {
       .post(href())
       .set("Authorization", token)
       .send(body())
-      .then((res) => {
+      .then(async (res) => {
         assertSucceeded(res, "Adding recipe not successful.");
-        request(app)
+        await request(app)
           .get("/collections/" + TestCollections.Breakfast.id)
           .set("Authorization", token)
           .send()
-          .then((res) => {
+          .then((res) =>
             assert(
               res.body.collection.recipes.contains(TestRecipes.Rice.id),
               "Recipe isn't in collection."
-            );
-          });
+            )
+          );
       })
   );
 });
