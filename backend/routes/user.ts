@@ -8,6 +8,7 @@ import * as jwt_validator from "../helpers/user-jwt-validate.js";
 import Joi from "joi";
 
 import User, { addUser, comparePassword, getUserByEmail, updatePassword } from "../models/user.js";
+import { AuthenticatedRequest } from "../helpers/authenticated-request.js";
 
 const errorLogger = {
   error: (err) => console.log(err)
@@ -116,7 +117,7 @@ router.post(
 router.get(
   "/profile",
   passport.authenticate("user", { session: false }),
-  (req : any, res, next) => {
+  (req: AuthenticatedRequest, res) => {
     res.status(200).json({ success: true, user: req.user });
   }
 );
