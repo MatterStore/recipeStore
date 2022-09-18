@@ -163,7 +163,7 @@ here to avoid duplication.
     * `GET /recipes/all`
         * Requires authentication.
         * Finds all recipes owned by the logged in user.
-        * Returns an array of recipe objects of the form
+        * Returns a response with an array of recipe objects of the form
             ```
             {
                 success: boolean,
@@ -171,6 +171,10 @@ here to avoid duplication.
                 list: [Recipe]
             }
             ``` 
+    * `GET /recipes/all/public`
+        * Requires authentication.
+        * Returns a list of all public recipes.
+        * Returns the same form of response as `GET /recipes/all`.
     * `GET /recipes/:id`
         * Requires authentication.
         * Find a specific recipe, which must be owned by the logged in user or
@@ -184,6 +188,10 @@ here to avoid duplication.
                 recipe: Recipe
             }
             ```
+    * `DELETE /recipes/:id`
+        * Requires authentication.
+        * Delete a recipe by ID.
+        * Returns a **Simple Response**.
 * `/user`
     * `POST /user/signup`
         * Signs up a new user if valid details were supplied.
