@@ -1,19 +1,21 @@
 import express from "express";
-const router = express.Router();
-import passport from "passport";
 import jwt from "jsonwebtoken";
 
 import validateParams from "../helpers/params-validator.js";
-import * as jwt_validator from "../helpers/user-jwt-validate.js";
 import Joi from "joi";
 
+import {
+  authenticate,
+  AuthenticatedRequest,
+} from "../helpers/authentication.js";
 import User, {
   addUser,
   comparePassword,
   getUserByEmail,
   updatePassword,
 } from "../models/user.js";
-import { AuthenticatedRequest } from "../helpers/utils.js";
+
+const router = express.Router();
 
 const errorLogger = {
   error: (err) => console.log(err),
@@ -120,91 +122,45 @@ router.post(
   }
 );
 
-router.get(
-  "/profile",
-  passport.authenticate("user", { session: false }),
-  (req: AuthenticatedRequest, res) => {
-    res.status(200).json({ success: true, user: req.user });
-  }
-);
+router.get("/profile", authenticate(), (req: AuthenticatedRequest, res) => {
+  res.status(200).json({ success: true, user: req.user });
+});
 
 router.post(
   "/update-password",
+  authenticate(),
   validateParams({
-    email: Joi.string().max(20).required(),
-    currentPassword: Joi.string().max(20).required(),
-    newPassword: Joi.string()
-      .pattern(
-        /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&(=)<>.,/])[A-Za-z\d@$!%*#?&(=)<>.,/]{6,}$/
-      )
-      .max(20)
-      .required(),
-    newConfirmPassword: Joi.string().max(20).required(),
+    password: Joi.string().min(8).max(20).required(),
+    confirmPassword: Joi.string().min(8).max(20).required(),
   }),
-  (req, res, next) => {
-    let user = jwt_validator.validateUserJWTToken(req.headers.authorization);
-    if (!user)
-      return res.status(422).json({ success: false, msg: "Invalid token." });
+  (req: AuthenticatedRequest, res, next) => {
+    const newPassword = req.body.password;
+    const confirmPassword = req.body.confirmPassword;
 
-    const newUser = {
-      email: req.body.email,
-      currentPassword: req.body.currentPassword,
-      newPassword: req.body.newPassword,
-      newConfirmPassword: req.body.newConfirmPassword,
-    };
-
-    if (newUser.newPassword != newUser.newConfirmPassword) {
+    if (newPassword != confirmPassword) {
       return res.status(422).json({
         success: false,
         msg: "Both password fields do not match.",
       });
     }
 
-    if (newUser.currentPassword == newUser.newPassword) {
-      return res.status(422).json({
-        success: false,
-        msg: "Current password matches with the new password.",
-      });
-    }
-
-    getUserByEmail(newUser.email, (err, user) => {
-      if (err) {
-        return res
-          .status(422)
-          .json({ success: false, msg: "Something went wrong." });
-      }
-      if (!user) {
-        return res.status(404).json({ success: false, msg: "User not found." });
-      }
-      comparePassword(
-        newUser.currentPassword,
-        user.password,
-        (err, isMatch) => {
+    comparePassword(newPassword, req.user.password, (err, ok) => {
+      if (ok) {
+        res.status(422).json({
+          success: false,
+          msg: "Current password matches with the new password.",
+        });
+      } else {
+        updatePassword(req.user._id, newPassword, (err, ok) => {
           if (err) {
-            errorLogger.error(err);
-
-            return res
+            res
               .status(422)
               .json({ success: false, msg: "Something went wrong." });
+          } else {
+            res.status(200).json({ success: true, msg: "Password updated." });
           }
-          if (!isMatch) {
-            return res
-              .status(422)
-              .json({ success: false, msg: "Incorrect password." });
-          }
-          updatePassword(newUser, (err) => {
-            if (err) {
-              errorLogger.error(err);
-              return res
-                .status(422)
-                .json({ success: false, msg: "Something went wrong." });
-            }
-            return res
-              .status(200)
-              .json({ success: true, msg: "Password updated." });
-          });
-        }
-      );
+        });
+      }
     });
   }
 );
