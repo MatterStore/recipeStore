@@ -29,13 +29,13 @@ describe("POST /collections/new", () => {
 
   itShouldRequireAuthentication("/collections/new", "post", collection);
 
-  whenLoggedInIt("Should reject invalid object IDs", (token) => {
+  whenLoggedInIt("Should reject invalid object IDs", async (token) => {
     let badCollection = Object.assign({}, collection);
     badCollection.recipes = badCollection.recipes.concat([
       "An Invalid ObjectID",
     ]);
 
-    request(app)
+    await request(app)
       .post("/collections/new")
       .set("Authorization", token)
       .send(badCollection)
@@ -219,9 +219,9 @@ describe("POST /collections/:id/delete", () => {
       .post("/collections/" + TestCollections.Breakfast.id + "/delete")
       .set("Authorization", token)
       .send()
-      .then((res) => {
+      .then(async (res) => {
         assertSucceeded(res, "Deleting collection not successful.");
-        request(app)
+        await request(app)
           .get("/collections/" + TestCollections.Breakfast.id)
           .set("Authorization", token)
           .send()
