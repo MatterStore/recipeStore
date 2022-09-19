@@ -131,7 +131,6 @@ describe("DELETE /recipes/:id", async () => {
                 assertFailed(res, "Could still access recipe.");
             });
         })
-        
     );
   
     whenLoggedInIt(
