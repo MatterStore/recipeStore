@@ -6,7 +6,12 @@ import { AuthenticatedRequest } from "../helpers/authenticated-request.js";
 import validateParams from "../helpers/params-validator.js";
 import { cmpObjectIds } from "../helpers/utils.js";
 
-import Recipe, { deleteById, getAllPublic, getById, getByUser } from "../models/recipe.js";
+import Recipe, {
+  deleteById,
+  getAllPublic,
+  getById,
+  getByUser,
+} from "../models/recipe.js";
 import Tag from "../models/tag.js";
 
 const router = express.Router();
@@ -70,18 +75,18 @@ router.get(
 );
 
 router.get(
-    "/all/public",
-    passport.authenticate("user", { session: false }),
-    (req: AuthenticatedRequest, res, next) => {
-      getAllPublic( (err, list) => {
-        if (err) {
-          res.status(422).json({ success: false, msg: "Something went wrong." });
-        } else {
-          res.status(200).json({ success: true, msg: "Recipes found.", list });
-        }
-      });
-    }
-  );
+  "/all/public",
+  passport.authenticate("user", { session: false }),
+  (req: AuthenticatedRequest, res, next) => {
+    getAllPublic((err, list) => {
+      if (err) {
+        res.status(422).json({ success: false, msg: "Something went wrong." });
+      } else {
+        res.status(200).json({ success: true, msg: "Recipes found.", list });
+      }
+    });
+  }
+);
 
 router.get(
   "/:id",
@@ -105,29 +110,31 @@ router.get(
 );
 
 router.delete(
-    "/:id",
-    passport.authenticate("user", { session: false }),
-    (req: AuthenticatedRequest, res, next) => {
-        getById(req.params.id, (err, recipe) => {
-            if (err) {
-              res.status(422).json({ success: false, msg: "Something went wrong." });
-            } else if (!recipe) {
-              res.status(404).json({ success: false, msg: "Recipe not found." });
-            } else if (recipe.public || cmpObjectIds(req.user._id, recipe.user)) {
-                //recipe found and user has permissions to delete it,
-                deleteById(req.params.id, (err, resp) => {
-                    if (err || !resp) {
-                      res.status(422).json({ success: false, msg: "Something went wrong." });
-                    } else {
-                      res.status(200).json({ success: true, msg: "Recipe deleted." });
-                    }
-                  });
-            } else {
-              res.status(403).json({
-                success: false,
-                msg: "Permission not granted.",
-              });
-            }
-          });
-    }
-  );
+  "/:id",
+  passport.authenticate("user", { session: false }),
+  (req: AuthenticatedRequest, res, next) => {
+    getById(req.params.id, (err, recipe) => {
+      if (err) {
+        res.status(422).json({ success: false, msg: "Something went wrong." });
+      } else if (!recipe) {
+        res.status(404).json({ success: false, msg: "Recipe not found." });
+      } else if (recipe.public || cmpObjectIds(req.user._id, recipe.user)) {
+        //recipe found and user has permissions to delete it,
+        deleteById(req.params.id, (err, resp) => {
+          if (err || !resp) {
+            res
+              .status(422)
+              .json({ success: false, msg: "Something went wrong." });
+          } else {
+            res.status(200).json({ success: true, msg: "Recipe deleted." });
+          }
+        });
+      } else {
+        res.status(403).json({
+          success: false,
+          msg: "Permission not granted.",
+        });
+      }
+    });
+  }
+);
