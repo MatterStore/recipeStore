@@ -168,10 +168,11 @@ router.patch(
       "public",
     ];
 
+    // Create object with the changes provided in the request.
     let update = {};
     updateableKeys.forEach((key) => {
-      if (key in req.record) {
-        update[key] = req.record[key];
+      if (key in req.body && req.body[key] != req.record[key]) {
+        update[key] = req.body[key];
       }
     });
 

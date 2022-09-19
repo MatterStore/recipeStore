@@ -103,6 +103,9 @@ here to avoid duplication.
                 list: [Collection]
             }
             ```
+    * `GET /collections/all/public`
+        * Returns a list of all public collections.
+        * Response of the same form as `GET collections/all`.
     * `GET /collections/:id`
         * Requires authentication.
         * Finds details of a collection by ID (`:id`).
@@ -117,9 +120,13 @@ here to avoid duplication.
                 collection: Collection
             }
             ```
-    * `POST /collections/:id/delete`
+    * `DELETE /collections/:id`
         * Requires authentication.
         * Deletes a collection owned by the authenticated user.
+        * Returns a **Simple Response**.
+    * `PATCH /collections/:id`
+        * Requires authentication.
+        * Updates a collection owned by the authenticated user.
         * Returns a **Simple Response**.
     * `POST /collections/:id/add`
         * Requires authentication.
@@ -191,6 +198,11 @@ here to avoid duplication.
     * `DELETE /recipes/:id`
         * Requires authentication.
         * Delete a recipe by ID.
+        * Returns a **Simple Response**.
+    * `PATCH /recipes/:id`
+        * Requires authentication.
+        * Update a recipe by ID.
+        * Accepts a JSON body with any of the fields from `/recipes/new`.
         * Returns a **Simple Response**.
 * `/user`
     * `POST /user/signup`

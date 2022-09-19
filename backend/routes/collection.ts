@@ -67,7 +67,15 @@ router.get(
   }
 );
 
-router.get("/all/public", (req, res) => {});
+router.get("/all/public", (req, res) =>
+  Collection.find({ public: true }, (err, list) => {
+    if (err) {
+      res.status(500).json({ success: false, msg: "Something went wrong." });
+    } else {
+      res.status(200).json({ success: true, msg: "Collections found.", list });
+    }
+  })
+);
 
 router.get(
   "/:id",
@@ -109,8 +117,35 @@ router.delete(
 router.patch(
   "/:id",
   passport.authenticate("user", { session: false }),
+  validateParams({
+    name: Joi.string().max(255),
+    tags: Joi.array().items(Tag.validator),
+    recipes: Joi.array().items(objectId()),
+    public: Joi.boolean(),
+  }),
   withRecord(Collection, true),
-  (req: CollectionRequest, res) => {}
+  (req: CollectionRequest, res) => {
+    const updateableKeys = ["name", "tags", "recipes", "public"];
+
+    let update = {};
+    updateableKeys.forEach((key) => {
+      if (key in req.body && req.body[key] != req.record[key]) {
+        update[key] = req.body[key];
+      }
+    });
+
+    if (Object.keys(update).length > 0) {
+      Collection.updateOne({ _id: req.params.id }, update, (err) => {
+        if (err) {
+          res.status(500).json({ success: false, msg: "An error occurred." });
+        } else {
+          res.status(200).json({ success: true, msg: "Collection updated." });
+        }
+      });
+    } else {
+      res.status(200).json({ success: true, msg: "No updates needed." });
+    }
+  }
 );
 
 router.post(
