@@ -1,5 +1,14 @@
-import mongoose from "mongoose";
+import mongoose, { ObjectId } from "mongoose";
 import bcrypt from "bcryptjs";
+
+export interface IUser {
+  _id: ObjectId;
+  email: string;
+  password: string;
+  name: string;
+  emailVerified: boolean;
+  admin: boolean;
+}
 
 const userSchema = new mongoose.Schema({
   email: {
@@ -26,22 +35,22 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model("User", userSchema);
 
-export default User
+export default User;
 
-export function getUserById (id, callback) {
+export function getUserById(id, callback) {
   User.findById({ _id: id }, callback);
-};
+}
 
-export function authenticateUser (email, callback) {
+export function authenticateUser(email, callback) {
   User.updateOne({ email: email }, { $set: { authenticated: true } }, callback);
-};
+}
 
-export function getUserByEmail (email, callback) {
+export function getUserByEmail(email, callback) {
   const query = { email: email };
   User.findOne(query, callback);
-};
+}
 
-export function addUser (newUser, callback) {
+export function addUser(newUser, callback) {
   bcrypt.genSalt(10, (err, salt) => {
     bcrypt.hash(newUser.password, salt, (err, hash) => {
       if (err) throw err;
@@ -49,9 +58,9 @@ export function addUser (newUser, callback) {
       newUser.save(callback);
     });
   });
-};
+}
 
-export function comparePassword (candidatePassword, hash, callback) {
+export function comparePassword(candidatePassword, hash, callback) {
   if (!candidatePassword) {
     return false;
   }
@@ -59,9 +68,9 @@ export function comparePassword (candidatePassword, hash, callback) {
     if (err) throw err;
     callback(null, isMatch);
   });
-};
+}
 
-export function updatePassword (newUser, callback) {
+export function updatePassword(newUser, callback) {
   bcrypt.genSalt(10, (err, salt) => {
     if (err) throw err;
     bcrypt.hash(newUser.newPassword, salt, (err, hash) => {
@@ -74,4 +83,4 @@ export function updatePassword (newUser, callback) {
       );
     });
   });
-};
+}
