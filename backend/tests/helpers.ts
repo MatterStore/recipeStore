@@ -99,6 +99,14 @@ export const TestCollections = {
     recipes: [],
     public: false,
   },
+  Sides: {
+    id: null,
+    user: null,
+    name: "Sides",
+    tags: ["side", "savoury"],
+    recipes: [],
+    public: true,
+  },
 };
 
 export async function doLoggedIn(
@@ -158,6 +166,7 @@ async function prepareTestRecipes(token: string, user: string) {
  */
 async function prepareTestCollections(token: string, user: string) {
   TestCollections.Breakfast.recipes.push(TestRecipes.Pancakes.id);
+  TestCollections.Sides.recipes.push(TestRecipes.Rice.id);
 
   for (let collection of Object.values(TestCollections)) {
     let existing = await Collection.findOne({ user, name: collection.name });
@@ -220,7 +229,12 @@ export function itShouldRequireAuthentication(
     request(app)
       [method](endpoint)
       .send(body)
-      .then((res) => assert(res.status == 401, "Didn't return 401.")));
+      .then((res) =>
+        assert(
+          res.status == 401 || res.status == 403,
+          `No authentication error. Status: ${res.status}.`
+        )
+      ));
 }
 
 /**

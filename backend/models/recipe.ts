@@ -1,5 +1,21 @@
-import pkg from "mongoose";
+import pkg, { ObjectId } from "mongoose";
 const { Schema, Types, model } = pkg;
+
+export interface IRecipe {
+  user: ObjectId;
+  title: string;
+  cooking_time?: string;
+  servings?: number;
+  ingredients: {
+    text: string;
+    name?: string;
+    quantity?: string;
+    unit?: string;
+  }[];
+  steps: string[];
+  tags: string[];
+  public?: boolean;
+}
 
 const recipeSchema = new Schema({
   user: {

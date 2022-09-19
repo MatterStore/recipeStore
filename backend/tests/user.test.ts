@@ -85,26 +85,27 @@ describe("GET /user/profile", () => {
     request(app)
       .get("/user/profile")
       .send()
-      .then((res) => {
-        assert(res.status == 401, "Not unauthorised.");
-      }));
+      .then((res) => assert(res.status == 401, "Not unauthorised.")));
 
   it("Should return the logged-in users's profile", () =>
     request(app)
       .post("/user/login")
       .send(TestUsers.Alfred)
-      .then((res) => {
+      .then(async (res) => {
         assert(res.body.token, "Missing authorization token.");
         assert(res.status == 200, "Failed to log in");
 
         let token = res.body.token;
-        request(app)
+        await request(app)
           .get("/user/profile")
           .set("Authorization", token)
           .send()
           .then((res) => {
             assertSucceeded(res, "Profile request failed.");
-            assert(res.body.user?.name == "testuser", "Bad profile.");
+            assert(
+              res.body.user?.name == TestUsers.Alfred.name,
+              "Bad profile."
+            );
           });
       }));
 });
