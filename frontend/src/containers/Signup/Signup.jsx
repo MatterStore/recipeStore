@@ -27,7 +27,7 @@ export default function Signup() {
   const handleValidation = (event) => {
     let formIsValid = true;
 
-    if (!validator.isAlpha(name)) {
+    if (!validator.isAscii(name)) {
       formIsValid = false;
       setNameError("Name is Not Valid");
       return false;
@@ -86,7 +86,7 @@ export default function Signup() {
 
   return (
     <div className="flex row min-w-screen justify-center">
-      <main className="min-h-screen w-screen flex flex-column items-center max-w-screen-2xl">
+      <main className="min-h-screen w-screen flex flex-column items-center container">
         <div className="flex flex-col md:flex-row justify-around flex-grow">
           <div className="p-8 self-center md:mb-32">
             <form id="loginform" onSubmit={loginSubmit} className="login-form">
