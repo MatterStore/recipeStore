@@ -14,3 +14,18 @@ export function cmpObjectIds(
 ): boolean {
   return String(a) == String(b);
 }
+
+/**
+ * Checks whether an array contains an `ObjectId`s. Because `==` doesn't work
+ * properly with `ObjectId`s, we first convert them to strings.
+ *
+ * @param ary Array of ObjectIDs to check for membership.
+ * @param id Member to look for.
+ * @returns Whether `ary` contains `id`.
+ */
+export function includesObjectId(
+  ary: (ObjectId | string)[],
+  id: ObjectId | string
+): boolean {
+  return ary.map(String).includes(String(id));
+}
