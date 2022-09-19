@@ -26,7 +26,7 @@ export function objectId() {
   return Joi.string().custom((value, helper) => {
     if (!mongoose.isValidObjectId(value)) {
       return helper.message({
-        custom: `${value} is not a valid MongoDB ObjectID.`,
+        custom: `"${value}" is not a valid MongoDB ObjectID.`,
       });
     } else {
       return true;

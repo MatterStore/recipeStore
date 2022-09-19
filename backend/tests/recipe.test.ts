@@ -115,7 +115,64 @@ describe("GET /recipes/:id", async () => {
   );
 });
 
-describe("DELETE /recipes/:id", async () => {
+describe("PATCH /recipes/:id", () => {
+  const href = () => "/recipes/" + TestRecipes.Pancakes.id;
+
+  const patch = {
+    user: "immutable field", // Should be ignored
+    title: "Blueberry Pancakes",
+    steps: TestRecipes.Pancakes.steps
+      .slice(0, -1)
+      .concat("Sprinkle with blueberries and serve."),
+  };
+
+  itShouldRequireAuthentication(href(), "patch");
+
+  whenLoggedInIt(
+    "Shouldn't work for non-author user",
+    (token) =>
+      request(app)
+        .patch(href())
+        .set("Authorization", token)
+        .send(patch)
+        .then((res) => assertFailed(res, "Non-author user allowed to update.")),
+    TestUsers.Beatrice
+  );
+
+  whenLoggedInIt("Should work for the author user", (token) =>
+    request(app)
+      .patch(href())
+      .set("Authorization", token)
+      .send(patch)
+      .then(async (res) => {
+        assertSucceeded(res, "Author failed to update recipe.");
+        await request(app)
+          .get(href())
+          .set("Authorization", token)
+          .send()
+          .then((res) => {
+            assertSucceeded(res, "Failed to retrieve updated recipe.");
+
+            let recipe = res.body.recipe;
+            assert(recipe.title == patch.title, "Recipe title not updated.");
+            assert(
+              recipe.steps[2] == patch.steps[2],
+              "Recipe steps not updated."
+            );
+            assert(
+              recipe.user == TestRecipes.Pancakes.user,
+              "Recipe user updated."
+            );
+            assert(
+              recipe.servings == TestRecipes.Pancakes.servings,
+              "Recipe servings updated when they shouldn't be."
+            );
+          });
+      })
+  );
+});
+
+describe("DELETE /recipes/:id", () => {
   itShouldRequireAuthentication(
     "/recipes/" + TestRecipes.Pancakes.id,
     "delete"
