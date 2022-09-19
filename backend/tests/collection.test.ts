@@ -66,6 +66,20 @@ describe("GET /collections/all", () => {
   );
 });
 
+describe("GET /collections/all/public", () => {
+  it("Should return a list with all public collections", () =>
+    request(app)
+      .get("/collections/all/public")
+      .send()
+      .then((res) => {
+        assertSucceeded(res, "Failed to list public collections.");
+        assert(res.body.list.length >= 1, "No collections returned.");
+        res.body.list.forEach((collection) =>
+          assert(collection.public, "Non-public collection returned.")
+        );
+      }));
+});
+
 describe("GET /collections/:id", () => {
   itShouldRequireAuthentication(
     "/collections/" + TestCollections.Breakfast.id,
@@ -198,6 +212,57 @@ describe("POST /collections/:id/remove", () => {
   );
 });
 
+describe("PATCH /collections/:id", () => {
+  const href = () => "/collections/" + TestCollections.Breakfast.id;
+
+  const patch = {
+    name: "Quick Sweets",
+    tags: ["quick", "easy"],
+  };
+
+  itShouldRequireAuthentication(href(), "patch");
+
+  whenLoggedInIt(
+    "Should fail for non-author user",
+    (token) =>
+      request(app)
+        .patch(href())
+        .set("Authorization", token)
+        .send(patch)
+        .then((res) => assertFailed(res, "Non-author allowed to update.")),
+    TestUsers.Beatrice
+  );
+
+  whenLoggedInIt("Should work for author user", (token) =>
+    request(app)
+      .patch(href())
+      .set("Authorization", token)
+      .send(patch)
+      .then(async (res) => {
+        assertSucceeded(res, "Author not able to update.");
+        await request(app)
+          .get(href())
+          .set("Authorization", token)
+          .send()
+          .then((res) => {
+            assertSucceeded(res, "Updated collection missing.");
+
+            let collection = res.body.collection;
+            assert(collection.name == patch.name, "Name not updated.");
+            assert(
+              !collection.tags.includes("breakfast"),
+              "Tags not updated correctly."
+            );
+            assert(
+              collection.public == TestCollections.Breakfast.public,
+              "Publicity updated erroneously."
+            );
+          });
+      })
+  );
+});
+
+// This test is last because it deletes the test record
 describe("DELETE /collections/:id", () => {
   const href = () => "/collections/" + TestCollections.Breakfast.id;
 
