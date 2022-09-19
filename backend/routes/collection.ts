@@ -5,50 +5,23 @@ import passport from "passport";
 import validateParams, { objectId } from "../helpers/params-validator.js";
 
 import Collection, {
-  ICollection,
   deleteById,
-  getById,
   getByUser,
+  ICollection,
 } from "../models/collection.js";
 import Tag from "../models/tag.js";
-import { AuthenticatedRequest } from "../helpers/authenticated-request.js";
-import { cmpObjectIds, includesObjectId } from "../helpers/utils.js";
+import {
+  AuthenticatedRequest,
+  cmpObjectIds,
+  includesObjectId,
+  RecordRequest,
+  withRecord,
+} from "../helpers/utils.js";
+
+type CollectionRequest = RecordRequest<ICollection>;
 
 const router = express.Router();
 export default router;
-
-interface RecordRequest extends AuthenticatedRequest {
-  record: ICollection;
-}
-
-/**
- * Adds a record field to the request, or returns an error if a record matching
- * the :id parameter is not found. Request is now a RecordRequest. If matchUser
- * is true, the collection will be required to match the authenticated user.
- *
- * @param matchUser Whether to require the user to match the authenticated one.
- * @returns Middleware function which generates a RecordRequest.
- */
-function withRecord(
-  matchUser: boolean = false
-): (req: AuthenticatedRequest, res: Response, next: NextFunction) => void {
-  return async (req: AuthenticatedRequest, res: Response, next: NextFunction) =>
-    getById(req.params.id, (err, collection) => {
-      if (err) {
-        res.status(422).json({ success: false, msg: "Something went wrong." });
-      } else if (!collection) {
-        res.status(404).json({ success: false, msg: "Collection not found." });
-      } else if (matchUser && !cmpObjectIds(req.user._id, collection.user)) {
-        res.status(403).json({
-          success: false,
-          msg: "Recipe belongs to another user.",
-        });
-      } else {
-        (req as RecordRequest).record = collection;
-        next();
-      }
-    });
-}
 
 router.post(
   "/new",
@@ -94,25 +67,37 @@ router.get(
   }
 );
 
+router.get("/all/public", (req, res) =>
+  Collection.find({ public: true }, (err, list) => {
+    if (err) {
+      res.status(500).json({ success: false, msg: "Something went wrong." });
+    } else {
+      res.status(200).json({ success: true, msg: "Collections found.", list });
+    }
+  })
+);
+
 router.get(
   "/:id",
   passport.authenticate("user", { session: false }),
-  withRecord(),
-  (req: RecordRequest, res) => {
+  withRecord(Collection),
+  (req: CollectionRequest, res) => {
     let collection = req.record;
     if (collection.public || cmpObjectIds(req.user._id, collection.user)) {
-      res.status(200).json({ success: true, msg: "Recipe found.", collection });
+      res
+        .status(200)
+        .json({ success: true, msg: "Collection found.", collection });
     } else {
       res.status(403).json({ success: false, msg: "Permission not granted." });
     }
   }
 );
 
-router.post(
-  "/:id/delete",
+router.delete(
+  "/:id",
   passport.authenticate("user", { session: false }),
-  withRecord(true),
-  (req: RecordRequest, res) => {
+  withRecord(Collection, true),
+  (req: CollectionRequest, res) => {
     deleteById(req.params.id, (err) => {
       if (err) {
         res.status(500).json({
@@ -129,14 +114,48 @@ router.post(
   }
 );
 
+router.patch(
+  "/:id",
+  passport.authenticate("user", { session: false }),
+  validateParams({
+    name: Joi.string().max(255),
+    tags: Joi.array().items(Tag.validator),
+    recipes: Joi.array().items(objectId()),
+    public: Joi.boolean(),
+  }),
+  withRecord(Collection, true),
+  (req: CollectionRequest, res) => {
+    const updateableKeys = ["name", "tags", "recipes", "public"];
+
+    let update = {};
+    updateableKeys.forEach((key) => {
+      if (key in req.body && req.body[key] != req.record[key]) {
+        update[key] = req.body[key];
+      }
+    });
+
+    if (Object.keys(update).length > 0) {
+      Collection.updateOne({ _id: req.params.id }, update, (err) => {
+        if (err) {
+          res.status(500).json({ success: false, msg: "An error occurred." });
+        } else {
+          res.status(200).json({ success: true, msg: "Collection updated." });
+        }
+      });
+    } else {
+      res.status(200).json({ success: true, msg: "No updates needed." });
+    }
+  }
+);
+
 router.post(
   "/:id/add",
   validateParams({
     recipes: Joi.array().items(objectId()),
   }),
   passport.authenticate("user", { session: false }),
-  withRecord(true),
-  (req: RecordRequest, res) => {
+  withRecord(Collection, true),
+  (req: CollectionRequest, res) => {
     let collection = req.record;
 
     let added = false;
@@ -179,8 +198,8 @@ router.post(
     recipes: Joi.array().items(objectId()),
   }),
   passport.authenticate("user", { session: false }),
-  withRecord(true),
-  (req: RecordRequest, res) => {
+  withRecord(Collection, true),
+  (req: CollectionRequest, res) => {
     let collection = req.record;
 
     let len = collection.recipes.length;
