@@ -26,6 +26,7 @@
     "js-to-ts-converter": "^0.18.2",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.21",
+    "mongodb-memory-server": "^8.9.0",
     "mongoose": "^6.5.2",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.0",
