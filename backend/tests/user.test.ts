@@ -3,7 +3,12 @@ import { assert } from "chai";
 
 import app from "../app.js";
 import User from "../models/user.js";
-import { assertFailed, assertSucceeded } from "./helpers.js";
+import {
+  assertFailed,
+  assertSucceeded,
+  itShouldRequireAuthentication,
+  whenLoggedInIt,
+} from "./helpers.js";
 
 // Note: the /user tests delete @test.domain users as part of the tests, so
 // best not to use these for other tests.
@@ -78,6 +83,53 @@ describe("POST /user/login", () => {
       .post("/user/login")
       .send(TestUsers.Dominguez)
       .then((res) => assertSucceeded(res, "Long email login rejected.")));
+});
+
+describe("POST /user/update-password", () => {
+  itShouldRequireAuthentication("/user/update-password");
+
+  const password = "highlysecure";
+
+  it("Should fail if password not confirmed", () =>
+    request(app)
+      .post("/user/update-password")
+      .send({ password })
+      .then((res) =>
+        assertFailed(res, "Password changed without confirmation.")
+      ));
+
+  it("Should fail if passwords don't match", () =>
+    request(app)
+      .post("/user/update-password")
+      .send({ password, confirmPassword: "wrong" })
+      .then((res) =>
+        assertFailed(res, "Password changed without confirmation.")
+      ));
+
+  whenLoggedInIt(
+    "Should be able to change password",
+    (token) =>
+      request(app)
+        .post("/user/update-password")
+        .set("Authorization", token)
+        .send({ password, confirmPassword: password })
+        .then(async (res) => {
+          assertSucceeded(res, "Failed to change password");
+          await request(app)
+            .post("/user/login")
+            .send({
+              email: TestUsers.Dominguez.email,
+              password: TestUsers.Dominguez.password,
+            })
+            .then((res) => assertFailed(res, "Password didn't change."));
+
+          await request(app)
+            .post("/user/login")
+            .send({ email: TestUsers.Dominguez.email, password })
+            .then((res) => assertSucceeded(res, "Password changed wrongly."));
+        }),
+    TestUsers.Dominguez
+  );
 });
 
 describe("GET /user/profile", () => {
