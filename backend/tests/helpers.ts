@@ -220,7 +220,12 @@ export function itShouldRequireAuthentication(
     request(app)
       [method](endpoint)
       .send(body)
-      .then((res) => assert(res.status == 401, "Didn't return 401.")));
+      .then((res) =>
+        assert(
+          res.status == 401 || res.status == 403,
+          `No authentication error. Status: ${res.status}.`
+        )
+      ));
 }
 
 /**

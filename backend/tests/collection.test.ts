@@ -198,16 +198,16 @@ describe("POST /collections/:id/remove", () => {
   );
 });
 
-describe("POST /collections/:id/delete", () => {
-  itShouldRequireAuthentication(
-    "/collections/" + TestCollections.Breakfast.id + "/delete"
-  );
+describe("DELETE /collections/:id", () => {
+  const href = () => "/collections/" + TestCollections.Breakfast.id;
+
+  itShouldRequireAuthentication(href(), "delete");
 
   whenLoggedInIt(
     "Shouldn't work for non-author user",
     (token) =>
       request(app)
-        .post("/collections/" + TestCollections.Breakfast.id + "/delete")
+        .delete(href())
         .set("Authorization", token)
         .send()
         .then((res) => assertFailed(res, "Non-author user allowed.")),
@@ -216,13 +216,13 @@ describe("POST /collections/:id/delete", () => {
 
   whenLoggedInIt("Should work for author user", (token) =>
     request(app)
-      .post("/collections/" + TestCollections.Breakfast.id + "/delete")
+      .delete(href())
       .set("Authorization", token)
       .send()
       .then(async (res) => {
         assertSucceeded(res, "Deleting collection not successful.");
         await request(app)
-          .get("/collections/" + TestCollections.Breakfast.id)
+          .get(href())
           .set("Authorization", token)
           .send()
           .then((res) => assertFailed(res, "Collection not deleted."));
