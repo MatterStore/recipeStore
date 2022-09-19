@@ -1,10 +1,10 @@
-import dotenv from "dotenv"
+import dotenv from "dotenv";
 const result = dotenv.config({
   path: `.env`,
 });
 
-import connect from "./config/db-connection.js";
-import path from 'path';
+import "./config/db-connection.js";
+import path from "path";
 import express from "express";
 import expressSession from "express-session";
 import cors from "cors";
@@ -13,8 +13,6 @@ import passport from "passport";
 import * as users_route from "./routes/user.js";
 import collectionsRoute from "./routes/collection.js";
 import recipesRoute from "./routes/recipe.js";
-
-connect(); // Connect to database
 
 const app = express();
 
@@ -30,22 +28,23 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 import execPassport from "./config/passport.js";
-execPassport(passport)
+execPassport(passport);
 
-if (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "staging") {
+if (
+  process.env.NODE_ENV === "production" ||
+  process.env.NODE_ENV === "staging"
+) {
   app.use(express.static("frontend/build"));
-  app.get('*', (req, res) => {
-    const buildPath = path.join(__dirname + '/../frontend/build/index.html')
+  app.get("*", (req, res) => {
+    const buildPath = path.join(__dirname + "/../frontend/build/index.html");
     res.sendFile(buildPath);
-    console.log(buildPath)
+    console.log(buildPath);
   });
 }
-
 
 app.use("/user", users_route.router);
 app.use("/collections", collectionsRoute);
 app.use("/recipes", recipesRoute);
-
 
 // default case for unmatched routes
 app.use(function (req, res) {
