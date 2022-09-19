@@ -3,28 +3,29 @@ const router = express.Router();
 import passport from "passport";
 import jwt from "jsonwebtoken";
 
-import * as params_validator from "../helpers/params-validator.js";
+import validateParams from "../helpers/params-validator.js";
 import * as jwt_validator from "../helpers/user-jwt-validate.js";
 import Joi from "joi";
 
-import User, { addUser, comparePassword, getUserByEmail, updatePassword } from "../models/user.js";
+import User, {
+  addUser,
+  comparePassword,
+  getUserByEmail,
+  updatePassword,
+} from "../models/user.js";
 
 const errorLogger = {
-  error: (err) => console.log(err)
-} 
+  error: (err) => console.log(err),
+};
+
+const emailRegex =
+  /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 router.post(
   "/signup",
-  params_validator.validateParams({
-    email: Joi.string()
-      .pattern(
-        /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-      )
-      .required(),
-    password: Joi.string()
-      .min(8)
-      .max(20)
-      .required(),
+  validateParams({
+    email: Joi.string().pattern(emailRegex).required(),
+    password: Joi.string().min(8).max(20).required(),
     name: Joi.string().min(2).max(40).required(),
   }),
   (req, res, next) => {
@@ -67,12 +68,9 @@ router.post(
 
 router.post(
   "/login",
-  params_validator.validateParams({
-    email: Joi.string().min(8).max(20).required(),
-    password: Joi.string()
-      .min(8)
-      .max(20)
-      .required(),
+  validateParams({
+    email: Joi.string().pattern(emailRegex).required(),
+    password: Joi.string().min(8).max(20).required(),
   }),
   (req, res, next) => {
     const email = req.body.email;
@@ -124,14 +122,14 @@ router.post(
 router.get(
   "/profile",
   passport.authenticate("user", { session: false }),
-  (req : any, res, next) => {
+  (req: any, res, next) => {
     res.status(200).json({ success: true, user: req.user });
   }
 );
 
 router.post(
   "/update-password",
-  params_validator.validateParams({
+  validateParams({
     email: Joi.string().max(20).required(),
     currentPassword: Joi.string().max(20).required(),
     newPassword: Joi.string()
@@ -210,4 +208,4 @@ router.post(
   }
 );
 
-export {router}
+export { router };

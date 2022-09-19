@@ -1,7 +1,8 @@
 import Joi from "joi";
 import lodash from "lodash";
+import mongoose from "mongoose";
 
-const validateParams = function (paramSchema) {
+export default function validateParams(paramSchema) {
   return async (req, res, next) => {
     const schema = Joi.object().keys(paramSchema);
     const paramSchemaKeys = Object.keys(paramSchema);
@@ -19,8 +20,16 @@ const validateParams = function (paramSchema) {
     }
     next();
   };
-};
+}
 
-export {
-  validateParams,
-};
+export function objectId() {
+  return Joi.string().custom((value, helper) => {
+    if (!mongoose.isValidObjectId(value)) {
+      return helper.message({
+        custom: `${value} is not a valid MongoDB ObjectID.`,
+      });
+    } else {
+      return true;
+    }
+  });
+}
