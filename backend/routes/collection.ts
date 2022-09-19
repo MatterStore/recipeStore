@@ -12,7 +12,7 @@ import Collection, {
 } from "../models/collection.js";
 import Tag from "../models/tag.js";
 import { AuthenticatedRequest } from "../helpers/authenticated-request.js";
-import { cmpObjectIds } from "../helpers/utils.js";
+import { cmpObjectIds, includesObjectId } from "../helpers/utils.js";
 
 const router = express.Router();
 export default router;
@@ -184,7 +184,9 @@ router.post(
     let collection = req.record;
 
     let len = collection.recipes.length;
-    collection.recipes.filter((r) => !req.body.recipes.includes(r));
+    collection.recipes = collection.recipes.filter(
+      (r) => !includesObjectId(req.body.recipes, r)
+    );
 
     if (collection.recipes.length == len) {
       res.status(200).json({
