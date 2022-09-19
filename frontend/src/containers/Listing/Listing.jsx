@@ -61,11 +61,11 @@ export default function Listing() {
 
   return (
     <div>
-      <main className="p-16 mx-auto max-w-screen-sm lg:max-w-screen-2xl flex flex-col">
+      <main className="p-16 mx-auto container flex flex-col">
         <Header>
           Recipes
           <span className="block mt-8 lg:mt-0 lg:inline-block lg:float-right">
-            <Button to="/recipe/new" primary={true}>
+            <Button to="/recipe/new" primary={true} className="mr-0">
               New Recipe
             </Button>
           </span>
