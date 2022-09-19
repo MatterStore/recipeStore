@@ -139,12 +139,12 @@ describe("POST /collections/:id/add", () => {
           .get("/collections/" + TestCollections.Breakfast.id)
           .set("Authorization", token)
           .send()
-          .then((res) =>
+          .then((res) => {
             assert(
-              res.body.collection.recipes.contains(TestRecipes.Rice.id),
+              res.body.collection.recipes.includes(TestRecipes.Rice.id),
               "Recipe isn't in collection."
-            )
-          );
+            );
+          });
       })
   );
 });
@@ -182,15 +182,15 @@ describe("POST /collections/:id/remove", () => {
       .post(href())
       .set("Authorization", token)
       .send(body())
-      .then((res) => {
+      .then(async (res) => {
         assertSucceeded(res, "Removing recipe not successful.");
-        request(app)
+        await request(app)
           .get("/collections/" + TestCollections.Breakfast.id)
           .set("Authorization", token)
           .send()
           .then((res) => {
             assert(
-              !res.body.collection.recipes.contains(TestRecipes.Rice.id),
+              !res.body.collection.recipes.includes(TestRecipes.Rice.id),
               "Recipe still in collection after removal."
             );
           });
