@@ -4,7 +4,7 @@ import Header from "../../components/Header";
 export default function Home() {
   return (
     <div className="flex row min-w-screen justify-center">
-      <main className="min-h-screen w-screen flex flex-column items-center max-w-screen-2xl">
+      <main className="min-h-screen w-screen flex flex-column items-center container">
         <div className="flex flex-col md:flex-row justify-around flex-grow">
           <div className="p-8 self-center md:mb-32">
             <Header>Recipe Store App</Header>

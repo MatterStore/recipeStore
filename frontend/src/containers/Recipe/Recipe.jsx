@@ -39,7 +39,7 @@ export default function Recipe(props) {
   const recipe = getRecipe(params.recipeId);
 
   return (
-    <div className="px-16 lg:px-32 py-16 mx-auto max-w-screen-sm lg:max-w-screen-2xl">
+    <div className="px-16 lg:px-32 py-16 mx-auto container">
       <Header inline>{recipe.name}</Header>
       <span>
         {recipe.time} — Serves {recipe.servings}
