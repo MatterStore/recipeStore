@@ -6,20 +6,22 @@
 
 ## Local Development
 
-0. Specify environment variables in a `.env` file: 
+0. Specify environment variables in a `.env` file:
 
 ```bash
 cp .env.template .env
 ```
 
-to connect to the database you will have to set the correct atlas username and password in the `.env` file. 
+to connect to the database you will have to set the correct atlas username and password in the `.env` file.
 
 1. Install npm packages:
 
 ```bash
 npm install
 ```
-2. Run the app with `npm run dev`, this will open the application on 
+
+2. Run the app with `npm run dev`, this will open the application on
+
 ```
 http://localhost:3000
 ```

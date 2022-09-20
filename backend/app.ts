@@ -3,7 +3,7 @@ const result = dotenv.config({
   path: `.env`,
 });
 
-import connect from "./config/db-connection.js";
+import "./config/db-connection.js";
 import path from "path";
 import express from "express";
 import expressSession from "express-session";
@@ -13,8 +13,6 @@ import { fileURLToPath } from "url";
 import * as users_route from "./routes/user.js";
 import collectionsRoute from "./routes/collection.js";
 import recipesRoute from "./routes/recipe.js";
-
-connect(); // Connect to database
 
 const app = express();
 

@@ -7,13 +7,20 @@ import validateParams from "../helpers/params-validator.js";
 import * as jwt_validator from "../helpers/user-jwt-validate.js";
 import Joi from "joi";
 
-import User, { addUser, comparePassword, getUserByEmail, updatePassword } from "../models/user.js";
+import User, {
+  addUser,
+  comparePassword,
+  getUserByEmail,
+  updatePassword,
+} from "../models/user.js";
+import { AuthenticatedRequest } from "../helpers/utils.js";
 
 const errorLogger = {
-  error: (err) => console.log(err)
+  error: (err) => console.log(err),
 };
 
-const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+const emailRegex =
+  /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 router.post(
   "/signup",
@@ -116,7 +123,7 @@ router.post(
 router.get(
   "/profile",
   passport.authenticate("user", { session: false }),
-  (req : any, res, next) => {
+  (req: AuthenticatedRequest, res) => {
     res.status(200).json({ success: true, user: req.user });
   }
 );
@@ -202,4 +209,4 @@ router.post(
   }
 );
 
-export {router}
+export { router };
