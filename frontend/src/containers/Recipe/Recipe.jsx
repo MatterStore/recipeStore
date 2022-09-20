@@ -81,6 +81,11 @@ export default function Recipe(props) {
     clone.time.minutes = parseInt(minutes);
     setRecipe(clone);
   }
+  const setServes = (serves) => {
+    let clone = cloneRecipe();
+    clone.servings = parseInt(serves);
+    setRecipe(clone);
+  }
 
   const getRecipe = (recipeId) => {
     return recipeDummyData[recipeId - 1];
@@ -115,7 +120,7 @@ export default function Recipe(props) {
             <label className="ml-4">
               <PersonIcon size={16} />
 
-              <input type="number" className="bg-slate-100 appearance-none inline-block w-40 px-3 py-1.5 border border-solid rounded ml-2" />
+              <input type="number" value={recipe.servings} onChange={(e)=>{setServes(e.target.value)}} className="bg-slate-100 appearance-none inline-block w-40 px-3 py-1.5 border border-solid rounded ml-2" />
 
             </label>
             <label className="ml-4">
