@@ -32,7 +32,6 @@ execPassport(passport);
 
 const __filename = fileURLToPath(import.meta.url + "/../../");
 const __dirname = path.dirname(__filename);
-console.log(__dirname);
 if (
   process.env.NODE_ENV === "production" ||
   process.env.NODE_ENV === "staging"
