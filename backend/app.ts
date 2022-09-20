@@ -35,11 +35,14 @@ const __dirname = path.dirname(__filename);
 console.log(__dirname);
 if (
   process.env.NODE_ENV === "production" ||
-  process.env.NODE_ENV === "staging"
+  process.env.NODE_ENV === "staging" ||
+  true
 ) {
   app.use(express.static(path.resolve(__dirname, "frontend/build")));
   app.get("*", (req, res) => {
-    const buildPath = path.join(path.resolve(__dirname, "frontend/build"));
+    const buildPath = path.join(
+      path.resolve(__dirname, "frontend/build/index.html")
+    );
     res.sendFile(buildPath);
     console.log(buildPath);
   });
