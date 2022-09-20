@@ -5,14 +5,16 @@ import Listing from "./containers/Listing/Listing";
 import Login from "./containers/Login/Login";
 import Signup from "./containers/Signup/Signup";
 import { useEffect } from "react";
+import Nav from "./components/Nav";
 
 function App() {
   useEffect(() => {
-    document.title = "Recipe Store"
+    document.title = "Recipe Store";
   });
 
   return (
     <div>
+      <Nav></Nav>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />

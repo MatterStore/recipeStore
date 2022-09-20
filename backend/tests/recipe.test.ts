@@ -64,6 +64,28 @@ describe("GET /recipes/all", () => {
   );
 });
 
+describe("GET /recipes/all/public", () => {
+  itShouldRequireAuthentication("/recipes/all/public", "get");
+
+  whenLoggedInIt("Should be able to list user recipes", (token) =>
+    request(app)
+      .get("/recipes/all/public")
+      .set("Authorization", token)
+      .send()
+      .then((res) => {
+        assertSucceeded(res, "Recipe list not retrieved.");
+        assert(res.body.list?.length >= 1, "Recipe not in list.");
+
+        res.body.list.forEach((element) => {
+          assert(
+            element.public == true,
+            "Recipe list has a non-public recipe "
+          );
+        });
+      })
+  );
+});
+
 describe("GET /recipes/:id", async () => {
   itShouldRequireAuthentication("/recipes/" + TestRecipes.Pancakes.id, "get");
 
@@ -89,6 +111,99 @@ describe("GET /recipes/:id", async () => {
         .set("Authorization", token)
         .send()
         .then((res) => assertFailed(res, "Able to access private recipe.")),
+    TestUsers.Beatrice
+  );
+});
+
+describe("PATCH /recipes/:id", () => {
+  const href = () => "/recipes/" + TestRecipes.Pancakes.id;
+
+  const patch = {
+    user: "immutable field", // Should be ignored
+    title: "Blueberry Pancakes",
+    steps: TestRecipes.Pancakes.steps
+      .slice(0, -1)
+      .concat("Sprinkle with blueberries and serve."),
+  };
+
+  itShouldRequireAuthentication(href(), "patch");
+
+  whenLoggedInIt(
+    "Shouldn't work for non-author user",
+    (token) =>
+      request(app)
+        .patch(href())
+        .set("Authorization", token)
+        .send(patch)
+        .then((res) => assertFailed(res, "Non-author user allowed to update.")),
+    TestUsers.Beatrice
+  );
+
+  whenLoggedInIt("Should work for the author user", (token) =>
+    request(app)
+      .patch(href())
+      .set("Authorization", token)
+      .send(patch)
+      .then(async (res) => {
+        assertSucceeded(res, "Author failed to update recipe.");
+        await request(app)
+          .get(href())
+          .set("Authorization", token)
+          .send()
+          .then((res) => {
+            assertSucceeded(res, "Failed to retrieve updated recipe.");
+
+            let recipe = res.body.recipe;
+            assert(recipe.title == patch.title, "Recipe title not updated.");
+            assert(
+              recipe.steps[2] == patch.steps[2],
+              "Recipe steps not updated."
+            );
+            assert(
+              recipe.user == TestRecipes.Pancakes.user,
+              "Recipe user updated."
+            );
+            assert(
+              recipe.servings == TestRecipes.Pancakes.servings,
+              "Recipe servings updated when they shouldn't be."
+            );
+          });
+      })
+  );
+});
+
+describe("DELETE /recipes/:id", () => {
+  itShouldRequireAuthentication(
+    "/recipes/" + TestRecipes.Pancakes.id,
+    "delete"
+  );
+
+  whenLoggedInIt("Should work author user", (token) =>
+    request(app)
+      .delete("/recipes/" + TestRecipes.Pancakes.id)
+      .set("Authorization", token)
+      .send()
+      .then(async (res) => {
+        assertSucceeded(res, "Failed to get recipe.");
+        //shouldn't be able to get recipe after its been deleted
+        await request(app)
+          .get("/recipes/" + TestRecipes.Pancakes.id)
+          .set("Authorization", token)
+          .send()
+          .then((res) => {
+            assertFailed(res, "Could still access recipe.");
+          });
+      })
+  );
+
+  whenLoggedInIt(
+    "Shouldn't work for other user",
+    (token) =>
+      request(app)
+        .get("/recipes/" + TestRecipes.Pancakes.id)
+        .set("Authorization", token)
+        .send()
+        .then((res) => assertFailed(res, "Able to delete private recipe.")),
     TestUsers.Beatrice
   );
 });
