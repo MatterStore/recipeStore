@@ -35,8 +35,7 @@ const __dirname = path.dirname(__filename);
 console.log(__dirname);
 if (
   process.env.NODE_ENV === "production" ||
-  process.env.NODE_ENV === "staging" ||
-  true
+  process.env.NODE_ENV === "staging"
 ) {
   app.use(express.static(path.resolve(__dirname, "frontend/build")));
   app.get("*", (req, res) => {
