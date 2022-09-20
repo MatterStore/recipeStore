@@ -1,13 +1,12 @@
 {
-    "compilerOptions": {
-        "outDir": "./backend/dist",
-        "allowJs": true,
-        "target": "ES6",
-        "moduleResolution":"node",
-        "lib": ["es6"],
-        "allowSyntheticDefaultImports" : true
-    },
-        "include": [
-        "./backend/**/*"
-    ],
+  "compilerOptions": {
+    "outDir": "./backend/dist",
+    "allowJs": true,
+    "target": "ES6",
+    "module": "es2022",
+    "moduleResolution": "Node",
+    "lib": ["es6"],
+    "allowSyntheticDefaultImports": true
+  },
+  "include": ["./backend/**/*"]
 }
