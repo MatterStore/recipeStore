@@ -45,6 +45,7 @@ export default function Recipe(props) {
     },
   ];
 
+  // Inefficient but good enough.
   const cloneRecipe = () => {
     return JSON.parse(JSON.stringify(recipe));
   }
@@ -57,6 +58,11 @@ export default function Recipe(props) {
   const setSteps = (steps) => {
     let clone = cloneRecipe();
     clone.steps = steps;
+    setRecipe(clone);
+  }
+  const setRecipeName = (name) => {
+    let clone = cloneRecipe();
+    clone.name = name;
     setRecipe(clone);
   }
 
@@ -76,7 +82,7 @@ export default function Recipe(props) {
       {
         editing ? (
           <div className="max-w-xl mt-4">
-            <Textfield params={{value: recipe.name, onChange: ()=>{}}} className="text-3xl"></Textfield>
+            <Textfield params={{value: recipe.name, onChange: (e) => {setRecipeName(e.target.value)}}} className="text-3xl"></Textfield>
           </div>
         ) : (
           <Header inline>{recipe.name}</Header>
