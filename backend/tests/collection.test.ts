@@ -29,13 +29,13 @@ describe("POST /collections/new", () => {
 
   itShouldRequireAuthentication("/collections/new", "post", collection);
 
-  whenLoggedInIt("Should reject invalid object IDs", (token) => {
+  whenLoggedInIt("Should reject invalid object IDs", async (token) => {
     let badCollection = Object.assign({}, collection);
     badCollection.recipes = badCollection.recipes.concat([
       "An Invalid ObjectID",
     ]);
 
-    request(app)
+    await request(app)
       .post("/collections/new")
       .set("Authorization", token)
       .send(badCollection)
@@ -64,6 +64,20 @@ describe("GET /collections/all", () => {
         assert(res.body.list.length >= 1, "No collections in list.");
       })
   );
+});
+
+describe("GET /collections/all/public", () => {
+  it("Should return a list with all public collections", () =>
+    request(app)
+      .get("/collections/all/public")
+      .send()
+      .then((res) => {
+        assertSucceeded(res, "Failed to list public collections.");
+        assert(res.body.list.length >= 1, "No collections returned.");
+        res.body.list.forEach((collection) =>
+          assert(collection.public, "Non-public collection returned.")
+        );
+      }));
 });
 
 describe("GET /collections/:id", () => {
@@ -133,15 +147,15 @@ describe("POST /collections/:id/add", () => {
       .post(href())
       .set("Authorization", token)
       .send(body())
-      .then((res) => {
+      .then(async (res) => {
         assertSucceeded(res, "Adding recipe not successful.");
-        request(app)
+        await request(app)
           .get("/collections/" + TestCollections.Breakfast.id)
           .set("Authorization", token)
           .send()
           .then((res) => {
             assert(
-              res.body.collection.recipes.contains(TestRecipes.Rice.id),
+              res.body.collection.recipes.includes(TestRecipes.Rice.id),
               "Recipe isn't in collection."
             );
           });
@@ -182,15 +196,15 @@ describe("POST /collections/:id/remove", () => {
       .post(href())
       .set("Authorization", token)
       .send(body())
-      .then((res) => {
+      .then(async (res) => {
         assertSucceeded(res, "Removing recipe not successful.");
-        request(app)
+        await request(app)
           .get("/collections/" + TestCollections.Breakfast.id)
           .set("Authorization", token)
           .send()
           .then((res) => {
             assert(
-              !res.body.collection.recipes.contains(TestRecipes.Rice.id),
+              !res.body.collection.recipes.includes(TestRecipes.Rice.id),
               "Recipe still in collection after removal."
             );
           });
@@ -198,16 +212,67 @@ describe("POST /collections/:id/remove", () => {
   );
 });
 
-describe("POST /collections/:id/delete", () => {
-  itShouldRequireAuthentication(
-    "/collections/" + TestCollections.Breakfast.id + "/delete"
+describe("PATCH /collections/:id", () => {
+  const href = () => "/collections/" + TestCollections.Breakfast.id;
+
+  const patch = {
+    name: "Quick Sweets",
+    tags: ["quick", "easy"],
+  };
+
+  itShouldRequireAuthentication(href(), "patch");
+
+  whenLoggedInIt(
+    "Should fail for non-author user",
+    (token) =>
+      request(app)
+        .patch(href())
+        .set("Authorization", token)
+        .send(patch)
+        .then((res) => assertFailed(res, "Non-author allowed to update.")),
+    TestUsers.Beatrice
   );
+
+  whenLoggedInIt("Should work for author user", (token) =>
+    request(app)
+      .patch(href())
+      .set("Authorization", token)
+      .send(patch)
+      .then(async (res) => {
+        assertSucceeded(res, "Author not able to update.");
+        await request(app)
+          .get(href())
+          .set("Authorization", token)
+          .send()
+          .then((res) => {
+            assertSucceeded(res, "Updated collection missing.");
+
+            let collection = res.body.collection;
+            assert(collection.name == patch.name, "Name not updated.");
+            assert(
+              !collection.tags.includes("breakfast"),
+              "Tags not updated correctly."
+            );
+            assert(
+              collection.public == TestCollections.Breakfast.public,
+              "Publicity updated erroneously."
+            );
+          });
+      })
+  );
+});
+
+// This test is last because it deletes the test record
+describe("DELETE /collections/:id", () => {
+  const href = () => "/collections/" + TestCollections.Breakfast.id;
+
+  itShouldRequireAuthentication(href(), "delete");
 
   whenLoggedInIt(
     "Shouldn't work for non-author user",
     (token) =>
       request(app)
-        .post("/collections/" + TestCollections.Breakfast.id + "/delete")
+        .delete(href())
         .set("Authorization", token)
         .send()
         .then((res) => assertFailed(res, "Non-author user allowed.")),
@@ -216,13 +281,13 @@ describe("POST /collections/:id/delete", () => {
 
   whenLoggedInIt("Should work for author user", (token) =>
     request(app)
-      .post("/collections/" + TestCollections.Breakfast.id + "/delete")
+      .delete(href())
       .set("Authorization", token)
       .send()
-      .then((res) => {
+      .then(async (res) => {
         assertSucceeded(res, "Deleting collection not successful.");
-        request(app)
-          .get("/collections/" + TestCollections.Breakfast.id)
+        await request(app)
+          .get(href())
           .set("Authorization", token)
           .send()
           .then((res) => assertFailed(res, "Collection not deleted."));

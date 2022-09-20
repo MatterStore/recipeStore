@@ -97,7 +97,7 @@ export default function Recipe(props) {
   const [recipe, setRecipe] = useState(getRecipe(params.recipeId));
 
   return (
-    <div className="px-16 lg:px-32 py-16 mx-auto max-w-screen-sm lg:max-w-screen-2xl">
+    <div className="px-16 py-16 mx-auto container">
       {
         editing ? (
           <div className="max-w-xl mt-4">
