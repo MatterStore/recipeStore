@@ -29,7 +29,10 @@ export default function Recipe(props) {
       ingredients: ["100g Flour", "1tspn Sugar"],
       steps: ["Mix the flour with the sugar", "Serve and enjoy!"],
       tags: ["Vegetarian"],
-      time: "3 hours",
+      time: {
+        hours: 3,
+        minutes: 0
+      },
       servings: 4,
     },
     {
@@ -40,7 +43,10 @@ export default function Recipe(props) {
       ingredients: ["250g Pumpkin", "500mL Water"],
       steps: ["Pour the water onto the pumpkin", "Serve and enjoy!"],
       tags: ["Anton Ego Approved", "Gluten Free"],
-      time: "15 minutes",
+      time: {
+        hours: 0,
+        minutes: 15
+      },
       servings: 8,
     },
   ];
@@ -65,6 +71,16 @@ export default function Recipe(props) {
     clone.name = name;
     setRecipe(clone);
   }
+  const setTimeHours = (hours) => {
+    let clone = cloneRecipe();
+    clone.time.hours = parseInt(hours);
+    setRecipe(clone);
+  }
+  const setTimeMinutes = (minutes) => {
+    let clone = cloneRecipe();
+    clone.time.minutes = parseInt(minutes);
+    setRecipe(clone);
+  }
 
   const getRecipe = (recipeId) => {
     return recipeDummyData[recipeId - 1];
@@ -72,8 +88,6 @@ export default function Recipe(props) {
 
   let [stepMode, setStepMode] = useState(true);
   let [ingredientMode, setIngredientMode] = useState(true);
-
-  const [ingredientText, setIngredientText] = useState("");
 
   const [recipe, setRecipe] = useState(getRecipe(params.recipeId));
 
@@ -93,32 +107,16 @@ export default function Recipe(props) {
           <span>
             <label className="">
               <ClockIcon size={16} />
-              <select name="time" id="time" className="bg-slate-100 appearance-none inline-block w-40 px-3 py-1.5 border border-solid rounded ml-2">
-                <option value="Under 10 Minutes">Under 10 Minutes</option>
-                <option value="10 Minutes">10 Minutes</option>
-                <option value="15 Minutes">15 Minutes</option>
-                <option value="20 Minutes">20 Minutes</option>
-                <option value="30 Minutes">30 Minutes</option>
-                <option value="45 Minutes">45 Minutes</option>
-                <option value="1 hour">1 hour</option>
-                <option value="1 hour 15 minutes">1 hour 15 minutes</option>
-                <option value="1 hour 30 minutes">1 hour 30 minutes</option>
-                <option value="1 hour 45 minutes">1 hour 45 minutes</option>
-                <option value="2 hours">2 hours</option>
-                <option value="Over 2 hours">Over 2 hours</option>
-              </select>
+              <input type="number" value={recipe.time.hours} onChange={(e)=>{setTimeHours(e.target.value)}} className="bg-slate-100 appearance-none inline-block w-16 px-3 py-1.5 border border-solid rounded mx-2" />
+              hours
+              <input type="number" value={recipe.time.minutes} onChange={(e)=>{setTimeMinutes(e.target.value)}} className="bg-slate-100 appearance-none inline-block w-16 px-3 py-1.5 border border-solid rounded mx-2" />
+              minutes
             </label>
             <label className="ml-4">
               <PersonIcon size={16} />
 
-              <select name="serves" id="serves" className="bg-slate-100 appearance-none inline-block w-40 px-3 py-1.5 border border-solid rounded ml-2">
-                <option value="1">Serves 1</option>
-                <option value="2">Serves 2</option>
-                <option value="3">Serves 3</option>
-                <option value="4">Serves 4</option>
-                <option value="5">Serves 5</option>
-                <option value="6">Serves 6</option>
-              </select>
+              <input type="number" className="bg-slate-100 appearance-none inline-block w-40 px-3 py-1.5 border border-solid rounded ml-2" />
+
             </label>
             <label className="ml-4">
               { props.public ? (<GlobeIcon size={16} />) : (<LockIcon size={16} />)}
@@ -131,7 +129,14 @@ export default function Recipe(props) {
             
           </span>
         ) : (
-          <span className="appearance-none inline-block w-96 py-1.5"> {recipe.time} — Serves {recipe.servings}</span>
+          <span className="appearance-none inline-block w-96 py-1.5">
+            {recipe.time.hours > 0 ? 
+              recipe.time.hours + ` hour${recipe.time.hours > 1 ? 's' : ''} `
+            : null}{
+            (recipe.time.minutes ?
+              recipe.time.minutes + ` minute${recipe.time.minutes > 1 ? 's' : ''}` : null)}
+             — Serves {recipe.servings}
+          </span>
         )}
       </span>
       <span className="float-right">
