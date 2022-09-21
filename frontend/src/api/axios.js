@@ -3,7 +3,7 @@ import axiosDefault from "axios";
 const isProduction = process.env.NODE_ENV === "production";
 
 const baseURL = isProduction
-  ? "https://<your-production-domain>/api"
+  ? window.location.href
   : "http://localhost:5000";
 
 const defaultOptions = {
