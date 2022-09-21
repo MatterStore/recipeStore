@@ -9,7 +9,7 @@ import express from "express";
 import expressSession from "express-session";
 import cors from "cors";
 import passport from "passport";
-
+import { fileURLToPath } from "url";
 import * as users_route from "./routes/user.js";
 import collectionsRoute from "./routes/collection.js";
 import recipesRoute from "./routes/recipe.js";
@@ -30,13 +30,17 @@ app.use(passport.session());
 import execPassport from "./config/passport.js";
 execPassport(passport);
 
+const __filename = fileURLToPath(import.meta.url + "/../../");
+const __dirname = path.dirname(__filename);
 if (
   process.env.NODE_ENV === "production" ||
   process.env.NODE_ENV === "staging"
 ) {
-  app.use(express.static("frontend/build"));
+  app.use(express.static(path.resolve(__dirname, "frontend/build")));
   app.get("*", (req, res) => {
-    const buildPath = path.join(__dirname + "/../frontend/build/index.html");
+    const buildPath = path.join(
+      path.resolve(__dirname, "frontend/build/index.html")
+    );
     res.sendFile(buildPath);
     console.log(buildPath);
   });

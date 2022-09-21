@@ -1,4 +1,4 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 
 export default function Nav(props) {
   const location = useLocation();
@@ -17,8 +17,8 @@ export default function Nav(props) {
           <ul className="flex flex-row space-x-8 text-sm">
             {navigationRoutes.map(([title, path]) => (
               <li key={path}>
-                <a
-                  href={`${path}`}
+                <Link
+                  to={`${path}`}
                   className={`block py-2 px-2.5 rounded select-none transition-colors ${
                     location.pathname === path
                       ? `bg-blue-200 text-blue-600 p-0 `
@@ -26,7 +26,7 @@ export default function Nav(props) {
                   }`}
                 >
                   {title}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
