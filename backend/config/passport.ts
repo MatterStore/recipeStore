@@ -1,14 +1,20 @@
-import { Strategy as JwtStrategy } from "passport-jwt";
-import { ExtractJwt as ExtractJwt } from "passport-jwt";
-import * as User from "../models/user.js";
+import { Strategy as JwtStrategy } from 'passport-jwt';
+import { ExtractJwt as ExtractJwt } from 'passport-jwt';
+import * as User from '../models/user.js';
 
-export default function execPassport (passport) {
-  let opts : any = {};
-  opts.jwtFromRequest = ExtractJwt.fromAuthHeaderWithScheme("jwt");
-  opts.secretOrKey = process.env.JWT_SECRET;
+interface optsInterface {
+  jwtFromRequest: unknown;
+  secretOrKey: string;
+}
+
+export default function execPassport(passport) {
+  const opts: optsInterface = {
+    jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme('jwt'),
+    secretOrKey: process.env.JWT_SECRET
+  };
 
   passport.use(
-    "user",
+    'user',
     new JwtStrategy(opts, (jwt_payload, done) => {
       User.getUserById(jwt_payload.data._id, (err, user) => {
         if (err) {
@@ -22,4 +28,4 @@ export default function execPassport (passport) {
       });
     })
   );
-};
+}
