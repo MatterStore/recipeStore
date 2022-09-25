@@ -1,7 +1,9 @@
-// import dotenv from 'dotenv';
-// const result = dotenv.config({
-//   path: `.env`,
-// });
+import dotenv from 'dotenv';
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const result = dotenv.config({
+  path: `.env`,
+});
 
 import './config/db-connection.js';
 import path from 'path';
