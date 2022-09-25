@@ -5,7 +5,7 @@ export default function Nav(props) {
   const navigationRoutes = [
     ['Home', '/listing'],
     ['My Recipes', '/collection/Your%20Recipe%20Collection'],
-    ['Sign Out', '/']
+    ['Sign Out', '/'],
   ];
   const doNotDisplayNavOn = ['/', '/login', '/signup'];
 
@@ -23,8 +23,7 @@ export default function Nav(props) {
                     location.pathname === path
                       ? `bg-blue-200 text-blue-600 p-0 `
                       : `hover:text-blue-700 p-0 text-neutral-600 `
-                  }`}
-                >
+                  }`}>
                   {title}
                 </Link>
               </li>

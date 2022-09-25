@@ -11,7 +11,7 @@ import {
   prepareTestData,
   itShouldRequireAuthentication,
   assertFailed,
-  assertSucceeded
+  assertSucceeded,
 } from './helpers.js';
 
 const FLAG_TAG = 'TESTRECIPE';
@@ -33,7 +33,7 @@ describe('POST /recipes/new', () => {
       .send({
         title: 'Pancakes',
         cooking_time: '15 minutes',
-        servings: 4
+        servings: 4,
       })
       .then((res) => assertFailed(res, 'Bad recipe succeeded.'))
   );
@@ -77,7 +77,10 @@ describe('GET /recipes/all/public', () => {
         assert(res.body.list?.length >= 1, 'Recipe not in list.');
 
         res.body.list.forEach((element) => {
-          assert(element.public == true, 'Recipe list has a non-public recipe ');
+          assert(
+            element.public == true,
+            'Recipe list has a non-public recipe '
+          );
         });
       })
   );
@@ -93,7 +96,10 @@ describe('GET /recipes/:id', async () => {
       .send()
       .then((res) => {
         assertSucceeded(res, 'Failed to get recipe.');
-        assert(res.body.recipe?._id == TestRecipes.Pancakes.id, "Response didn't have recipe.");
+        assert(
+          res.body.recipe?._id == TestRecipes.Pancakes.id,
+          "Response didn't have recipe."
+        );
       })
   );
 
@@ -115,7 +121,9 @@ describe('PATCH /recipes/:id', () => {
   const patch = {
     user: 'immutable field', // Should be ignored
     title: 'Blueberry Pancakes',
-    steps: TestRecipes.Pancakes.steps.slice(0, -1).concat('Sprinkle with blueberries and serve.')
+    steps: TestRecipes.Pancakes.steps
+      .slice(0, -1)
+      .concat('Sprinkle with blueberries and serve.'),
   };
 
   itShouldRequireAuthentication(href(), 'patch');
@@ -147,8 +155,14 @@ describe('PATCH /recipes/:id', () => {
 
             const recipe = res.body.recipe;
             assert(recipe.title == patch.title, 'Recipe title not updated.');
-            assert(recipe.steps[2] == patch.steps[2], 'Recipe steps not updated.');
-            assert(recipe.user == TestRecipes.Pancakes.user, 'Recipe user updated.');
+            assert(
+              recipe.steps[2] == patch.steps[2],
+              'Recipe steps not updated.'
+            );
+            assert(
+              recipe.user == TestRecipes.Pancakes.user,
+              'Recipe user updated.'
+            );
             assert(
               recipe.servings == TestRecipes.Pancakes.servings,
               "Recipe servings updated when they shouldn't be."
@@ -159,7 +173,10 @@ describe('PATCH /recipes/:id', () => {
 });
 
 describe('DELETE /recipes/:id', () => {
-  itShouldRequireAuthentication('/recipes/' + TestRecipes.Pancakes.id, 'delete');
+  itShouldRequireAuthentication(
+    '/recipes/' + TestRecipes.Pancakes.id,
+    'delete'
+  );
 
   whenLoggedInIt('Should work author user', (token) =>
     request(app)

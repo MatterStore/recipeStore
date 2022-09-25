@@ -34,7 +34,7 @@ export function withRecord<T>(
       } else if (matchUser && !cmpObjectIds(req.user._id, record.user)) {
         res.status(403).json({
           success: false,
-          msg: 'Recipe belongs to another user.'
+          msg: 'Recipe belongs to another user.',
         });
       } else {
         (req as RecordRequest<T>).record = record;
@@ -51,7 +51,10 @@ export function withRecord<T>(
  * @param b Second object ID.
  * @returns Whether IDs are equal
  */
-export function cmpObjectIds(a: ObjectId | string, b: ObjectId | string): boolean {
+export function cmpObjectIds(
+  a: ObjectId | string,
+  b: ObjectId | string
+): boolean {
   return String(a) == String(b);
 }
 
@@ -63,6 +66,9 @@ export function cmpObjectIds(a: ObjectId | string, b: ObjectId | string): boolea
  * @param id Member to look for.
  * @returns Whether `ary` contains `id`.
  */
-export function includesObjectId(ary: (ObjectId | string)[], id: ObjectId | string): boolean {
+export function includesObjectId(
+  ary: (ObjectId | string)[],
+  id: ObjectId | string
+): boolean {
   return ary.map(String).includes(String(id));
 }

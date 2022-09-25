@@ -11,7 +11,7 @@ import {
   TestCollections,
   TestRecipes,
   TestUsers,
-  whenLoggedInIt
+  whenLoggedInIt,
 } from './helpers.js';
 
 const FLAG_TAG = 'TESTCOLLECTION';
@@ -31,7 +31,9 @@ describe('POST /collections/new', () => {
 
   whenLoggedInIt('Should reject invalid object IDs', async (token) => {
     const badCollection = Object.assign({}, collection);
-    badCollection.recipes = badCollection.recipes.concat(['An Invalid ObjectID']);
+    badCollection.recipes = badCollection.recipes.concat([
+      'An Invalid ObjectID',
+    ]);
 
     await request(app)
       .post('/collections/new')
@@ -79,7 +81,10 @@ describe('GET /collections/all/public', () => {
 });
 
 describe('GET /collections/:id', () => {
-  itShouldRequireAuthentication('/collections/' + TestCollections.Breakfast.id, 'get');
+  itShouldRequireAuthentication(
+    '/collections/' + TestCollections.Breakfast.id,
+    'get'
+  );
 
   whenLoggedInIt('Should work author user', (token) =>
     request(app)
@@ -102,7 +107,9 @@ describe('GET /collections/:id', () => {
         .get('/recipes/' + TestCollections.Breakfast.id)
         .set('Authorization', token)
         .send()
-        .then((res) => assertFailed(res, 'Was able to access private collection.')),
+        .then((res) =>
+          assertFailed(res, 'Was able to access private collection.')
+        ),
     TestUsers.Beatrice
   );
 });
@@ -210,7 +217,7 @@ describe('PATCH /collections/:id', () => {
 
   const patch = {
     name: 'Quick Sweets',
-    tags: ['quick', 'easy']
+    tags: ['quick', 'easy'],
   };
 
   itShouldRequireAuthentication(href(), 'patch');
@@ -242,7 +249,10 @@ describe('PATCH /collections/:id', () => {
 
             const collection = res.body.collection;
             assert(collection.name == patch.name, 'Name not updated.');
-            assert(!collection.tags.includes('breakfast'), 'Tags not updated correctly.');
+            assert(
+              !collection.tags.includes('breakfast'),
+              'Tags not updated correctly.'
+            );
             assert(
               collection.public == TestCollections.Breakfast.public,
               'Publicity updated erroneously.'

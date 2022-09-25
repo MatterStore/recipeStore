@@ -51,7 +51,7 @@ export default function Signup() {
         minLowercase: 0,
         minUppercase: 0,
         minNumbers: 0,
-        minSymbols: 0
+        minSymbols: 0,
       })
     ) {
       formIsValid = false;
@@ -73,7 +73,7 @@ export default function Signup() {
         .post(signupRoute, {
           name: name,
           email: email,
-          password: password
+          password: password,
         })
         .then(function (response) {
           navigate('/login');
