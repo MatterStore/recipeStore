@@ -4,14 +4,18 @@ import passport from 'passport';
 
 import validateParams, { objectId } from '../helpers/params-validator.js';
 
-import Collection, { deleteById, getByUser, ICollection } from '../models/collection.js';
+import Collection, {
+  deleteById,
+  getByUser,
+  ICollection,
+} from '../models/collection.js';
 import Tag from '../models/tag.js';
 import {
   AuthenticatedRequest,
   cmpObjectIds,
   includesObjectId,
   RecordRequest,
-  withRecord
+  withRecord,
 } from '../helpers/utils.js';
 
 type CollectionRequest = RecordRequest<ICollection>;
@@ -26,7 +30,7 @@ router.post(
     name: Joi.string().max(255).required(),
     tags: Joi.array().items(Tag.validator).required(),
     recipes: Joi.array().items(objectId()).required(),
-    public: Joi.boolean()
+    public: Joi.boolean(),
   }),
   async (req: AuthenticatedRequest, res) => {
     const collection = new Collection({
@@ -34,7 +38,7 @@ router.post(
       name: req.body.name,
       tags: req.body.tags,
       recipes: req.body.recipes,
-      public: req.body?.public
+      public: req.body?.public,
     });
 
     collection.save((err) => {
@@ -55,7 +59,9 @@ router.get(
       if (err) {
         res.status(500).json({ success: false, msg: 'Something went wrong.' });
       } else {
-        res.status(200).json({ success: true, msg: 'Collections found.', list });
+        res
+          .status(200)
+          .json({ success: true, msg: 'Collections found.', list });
       }
     });
   }
@@ -78,7 +84,9 @@ router.get(
   (req: CollectionRequest, res) => {
     const collection = req.record;
     if (collection.public || cmpObjectIds(req.user._id, collection.user)) {
-      res.status(200).json({ success: true, msg: 'Collection found.', collection });
+      res
+        .status(200)
+        .json({ success: true, msg: 'Collection found.', collection });
     } else {
       res.status(403).json({ success: false, msg: 'Permission not granted.' });
     }
@@ -94,12 +102,12 @@ router.delete(
       if (err) {
         res.status(500).json({
           success: false,
-          msg: 'Something went wrong.'
+          msg: 'Something went wrong.',
         });
       } else {
         res.status(200).json({
           success: true,
-          msg: 'Collection deleted.'
+          msg: 'Collection deleted.',
         });
       }
     });
@@ -113,7 +121,7 @@ router.patch(
     name: Joi.string().max(255),
     tags: Joi.array().items(Tag.validator),
     recipes: Joi.array().items(objectId()),
-    public: Joi.boolean()
+    public: Joi.boolean(),
   }),
   withRecord(Collection, true),
   (req: CollectionRequest, res) => {
@@ -143,7 +151,7 @@ router.patch(
 router.post(
   '/:id/add',
   validateParams({
-    recipes: Joi.array().items(objectId())
+    recipes: Joi.array().items(objectId()),
   }),
   passport.authenticate('user', { session: false }),
   withRecord(Collection, true),
@@ -164,11 +172,13 @@ router.post(
         { $set: { recipes: collection.recipes } },
         (err) => {
           if (err) {
-            res.status(500).json({ success: false, msg: 'Something went wrong.' });
+            res
+              .status(500)
+              .json({ success: false, msg: 'Something went wrong.' });
           } else {
             res.status(200).json({
               success: true,
-              msg: 'Recipes added to collection.'
+              msg: 'Recipes added to collection.',
             });
           }
         }
@@ -176,7 +186,7 @@ router.post(
     } else {
       res.status(200).json({
         success: true,
-        msg: 'All recipes already in collection.'
+        msg: 'All recipes already in collection.',
       });
     }
   }
@@ -185,7 +195,7 @@ router.post(
 router.post(
   '/:id/remove',
   validateParams({
-    recipes: Joi.array().items(objectId())
+    recipes: Joi.array().items(objectId()),
   }),
   passport.authenticate('user', { session: false }),
   withRecord(Collection, true),
@@ -193,12 +203,14 @@ router.post(
     const collection = req.record;
 
     const len = collection.recipes.length;
-    collection.recipes = collection.recipes.filter((r) => !includesObjectId(req.body.recipes, r));
+    collection.recipes = collection.recipes.filter(
+      (r) => !includesObjectId(req.body.recipes, r)
+    );
 
     if (collection.recipes.length == len) {
       res.status(200).json({
         success: true,
-        msg: 'None of these recipes were in this collection.'
+        msg: 'None of these recipes were in this collection.',
       });
     } else {
       Collection.updateOne(
@@ -206,11 +218,13 @@ router.post(
         { $set: { recipes: collection.recipes } },
         (err) => {
           if (err) {
-            res.status(500).json({ success: false, msg: 'Something went wrong.' });
+            res
+              .status(500)
+              .json({ success: false, msg: 'Something went wrong.' });
           } else {
             res.status(200).json({
               success: true,
-              msg: 'Recipes removed from collection.'
+              msg: 'Recipes removed from collection.',
             });
           }
         }

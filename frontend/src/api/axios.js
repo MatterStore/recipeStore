@@ -7,8 +7,8 @@ const baseURL = isProduction ? window.location.href : 'http://localhost:5000';
 const defaultOptions = {
   baseURL,
   headers: {
-    'Content-Type': 'application/json'
-  }
+    'Content-Type': 'application/json',
+  },
 };
 
 const axios = axiosDefault.create(defaultOptions);

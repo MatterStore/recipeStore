@@ -10,7 +10,7 @@ interface optsInterface {
 export default function execPassport(passport) {
   const opts: optsInterface = {
     jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme('jwt'),
-    secretOrKey: process.env.JWT_SECRET
+    secretOrKey: process.env.JWT_SECRET,
   };
 
   passport.use(

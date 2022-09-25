@@ -11,19 +11,19 @@ const TestUsers = {
   Alfred: {
     email: 'test@test.domain',
     name: 'alfred',
-    password: 'testpassword'
+    password: 'testpassword',
   }, // Used for /user
   Dominguez: {
     email: 'testuserwithoverlylongemail@test.domain',
     name: 'longnametestuser',
-    password: 'testpassword0'
-  } // Used for /user
+    password: 'testpassword0',
+  }, // Used for /user
 };
 
 // Clear users collection of test DB before and after tests
 const clearTestUsers = () =>
   User.deleteMany({
-    email: { $regex: /.*@test\.domain$/ }
+    email: { $regex: /.*@test\.domain$/ },
   });
 before(clearTestUsers);
 after(clearTestUsers);
@@ -54,7 +54,7 @@ describe('POST /user/login', () => {
       .post('/user/login')
       .send({
         email: 'missing@weird.domain',
-        password: 'missinguserspassword'
+        password: 'missinguserspassword',
       })
       .then((res) => assertFailed(res, 'Missing user login succeeded.')));
 
@@ -63,7 +63,7 @@ describe('POST /user/login', () => {
       .post('/user/login')
       .send({
         email: TestUsers.Alfred.email,
-        password: 'wrongpassword'
+        password: 'wrongpassword',
       })
       .then((res) => assertFailed(res, 'Incorrect password allowed.')));
 
@@ -102,7 +102,10 @@ describe('GET /user/profile', () => {
           .send()
           .then((res) => {
             assertSucceeded(res, 'Profile request failed.');
-            assert(res.body.user?.name == TestUsers.Alfred.name, 'Bad profile.');
+            assert(
+              res.body.user?.name == TestUsers.Alfred.name,
+              'Bad profile.'
+            );
           });
       }));
 });

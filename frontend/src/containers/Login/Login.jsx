@@ -39,7 +39,7 @@ export default function Login() {
         minLowercase: 0,
         minUppercase: 0,
         minNumbers: 0,
-        minSymbols: 0
+        minSymbols: 0,
       })
     ) {
       formIsValid = false;
@@ -60,7 +60,7 @@ export default function Login() {
       axios
         .post(loginRoute, {
           email: email,
-          password: password
+          password: password,
         })
         .then(function (response) {
           setIsLoggedIn(true);

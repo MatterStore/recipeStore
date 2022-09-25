@@ -15,7 +15,7 @@ export default function validateParams(paramSchema) {
     } catch (err) {
       return res.status(422).json({
         success: false,
-        msg: err.details[0].message // Something went wrong.
+        msg: err.details[0].message, // Something went wrong.
       });
     }
     next();
@@ -26,7 +26,7 @@ export function objectId() {
   return Joi.string().custom((value, helper) => {
     if (!mongoose.isValidObjectId(value)) {
       return helper.message({
-        custom: `"${value}" is not a valid MongoDB ObjectID.`
+        custom: `"${value}" is not a valid MongoDB ObjectID.`,
       });
     } else {
       return true;
