@@ -11,15 +11,18 @@ const DB_HOST =
     ? 'cluster0.rvya9b7.mongodb.net'
     : 'cluster0.jd0lpeu.mongodb.net';
 const DB_URL =
-  `mongodb+srv://${DB_USER}:${DB_PASSWORD}@${DB_HOST}` + '/?retryWrites=true&w=majority';
+  `mongodb+srv://${DB_USER}:${DB_PASSWORD}@${DB_HOST}` +
+  '/?retryWrites=true&w=majority';
 
 const mongoOpts: unknown = {
   useNewUrlParser: true,
-  useUnifiedTopology: true
+  useUnifiedTopology: true,
 };
 
 if (process.env.NODE_ENV == 'testing') {
-  MongoMemoryServer.create().then((mongodb) => mongoose.connect(mongodb.getUri(), mongoOpts));
+  MongoMemoryServer.create().then((mongodb) =>
+    mongoose.connect(mongodb.getUri(), mongoOpts)
+  );
 } else {
   mongoose.connect(DB_URL, mongoOpts);
 }

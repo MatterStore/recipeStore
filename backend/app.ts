@@ -22,7 +22,7 @@ app.use(
   expressSession({
     secret: process.env.JWT_SECRET,
     resave: true,
-    saveUninitialized: true
+    saveUninitialized: true,
   })
 );
 app.use(passport.initialize());
@@ -32,10 +32,15 @@ execPassport(passport);
 
 const __filename = fileURLToPath(import.meta.url + '/../../');
 const __dirname = path.dirname(__filename);
-if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'staging') {
+if (
+  process.env.NODE_ENV === 'production' ||
+  process.env.NODE_ENV === 'staging'
+) {
   app.use(express.static(path.resolve(__dirname, 'frontend/build')));
   app.get('*', (req, res) => {
-    const buildPath = path.join(path.resolve(__dirname, 'frontend/build/index.html'));
+    const buildPath = path.join(
+      path.resolve(__dirname, 'frontend/build/index.html')
+    );
     res.sendFile(buildPath);
     console.log(buildPath);
   });

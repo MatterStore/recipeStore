@@ -17,7 +17,7 @@ export default function Recipe(props) {
       steps: ['Mix the flour with the sugar', 'Serve and enjoy!'],
       tags: ['Vegetarian'],
       time: '3 hours',
-      servings: 4
+      servings: 4,
     },
     {
       id: '2',
@@ -28,8 +28,8 @@ export default function Recipe(props) {
       steps: ['Pour the water onto the pumpkin', 'Serve and enjoy!'],
       tags: ['Anton Ego Approved', 'Gluten Free'],
       time: '15 minutes',
-      servings: 8
-    }
+      servings: 8,
+    },
   ];
 
   const getRecipe = (recipeId) => {

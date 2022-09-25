@@ -4,9 +4,19 @@ import Joi from 'joi';
 import passport from 'passport';
 
 import validateParams from '../helpers/params-validator.js';
-import { AuthenticatedRequest, cmpObjectIds, RecordRequest, withRecord } from '../helpers/utils.js';
+import {
+  AuthenticatedRequest,
+  cmpObjectIds,
+  RecordRequest,
+  withRecord,
+} from '../helpers/utils.js';
 
-import Recipe, { deleteById, getAllPublic, getByUser, IRecipe } from '../models/recipe.js';
+import Recipe, {
+  deleteById,
+  getAllPublic,
+  getByUser,
+  IRecipe,
+} from '../models/recipe.js';
 import Tag from '../models/tag.js';
 
 type RecipeRequest = RecordRequest<IRecipe>;
@@ -27,13 +37,13 @@ router.post(
           text: Joi.string().required(),
           name: Joi.string(),
           quantity: Joi.string(),
-          unit: Joi.string()
+          unit: Joi.string(),
         })
       )
       .required(),
     steps: Joi.array().items(Joi.string()).required(),
     tags: Joi.array().items(Tag.validator).required(),
-    public: Joi.boolean()
+    public: Joi.boolean(),
   }),
   (req: AuthenticatedRequest, res, next) => {
     const recipe = new Recipe({
@@ -44,7 +54,7 @@ router.post(
       ingredients: req.body.ingredients,
       steps: req.body.steps,
       tags: req.body.tags,
-      public: req.body.public
+      public: req.body.public,
     });
 
     recipe.save((err) => {
@@ -71,15 +81,19 @@ router.get(
   }
 );
 
-router.get('/all/public', passport.authenticate('user', { session: false }), (req, res, next) => {
-  getAllPublic((err, list: IRecipe[]) => {
-    if (err) {
-      res.status(422).json({ success: false, msg: 'Something went wrong.' });
-    } else {
-      res.status(200).json({ success: true, msg: 'Recipes found.', list });
-    }
-  });
-});
+router.get(
+  '/all/public',
+  passport.authenticate('user', { session: false }),
+  (req, res, next) => {
+    getAllPublic((err, list: IRecipe[]) => {
+      if (err) {
+        res.status(422).json({ success: false, msg: 'Something went wrong.' });
+      } else {
+        res.status(200).json({ success: true, msg: 'Recipes found.', list });
+      }
+    });
+  }
+);
 
 router.get(
   '/:id',
@@ -92,7 +106,7 @@ router.get(
     } else {
       res.status(403).json({
         success: false,
-        msg: 'Permission not granted.'
+        msg: 'Permission not granted.',
       });
     }
   }
@@ -108,7 +122,9 @@ router.delete(
       // Recipe found and user has permissions to delete it,
       deleteById(req.params.id, (err, resp) => {
         if (err || !resp) {
-          res.status(422).json({ success: false, msg: 'Something went wrong.' });
+          res
+            .status(422)
+            .json({ success: false, msg: 'Something went wrong.' });
         } else {
           res.status(200).json({ success: true, msg: 'Recipe deleted.' });
         }
@@ -116,7 +132,7 @@ router.delete(
     } else {
       res.status(403).json({
         success: false,
-        msg: 'Permission not granted.'
+        msg: 'Permission not granted.',
       });
     }
   }
@@ -134,12 +150,12 @@ router.patch(
         text: Joi.string().required(),
         name: Joi.string(),
         quantity: Joi.string(),
-        unit: Joi.string()
+        unit: Joi.string(),
       })
     ),
     steps: Joi.array().items(Joi.string()),
     tags: Joi.array().items(Tag.validator),
-    public: Joi.boolean()
+    public: Joi.boolean(),
   }),
   withRecord(Recipe, true),
   (req: RecipeRequest, res) => {
@@ -150,7 +166,7 @@ router.patch(
       'ingredients',
       'steps',
       'tags',
-      'public'
+      'public',
     ];
 
     // Create object with the changes provided in the request.

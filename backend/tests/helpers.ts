@@ -16,13 +16,13 @@ export const TestUsers = {
   Beatrice: {
     email: 'beatrice@sushi.kitchen',
     name: 'beatrice',
-    password: '1<3fish4dinner'
+    password: '1<3fish4dinner',
   }, // Beatrice is a secondary test user
   Chef: {
     email: 'chef@kitchen.table',
     name: 'chef',
-    password: 'recipesrgr8'
-  } // Chef is the author of the test recipes
+    password: 'recipesrgr8',
+  }, // Chef is the author of the test recipes
 };
 
 export const TestRecipes = {
@@ -38,15 +38,15 @@ export const TestRecipes = {
         text: '1 3/4 cup milk',
         name: 'milk',
         quantity: '1.75',
-        unit: 'cups'
+        unit: 'cups',
       },
       {
         text: '2 cups plain flour',
         name: 'plain flour',
         quantity: '2',
-        unit: 'cups'
+        unit: 'cups',
       },
-      { text: 'Butter for the pan' }
+      { text: 'Butter for the pan' },
     ],
     steps: [
       'Whisk eggs, milk and flour together in a large bowl.',
@@ -54,10 +54,10 @@ export const TestRecipes = {
       'Pour a small amount of batter and cook until bubbles ' +
         'appear, then flip and cook until set. Remove from pan ' +
         'and repeat until all batter used.',
-      'Serve with maple syrup or lemon and sugar.'
+      'Serve with maple syrup or lemon and sugar.',
     ],
     tags: ['breakfast', 'quick', 'sweet'],
-    public: false
+    public: false,
   },
   Rice: {
     id: null,
@@ -70,24 +70,24 @@ export const TestRecipes = {
         text: '1 cup white rice',
         name: 'white rice',
         unit: 'cups',
-        quantity: '1'
+        quantity: '1',
       },
       {
         text: '2 cups water',
         name: 'water',
         unit: 'cups',
-        quantity: '2'
-      }
+        quantity: '2',
+      },
     ],
     steps: [
       'Place water and rice in a pot over a high heat.',
       'Bring to boil then turn heat to low and cover with lid.',
       'Cook for 10 minutes or until water is fully absorbed.',
-      'Remove from heat and serve.'
+      'Remove from heat and serve.',
     ],
     tags: ['side', 'quick', 'savoury'],
-    public: true
-  }
+    public: true,
+  },
 };
 
 export const TestCollections = {
@@ -97,7 +97,7 @@ export const TestCollections = {
     name: 'Breakfast',
     tags: ['breakfast', 'quick', 'easy'],
     recipes: [],
-    public: false
+    public: false,
   },
   Sides: {
     id: null,
@@ -105,8 +105,8 @@ export const TestCollections = {
     name: 'Sides',
     tags: ['side', 'savoury'],
     recipes: [],
-    public: true
-  }
+    public: true,
+  },
 };
 
 export async function doLoggedIn(
@@ -138,7 +138,10 @@ async function prepareTestRecipes(token: string, user: string) {
     const existing = await Recipe.findOne({ user, title: recipe.title });
 
     if (!existing) {
-      await request(app).post('/recipes/new').set('Authorization', token).send(recipe);
+      await request(app)
+        .post('/recipes/new')
+        .set('Authorization', token)
+        .send(recipe);
     }
   }
 
@@ -169,7 +172,10 @@ async function prepareTestCollections(token: string, user: string) {
     const existing = await Collection.findOne({ user, name: collection.name });
 
     if (!existing) {
-      await request(app).post('/collections/new').set('Authorization', token).send(collection);
+      await request(app)
+        .post('/collections/new')
+        .set('Authorization', token)
+        .send(collection);
     }
   }
 

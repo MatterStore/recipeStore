@@ -25,9 +25,8 @@ export function AuthContextProvider({ children }) {
         isLoggedIn,
         setIsLoggedIn,
         user,
-        setUser
-      }}
-    >
+        setUser,
+      }}>
       {children}
     </Provider>
   );
