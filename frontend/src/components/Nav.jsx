@@ -1,13 +1,13 @@
-import { useLocation, Link } from "react-router-dom";
+import { useLocation, Link } from 'react-router-dom';
 
 export default function Nav(props) {
   const location = useLocation();
   const navigationRoutes = [
-    ["Home", "/listing"],
-    ["My Recipes", "/collection/Your%20Recipe%20Collection"],
-    ["Sign Out", "/"],
+    ['Home', '/listing'],
+    ['My Recipes', '/collection/Your%20Recipe%20Collection'],
+    ['Sign Out', '/']
   ];
-  const doNotDisplayNavOn = ["/", "/login", "/signup"];
+  const doNotDisplayNavOn = ['/', '/login', '/signup'];
 
   if (!doNotDisplayNavOn.includes(location.pathname)) {
     return (

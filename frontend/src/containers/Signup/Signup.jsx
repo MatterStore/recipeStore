@@ -1,24 +1,24 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-import validator from "validator";
-import axios from "../../api/axios";
+import validator from 'validator';
+import axios from '../../api/axios';
 
-import { signupRoute } from "../../api/routes";
+import { signupRoute } from '../../api/routes';
 
-import SubmitButton from "../../components/SubmitButton";
-import Header from "../../components/Header";
-import FormField from "../../components/FormField";
+import SubmitButton from '../../components/SubmitButton';
+import Header from '../../components/Header';
+import FormField from '../../components/FormField';
 
 export default function Signup() {
-  const [email, setEmail] = useState("");
-  const [name, setName] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
+  const [password, setPassword] = useState('');
 
-  const [nameError, setNameError] = useState("");
-  const [emailError, setEmailError] = useState("");
-  const [passwordError, setPasswordError] = useState("");
-  const [signupError, setSignupError] = useState("");
+  const [nameError, setNameError] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [signupError, setSignupError] = useState('');
 
   const [formValid, setFormValid] = useState(false);
 
@@ -29,19 +29,19 @@ export default function Signup() {
 
     if (!validator.isAscii(name)) {
       formIsValid = false;
-      setNameError("Name is Not Valid");
+      setNameError('Name is Not Valid');
       return false;
     } else {
-      setNameError("");
+      setNameError('');
       formIsValid = true;
     }
 
     if (!validator.isEmail(email)) {
       formIsValid = false;
-      setEmailError("Email is Not Valid");
+      setEmailError('Email is Not Valid');
       return false;
     } else {
-      setEmailError("");
+      setEmailError('');
       formIsValid = true;
     }
 
@@ -51,14 +51,14 @@ export default function Signup() {
         minLowercase: 0,
         minUppercase: 0,
         minNumbers: 0,
-        minSymbols: 0,
+        minSymbols: 0
       })
     ) {
       formIsValid = false;
-      setPasswordError("Must contain 8 characters");
+      setPasswordError('Must contain 8 characters');
       return false;
     } else {
-      setPasswordError("");
+      setPasswordError('');
       formIsValid = true;
     }
     setFormValid(formIsValid);
@@ -73,10 +73,10 @@ export default function Signup() {
         .post(signupRoute, {
           name: name,
           email: email,
-          password: password,
+          password: password
         })
         .then(function (response) {
-          navigate("/login");
+          navigate('/login');
         })
         .catch(function (error) {
           setSignupError(error.response.data.message);

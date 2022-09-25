@@ -1,5 +1,5 @@
-import mongoose, { ObjectId } from "mongoose";
-import bcrypt from "bcryptjs";
+import mongoose, { ObjectId } from 'mongoose';
+import bcrypt from 'bcryptjs';
 
 export interface IUser {
   _id: ObjectId;
@@ -13,27 +13,27 @@ export interface IUser {
 const userSchema = new mongoose.Schema({
   email: {
     type: String,
-    required: true,
+    required: true
   },
   password: {
     type: String,
-    required: true,
+    required: true
   },
   name: {
     type: String,
-    required: true,
+    required: true
   },
   emailVerified: {
     type: Boolean,
-    required: false,
+    required: false
   },
   admin: {
     type: Boolean,
-    required: false,
-  },
+    required: false
+  }
 });
 
-const User = mongoose.model("User", userSchema);
+const User = mongoose.model('User', userSchema);
 
 export default User;
 
