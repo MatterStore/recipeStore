@@ -1,4 +1,4 @@
-import pkg, { ObjectId } from "mongoose";
+import pkg, { ObjectId } from 'mongoose';
 const { Schema, Types, model } = pkg;
 
 export interface ICollection {
@@ -13,38 +13,35 @@ export interface ICollection {
 const collectionSchema = new Schema({
   user: {
     type: Types.ObjectId,
-    required: true,
+    required: true
   },
   name: {
     type: String,
-    required: true,
+    required: true
   },
   tags: {
     type: [String],
-    required: true,
+    required: true
   },
   recipes: {
     type: [Types.ObjectId],
-    required: true,
+    required: true
   },
   public: {
     type: Boolean,
     required: false,
-    default: false,
-  },
+    default: false
+  }
 });
 
-const Collection = model("Collection", collectionSchema);
+const Collection = model('Collection', collectionSchema);
 export default Collection;
 
 export function getByUser(user: string | ObjectId, callback) {
   Collection.find({ user }, callback);
 }
 
-export function getById(
-  id: string,
-  callback: (err: any, collection?: ICollection) => void
-) {
+export function getById(id: string, callback: (err: unknown, collection?: ICollection) => void) {
   Collection.findOne({ _id: id }, callback);
 }
 

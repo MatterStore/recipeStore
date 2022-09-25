@@ -1,7 +1,7 @@
-import { NextFunction, Request, Response } from "express";
-import { Model, ObjectId } from "mongoose";
+import { NextFunction, Request, Response } from 'express';
+import { Model, ObjectId } from 'mongoose';
 
-import { IUser } from "../models/user";
+import { IUser } from '../models/user';
 
 export interface AuthenticatedRequest extends Request {
   user: IUser;
@@ -23,18 +23,18 @@ export interface RecordRequest<T> extends AuthenticatedRequest {
  */
 export function withRecord<T>(
   model: Model<T>,
-  matchUser: boolean = false
+  matchUser = false
 ): (req: AuthenticatedRequest, res: Response, next: NextFunction) => void {
   return async (req: AuthenticatedRequest, res: Response, next: NextFunction) =>
     model.findById(req.params.id, (err, record) => {
       if (err) {
-        res.status(422).json({ success: false, msg: "Something went wrong." });
+        res.status(422).json({ success: false, msg: 'Something went wrong.' });
       } else if (!record) {
-        res.status(404).json({ success: false, msg: "Record not found." });
+        res.status(404).json({ success: false, msg: 'Record not found.' });
       } else if (matchUser && !cmpObjectIds(req.user._id, record.user)) {
         res.status(403).json({
           success: false,
-          msg: "Recipe belongs to another user.",
+          msg: 'Recipe belongs to another user.'
         });
       } else {
         (req as RecordRequest<T>).record = record;
@@ -51,10 +51,7 @@ export function withRecord<T>(
  * @param b Second object ID.
  * @returns Whether IDs are equal
  */
-export function cmpObjectIds(
-  a: ObjectId | string,
-  b: ObjectId | string
-): boolean {
+export function cmpObjectIds(a: ObjectId | string, b: ObjectId | string): boolean {
   return String(a) == String(b);
 }
 
@@ -66,9 +63,6 @@ export function cmpObjectIds(
  * @param id Member to look for.
  * @returns Whether `ary` contains `id`.
  */
-export function includesObjectId(
-  ary: (ObjectId | string)[],
-  id: ObjectId | string
-): boolean {
+export function includesObjectId(ary: (ObjectId | string)[], id: ObjectId | string): boolean {
   return ary.map(String).includes(String(id));
 }
