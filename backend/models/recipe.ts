@@ -1,4 +1,4 @@
-import pkg, { ObjectId } from "mongoose";
+import pkg, { ObjectId } from 'mongoose';
 const { Schema, Types, model } = pkg;
 
 export interface IRecipe {
@@ -20,59 +20,59 @@ export interface IRecipe {
 const recipeSchema = new Schema({
   user: {
     type: Types.ObjectId,
-    required: true,
+    required: true
   },
   title: {
     type: String,
-    required: true,
+    required: true
   },
   cooking_time: {
     type: String,
-    required: false,
+    required: false
   },
   servings: {
     type: Number,
-    required: false,
+    required: false
   },
   ingredients: {
     type: [
       {
         text: {
           type: String,
-          required: true,
+          required: true
         },
         name: {
           type: String,
-          required: false,
+          required: false
         },
         quantity: {
           type: String,
-          required: false,
+          required: false
         },
         unit: {
           type: String,
-          required: false,
-        },
-      },
+          required: false
+        }
+      }
     ],
-    required: true,
+    required: true
   },
   steps: {
     type: [String],
-    required: true,
+    required: true
   },
   tags: {
     type: [String],
-    required: true,
+    required: true
   },
   public: {
     type: Boolean,
     required: false,
-    default: false,
-  },
+    default: false
+  }
 });
 
-const Recipe = model("Recipe", recipeSchema);
+const Recipe = model('Recipe', recipeSchema);
 
 export default Recipe;
 
