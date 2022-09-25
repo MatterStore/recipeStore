@@ -15,6 +15,7 @@
     "pretty-quick": "pretty-quick",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
+    "eslint:github-action": "eslint .",
     "format": "prettier --write './**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc"
   },
   "author": "MatterStore",
