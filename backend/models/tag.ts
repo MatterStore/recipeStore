@@ -1,4 +1,4 @@
-import Joi from "joi";
+import Joi from 'joi';
 
 const MIN_LENGTH = 2;
 const MAX_LENGTH = 32;

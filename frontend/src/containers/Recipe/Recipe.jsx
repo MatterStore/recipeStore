@@ -1,33 +1,33 @@
-import { useParams } from "react-router-dom";
-import Header from "../../components/Header";
-import Subheader from "../../components/Subheader";
-import Button from "../../components/Button";
-import Tag from "../../components/Tag";
+import { useParams } from 'react-router-dom';
+import Header from '../../components/Header';
+import Subheader from '../../components/Subheader';
+import Button from '../../components/Button';
+import Tag from '../../components/Tag';
 
 export default function Recipe(props) {
   let params = useParams();
 
   const recipes = [
     {
-      id: "1",
-      name: "Gnocchi",
+      id: '1',
+      name: 'Gnocchi',
       primaryImage:
-        "https://unsplash.com/photos/Zmhi-OMDVbw/download?ixid=MnwxMjA3fDB8MXxzZWFyY2h8MXx8Z25vY2NoaXxlbnwwfHx8fDE2NjE2NzU5NjQ&w=600",
-      ingredients: ["100g Flour", "1tspn Sugar"],
-      steps: ["Mix the flour with the sugar", "Serve and enjoy!"],
-      tags: ["Vegetarian"],
-      time: "3 hours",
+        'https://unsplash.com/photos/Zmhi-OMDVbw/download?ixid=MnwxMjA3fDB8MXxzZWFyY2h8MXx8Z25vY2NoaXxlbnwwfHx8fDE2NjE2NzU5NjQ&w=600',
+      ingredients: ['100g Flour', '1tspn Sugar'],
+      steps: ['Mix the flour with the sugar', 'Serve and enjoy!'],
+      tags: ['Vegetarian'],
+      time: '3 hours',
       servings: 4,
     },
     {
-      id: "2",
-      name: "Ratatouille",
+      id: '2',
+      name: 'Ratatouille',
       primaryImage:
-        "https://unsplash.com/photos/3vDJ--i7w88/download?ixid=MnwxMjA3fDB8MXxzZWFyY2h8M3x8cmF0YXRvdWlsbGV8ZW58MHx8fHwxNjYxNjc2MDY0&w=600",
-      ingredients: ["250g Pumpkin", "500mL Water"],
-      steps: ["Pour the water onto the pumpkin", "Serve and enjoy!"],
-      tags: ["Anton Ego Approved", "Gluten Free"],
-      time: "15 minutes",
+        'https://unsplash.com/photos/3vDJ--i7w88/download?ixid=MnwxMjA3fDB8MXxzZWFyY2h8M3x8cmF0YXRvdWlsbGV8ZW58MHx8fHwxNjYxNjc2MDY0&w=600',
+      ingredients: ['250g Pumpkin', '500mL Water'],
+      steps: ['Pour the water onto the pumpkin', 'Serve and enjoy!'],
+      tags: ['Anton Ego Approved', 'Gluten Free'],
+      time: '15 minutes',
       servings: 8,
     },
   ];

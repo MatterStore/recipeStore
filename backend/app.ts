@@ -1,18 +1,20 @@
-import dotenv from "dotenv";
+import dotenv from 'dotenv';
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const result = dotenv.config({
   path: `.env`,
 });
 
-import "./config/db-connection.js";
-import path from "path";
-import express from "express";
-import expressSession from "express-session";
-import cors from "cors";
-import passport from "passport";
-import { fileURLToPath } from "url";
-import * as users_route from "./routes/user.js";
-import collectionsRoute from "./routes/collection.js";
-import recipesRoute from "./routes/recipe.js";
+import './config/db-connection.js';
+import path from 'path';
+import express from 'express';
+import expressSession from 'express-session';
+import cors from 'cors';
+import passport from 'passport';
+import { fileURLToPath } from 'url';
+import * as users_route from './routes/user.js';
+import collectionsRoute from './routes/collection.js';
+import recipesRoute from './routes/recipe.js';
 
 const app = express();
 
@@ -27,28 +29,28 @@ app.use(
 );
 app.use(passport.initialize());
 app.use(passport.session());
-import execPassport from "./config/passport.js";
+import execPassport from './config/passport.js';
 execPassport(passport);
 
-const __filename = fileURLToPath(import.meta.url + "/../../");
+const __filename = fileURLToPath(import.meta.url + '/../../');
 const __dirname = path.dirname(__filename);
 if (
-  process.env.NODE_ENV === "production" ||
-  process.env.NODE_ENV === "staging"
+  process.env.NODE_ENV === 'production' ||
+  process.env.NODE_ENV === 'staging'
 ) {
-  app.use(express.static(path.resolve(__dirname, "frontend/build")));
-  app.get("*", (req, res) => {
+  app.use(express.static(path.resolve(__dirname, 'frontend/build')));
+  app.get('*', (req, res) => {
     const buildPath = path.join(
-      path.resolve(__dirname, "frontend/build/index.html")
+      path.resolve(__dirname, 'frontend/build/index.html')
     );
     res.sendFile(buildPath);
     console.log(buildPath);
   });
 }
 
-app.use("/user", users_route.router);
-app.use("/collections", collectionsRoute);
-app.use("/recipes", recipesRoute);
+app.use('/user', users_route.router);
+app.use('/collections', collectionsRoute);
+app.use('/recipes', recipesRoute);
 
 // default case for unmatched routes
 app.use(function (req, res) {

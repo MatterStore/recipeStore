@@ -1,22 +1,22 @@
-import express, { NextFunction, Request, Response } from "express";
-import Joi from "joi";
-import passport from "passport";
+import express from 'express';
+import Joi from 'joi';
+import passport from 'passport';
 
-import validateParams, { objectId } from "../helpers/params-validator.js";
+import validateParams, { objectId } from '../helpers/params-validator.js';
 
 import Collection, {
   deleteById,
   getByUser,
   ICollection,
-} from "../models/collection.js";
-import Tag from "../models/tag.js";
+} from '../models/collection.js';
+import Tag from '../models/tag.js';
 import {
   AuthenticatedRequest,
   cmpObjectIds,
   includesObjectId,
   RecordRequest,
   withRecord,
-} from "../helpers/utils.js";
+} from '../helpers/utils.js';
 
 type CollectionRequest = RecordRequest<ICollection>;
 
@@ -24,8 +24,8 @@ const router = express.Router();
 export default router;
 
 router.post(
-  "/new",
-  passport.authenticate("user", { session: false }),
+  '/new',
+  passport.authenticate('user', { session: false }),
   validateParams({
     name: Joi.string().max(255).required(),
     tags: Joi.array().items(Tag.validator).required(),
@@ -33,7 +33,7 @@ router.post(
     public: Joi.boolean(),
   }),
   async (req: AuthenticatedRequest, res) => {
-    let collection = new Collection({
+    const collection = new Collection({
       user: req.user._id,
       name: req.body.name,
       tags: req.body.tags,
@@ -43,71 +43,71 @@ router.post(
 
     collection.save((err) => {
       if (err) {
-        res.status(422).json({ success: false, msg: "Something went wrong." });
+        res.status(422).json({ success: false, msg: 'Something went wrong.' });
       } else {
-        res.status(200).json({ success: true, msg: "Collection saved." });
+        res.status(200).json({ success: true, msg: 'Collection saved.' });
       }
     });
   }
 );
 
 router.get(
-  "/all",
-  passport.authenticate("user", { session: false }),
+  '/all',
+  passport.authenticate('user', { session: false }),
   (req: AuthenticatedRequest, res) => {
     getByUser(req.user._id, (err, list) => {
       if (err) {
-        res.status(500).json({ success: false, msg: "Something went wrong." });
+        res.status(500).json({ success: false, msg: 'Something went wrong.' });
       } else {
         res
           .status(200)
-          .json({ success: true, msg: "Collections found.", list });
+          .json({ success: true, msg: 'Collections found.', list });
       }
     });
   }
 );
 
-router.get("/all/public", (req, res) =>
+router.get('/all/public', (req, res) =>
   Collection.find({ public: true }, (err, list) => {
     if (err) {
-      res.status(500).json({ success: false, msg: "Something went wrong." });
+      res.status(500).json({ success: false, msg: 'Something went wrong.' });
     } else {
-      res.status(200).json({ success: true, msg: "Collections found.", list });
+      res.status(200).json({ success: true, msg: 'Collections found.', list });
     }
   })
 );
 
 router.get(
-  "/:id",
-  passport.authenticate("user", { session: false }),
+  '/:id',
+  passport.authenticate('user', { session: false }),
   withRecord(Collection),
   (req: CollectionRequest, res) => {
-    let collection = req.record;
+    const collection = req.record;
     if (collection.public || cmpObjectIds(req.user._id, collection.user)) {
       res
         .status(200)
-        .json({ success: true, msg: "Collection found.", collection });
+        .json({ success: true, msg: 'Collection found.', collection });
     } else {
-      res.status(403).json({ success: false, msg: "Permission not granted." });
+      res.status(403).json({ success: false, msg: 'Permission not granted.' });
     }
   }
 );
 
 router.delete(
-  "/:id",
-  passport.authenticate("user", { session: false }),
+  '/:id',
+  passport.authenticate('user', { session: false }),
   withRecord(Collection, true),
   (req: CollectionRequest, res) => {
     deleteById(req.params.id, (err) => {
       if (err) {
         res.status(500).json({
           success: false,
-          msg: "Something went wrong.",
+          msg: 'Something went wrong.',
         });
       } else {
         res.status(200).json({
           success: true,
-          msg: "Collection deleted.",
+          msg: 'Collection deleted.',
         });
       }
     });
@@ -115,8 +115,8 @@ router.delete(
 );
 
 router.patch(
-  "/:id",
-  passport.authenticate("user", { session: false }),
+  '/:id',
+  passport.authenticate('user', { session: false }),
   validateParams({
     name: Joi.string().max(255),
     tags: Joi.array().items(Tag.validator),
@@ -125,9 +125,9 @@ router.patch(
   }),
   withRecord(Collection, true),
   (req: CollectionRequest, res) => {
-    const updateableKeys = ["name", "tags", "recipes", "public"];
+    const updateableKeys = ['name', 'tags', 'recipes', 'public'];
 
-    let update = {};
+    const update = {};
     updateableKeys.forEach((key) => {
       if (key in req.body && req.body[key] != req.record[key]) {
         update[key] = req.body[key];
@@ -137,26 +137,26 @@ router.patch(
     if (Object.keys(update).length > 0) {
       Collection.updateOne({ _id: req.params.id }, update, (err) => {
         if (err) {
-          res.status(500).json({ success: false, msg: "An error occurred." });
+          res.status(500).json({ success: false, msg: 'An error occurred.' });
         } else {
-          res.status(200).json({ success: true, msg: "Collection updated." });
+          res.status(200).json({ success: true, msg: 'Collection updated.' });
         }
       });
     } else {
-      res.status(200).json({ success: true, msg: "No updates needed." });
+      res.status(200).json({ success: true, msg: 'No updates needed.' });
     }
   }
 );
 
 router.post(
-  "/:id/add",
+  '/:id/add',
   validateParams({
     recipes: Joi.array().items(objectId()),
   }),
-  passport.authenticate("user", { session: false }),
+  passport.authenticate('user', { session: false }),
   withRecord(Collection, true),
   (req: CollectionRequest, res) => {
-    let collection = req.record;
+    const collection = req.record;
 
     let added = false;
     req.body.recipes.forEach((recipe: string) => {
@@ -174,11 +174,11 @@ router.post(
           if (err) {
             res
               .status(500)
-              .json({ success: false, msg: "Something went wrong." });
+              .json({ success: false, msg: 'Something went wrong.' });
           } else {
             res.status(200).json({
               success: true,
-              msg: "Recipes added to collection.",
+              msg: 'Recipes added to collection.',
             });
           }
         }
@@ -186,23 +186,23 @@ router.post(
     } else {
       res.status(200).json({
         success: true,
-        msg: "All recipes already in collection.",
+        msg: 'All recipes already in collection.',
       });
     }
   }
 );
 
 router.post(
-  "/:id/remove",
+  '/:id/remove',
   validateParams({
     recipes: Joi.array().items(objectId()),
   }),
-  passport.authenticate("user", { session: false }),
+  passport.authenticate('user', { session: false }),
   withRecord(Collection, true),
   (req: CollectionRequest, res) => {
-    let collection = req.record;
+    const collection = req.record;
 
-    let len = collection.recipes.length;
+    const len = collection.recipes.length;
     collection.recipes = collection.recipes.filter(
       (r) => !includesObjectId(req.body.recipes, r)
     );
@@ -210,7 +210,7 @@ router.post(
     if (collection.recipes.length == len) {
       res.status(200).json({
         success: true,
-        msg: "None of these recipes were in this collection.",
+        msg: 'None of these recipes were in this collection.',
       });
     } else {
       Collection.updateOne(
@@ -220,11 +220,11 @@ router.post(
           if (err) {
             res
               .status(500)
-              .json({ success: false, msg: "Something went wrong." });
+              .json({ success: false, msg: 'Something went wrong.' });
           } else {
             res.status(200).json({
               success: true,
-              msg: "Recipes removed from collection.",
+              msg: 'Recipes removed from collection.',
             });
           }
         }
