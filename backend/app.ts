@@ -1,7 +1,6 @@
 import dotenv from 'dotenv';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const result = dotenv.config({
+dotenv.config({
   path: `.env`,
 });
 
