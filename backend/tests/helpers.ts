@@ -1,27 +1,27 @@
-import { assert } from "chai";
-import request, { Response } from "supertest";
+import { assert } from 'chai';
+import request, { Response } from 'supertest';
 
-import app from "../app.js";
-import Collection from "../models/collection.js";
-import Recipe from "../models/recipe.js";
+import app from '../app.js';
+import Collection from '../models/collection.js';
+import Recipe from '../models/recipe.js';
 
 interface UserDetails {
   email: string;
   password: string;
 }
 
-var testDataPrepared = false;
+let testDataPrepared = false;
 
 export const TestUsers = {
   Beatrice: {
-    email: "beatrice@sushi.kitchen",
-    name: "beatrice",
-    password: "1<3fish4dinner",
+    email: 'beatrice@sushi.kitchen',
+    name: 'beatrice',
+    password: '1<3fish4dinner',
   }, // Beatrice is a secondary test user
   Chef: {
-    email: "chef@kitchen.table",
-    name: "chef",
-    password: "recipesrgr8",
+    email: 'chef@kitchen.table',
+    name: 'chef',
+    password: 'recipesrgr8',
   }, // Chef is the author of the test recipes
 };
 
@@ -29,63 +29,63 @@ export const TestRecipes = {
   Pancakes: {
     id: null,
     user: null,
-    title: "Pancakes",
-    cooking_time: "15 minutes",
+    title: 'Pancakes',
+    cooking_time: '15 minutes',
     servings: 4,
     ingredients: [
-      { text: "2 eggs", name: "eggs", quantity: "2" },
+      { text: '2 eggs', name: 'eggs', quantity: '2' },
       {
-        text: "1 3/4 cup milk",
-        name: "milk",
-        quantity: "1.75",
-        unit: "cups",
+        text: '1 3/4 cup milk',
+        name: 'milk',
+        quantity: '1.75',
+        unit: 'cups',
       },
       {
-        text: "2 cups plain flour",
-        name: "plain flour",
-        quantity: "2",
-        unit: "cups",
+        text: '2 cups plain flour',
+        name: 'plain flour',
+        quantity: '2',
+        unit: 'cups',
       },
-      { text: "Butter for the pan" },
+      { text: 'Butter for the pan' },
     ],
     steps: [
-      "Whisk eggs, milk and flour together in a large bowl.",
-      "Heat a frying pan to a medium heat and grease with butter.",
-      "Pour a small amount of batter and cook until bubbles " +
-        "appear, then flip and cook until set. Remove from pan " +
-        "and repeat until all batter used.",
-      "Serve with maple syrup or lemon and sugar.",
+      'Whisk eggs, milk and flour together in a large bowl.',
+      'Heat a frying pan to a medium heat and grease with butter.',
+      'Pour a small amount of batter and cook until bubbles ' +
+        'appear, then flip and cook until set. Remove from pan ' +
+        'and repeat until all batter used.',
+      'Serve with maple syrup or lemon and sugar.',
     ],
-    tags: ["breakfast", "quick", "sweet"],
+    tags: ['breakfast', 'quick', 'sweet'],
     public: false,
   },
   Rice: {
     id: null,
     user: null,
-    title: "Plain Rice",
-    cooking_time: "10 minutes",
+    title: 'Plain Rice',
+    cooking_time: '10 minutes',
     servings: 4,
     ingredients: [
       {
-        text: "1 cup white rice",
-        name: "white rice",
-        unit: "cups",
-        quantity: "1",
+        text: '1 cup white rice',
+        name: 'white rice',
+        unit: 'cups',
+        quantity: '1',
       },
       {
-        text: "2 cups water",
-        name: "water",
-        unit: "cups",
-        quantity: "2",
+        text: '2 cups water',
+        name: 'water',
+        unit: 'cups',
+        quantity: '2',
       },
     ],
     steps: [
-      "Place water and rice in a pot over a high heat.",
-      "Bring to boil then turn heat to low and cover with lid.",
-      "Cook for 10 minutes or until water is fully absorbed.",
-      "Remove from heat and serve.",
+      'Place water and rice in a pot over a high heat.',
+      'Bring to boil then turn heat to low and cover with lid.',
+      'Cook for 10 minutes or until water is fully absorbed.',
+      'Remove from heat and serve.',
     ],
-    tags: ["side", "quick", "savoury"],
+    tags: ['side', 'quick', 'savoury'],
     public: true,
   },
 };
@@ -94,31 +94,31 @@ export const TestCollections = {
   Breakfast: {
     id: null,
     user: null,
-    name: "Breakfast",
-    tags: ["breakfast", "quick", "easy"],
+    name: 'Breakfast',
+    tags: ['breakfast', 'quick', 'easy'],
     recipes: [],
     public: false,
   },
   Sides: {
     id: null,
     user: null,
-    name: "Sides",
-    tags: ["side", "savoury"],
+    name: 'Sides',
+    tags: ['side', 'savoury'],
     recipes: [],
     public: true,
   },
 };
 
 export async function doLoggedIn(
-  cb: (token: string) => any,
+  cb: (token: string) => unknown,
   details: UserDetails = TestUsers.Chef
 ) {
   await request(app)
-    .post("/user/login")
+    .post('/user/login')
     .send(details)
     .then(async (res) => {
-      assert(res.body.success, "Login failed");
-      assert(res.body.token.startsWith("JWT"), "Bad token.");
+      assert(res.body.success, 'Login failed');
+      assert(res.body.token.startsWith('JWT'), 'Bad token.');
       await cb(res.body.token);
     });
 }
@@ -127,30 +127,30 @@ export async function doLoggedIn(
 // message, passing in an authorization token to the callback.
 export function whenLoggedInIt(
   msg: string,
-  cb: (token: string) => any,
+  cb: (token: string) => unknown,
   as: UserDetails = TestUsers.Chef
 ) {
   it(msg, () => doLoggedIn(cb, as));
 }
 
 async function prepareTestRecipes(token: string, user: string) {
-  for (let recipe of Object.values(TestRecipes)) {
-    let existing = await Recipe.findOne({ user, title: recipe.title });
+  for (const recipe of Object.values(TestRecipes)) {
+    const existing = await Recipe.findOne({ user, title: recipe.title });
 
     if (!existing) {
       await request(app)
-        .post("/recipes/new")
-        .set("Authorization", token)
+        .post('/recipes/new')
+        .set('Authorization', token)
         .send(recipe);
     }
   }
 
   await request(app)
-    .get("/recipes/all")
-    .set("Authorization", token)
+    .get('/recipes/all')
+    .set('Authorization', token)
     .then((res) => {
-      for (let recipe of res.body.list) {
-        for (let obj of Object.values(TestRecipes)) {
+      for (const recipe of res.body.list) {
+        for (const obj of Object.values(TestRecipes)) {
           if (recipe.user == user && recipe.title == obj.title) {
             obj.user = user;
             obj.id = recipe._id;
@@ -168,23 +168,23 @@ async function prepareTestCollections(token: string, user: string) {
   TestCollections.Breakfast.recipes.push(TestRecipes.Pancakes.id);
   TestCollections.Sides.recipes.push(TestRecipes.Rice.id);
 
-  for (let collection of Object.values(TestCollections)) {
-    let existing = await Collection.findOne({ user, name: collection.name });
+  for (const collection of Object.values(TestCollections)) {
+    const existing = await Collection.findOne({ user, name: collection.name });
 
     if (!existing) {
       await request(app)
-        .post("/collections/new")
-        .set("Authorization", token)
+        .post('/collections/new')
+        .set('Authorization', token)
         .send(collection);
     }
   }
 
   await request(app)
-    .get("/collections/all")
-    .set("Authorization", token)
+    .get('/collections/all')
+    .set('Authorization', token)
     .then((res) => {
-      for (let collection of res.body.list) {
-        for (let obj of Object.values(TestCollections)) {
+      for (const collection of res.body.list) {
+        for (const obj of Object.values(TestCollections)) {
           if (collection.user == user && collection.name == obj.name) {
             obj.user = user;
             obj.id = collection._id;
@@ -201,17 +201,17 @@ export async function prepareTestData() {
 
   // Create test users, just returns failure if they already exist, so no
   // need to check for that.
-  for (let details of Object.values(TestUsers)) {
-    await request(app).post("/user/signup").send(details);
+  for (const details of Object.values(TestUsers)) {
+    await request(app).post('/user/signup').send(details);
   }
 
   await doLoggedIn((token) =>
     request(app)
-      .get("/user/profile")
-      .set("Authorization", token)
+      .get('/user/profile')
+      .set('Authorization', token)
       .send()
       .then(async (res) => {
-        let user = res.body.user._id;
+        const user = res.body.user._id;
         await prepareTestRecipes(token, user);
         await prepareTestCollections(token, user);
       })
@@ -222,11 +222,12 @@ export async function prepareTestData() {
 
 export function itShouldRequireAuthentication(
   endpoint: string,
-  method: string = "post",
+  method = 'post',
   body?: string | object
 ) {
-  it("Should require authentication", () =>
+  it('Should require authentication', () =>
     request(app)
+      // eslint-disable-next-line no-unexpected-multiline
       [method](endpoint)
       .send(body)
       .then((res) =>

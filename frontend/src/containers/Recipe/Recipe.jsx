@@ -22,8 +22,8 @@ export default function Recipe(props) {
 
   const recipeDummyData = [
     {
-      id: "1",
-      name: "Gnocchi",
+      id: '1',
+      name: 'Gnocchi',
       primaryImage:
         "https://unsplash.com/photos/Zmhi-OMDVbw/download?ixid=MnwxMjA3fDB8MXxzZWFyY2h8MXx8Z25vY2NoaXxlbnwwfHx8fDE2NjE2NzU5NjQ&w=600",
       ingredients: ["100g Flour", "1tspn Sugar"],
@@ -36,8 +36,8 @@ export default function Recipe(props) {
       servings: 4,
     },
     {
-      id: "2",
-      name: "Ratatouille",
+      id: '2',
+      name: 'Ratatouille',
       primaryImage:
         "https://unsplash.com/photos/3vDJ--i7w88/download?ixid=MnwxMjA3fDB8MXxzZWFyY2h8M3x8cmF0YXRvdWlsbGV8ZW58MHx8fHwxNjYxNjc2MDY0&w=600",
       ingredients: ["250g Pumpkin", "500mL Water"],

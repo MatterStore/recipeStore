@@ -12,7 +12,10 @@
     "postinstall": "tsc",
     "heroku-postbuild": "cd frontend && npm install && npm run build",
     "prepare": "husky install",
-    "pretty-quick": "pretty-quick"
+    "pretty-quick": "pretty-quick",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write './**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc"
   },
   "author": "MatterStore",
   "license": "MIT",
@@ -41,7 +44,11 @@
     "@types/mongoose": "^5.11.97",
     "@types/node": "^17.0.29",
     "@types/supertest": "^2.0.12",
+    "@typescript-eslint/eslint-plugin": "^5.38.0",
+    "@typescript-eslint/parser": "^5.38.0",
     "chai": "^4.3.6",
+    "eslint": "^8.24.0",
+    "eslint-plugin-react": "^7.31.8",
     "husky": "^8.0.0",
     "mocha": "^10.0.0",
     "nodemon": "^2.0.19",
