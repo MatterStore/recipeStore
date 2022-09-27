@@ -1,13 +1,13 @@
-import Joi from "joi";
-import lodash from "lodash";
-import mongoose from "mongoose";
+import Joi from 'joi';
+import lodash from 'lodash';
+import mongoose from 'mongoose';
 
 export default function validateParams(paramSchema) {
   return async (req, res, next) => {
     const schema = Joi.object().keys(paramSchema);
     const paramSchemaKeys = Object.keys(paramSchema);
-    let requestParamObj = {};
-    for (let key of paramSchemaKeys) {
+    const requestParamObj = {};
+    for (const key of paramSchemaKeys) {
       requestParamObj[key] = lodash.get(req.body, key);
     }
     try {
