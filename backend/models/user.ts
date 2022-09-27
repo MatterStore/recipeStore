@@ -1,5 +1,5 @@
-import mongoose, { ObjectId } from "mongoose";
-import bcrypt from "bcryptjs";
+import mongoose, { ObjectId } from 'mongoose';
+import bcrypt from 'bcryptjs';
 
 export interface IUser {
   _id: ObjectId;
@@ -33,7 +33,7 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-const User = mongoose.model("User", userSchema);
+const User = mongoose.model('User', userSchema);
 
 export default User;
 
