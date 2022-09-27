@@ -20,7 +20,8 @@ export default function Nav(props) {
                 <Link
                   to={`${path}`}
                   className={`block py-2 px-2.5 rounded select-none transition-colors ${
-                    location.pathname === path
+                    location.pathname === path ||
+                    location.pathname === path + '/'
                       ? `bg-blue-200 text-blue-600 p-0 `
                       : `hover:text-blue-700 p-0 text-neutral-600 `
                   }`}>
