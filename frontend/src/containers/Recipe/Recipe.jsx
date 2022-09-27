@@ -112,15 +112,15 @@ export default function Recipe(props) {
           <span>
             <label className="">
               <ClockIcon size={16} />
-              <input type="number" value={recipe.time.hours} onChange={(e)=>{setTimeHours(e.target.value)}} className="bg-slate-100 appearance-none inline-block w-16 px-3 py-1.5 border border-solid rounded mx-2" />
+              <input type="number" value={recipe.time.hours} min="0" onChange={(e)=>{setTimeHours(e.target.value)}} className="bg-slate-100 appearance-none inline-block w-16 px-3 py-1.5 border border-solid rounded mx-2" />
               hours
-              <input type="number" value={recipe.time.minutes} onChange={(e)=>{setTimeMinutes(e.target.value)}} className="bg-slate-100 appearance-none inline-block w-16 px-3 py-1.5 border border-solid rounded mx-2" />
+              <input type="number" value={recipe.time.minutes} min="0" onChange={(e)=>{setTimeMinutes(e.target.value)}} className="bg-slate-100 appearance-none inline-block w-16 px-3 py-1.5 border border-solid rounded mx-2" />
               minutes
             </label>
             <label className="ml-4">
               <PersonIcon size={16} />
 
-              <input type="number" value={recipe.servings} onChange={(e)=>{setServes(e.target.value)}} className="bg-slate-100 appearance-none inline-block w-40 px-3 py-1.5 border border-solid rounded ml-2" />
+              <input type="number" value={recipe.servings} min="1" onChange={(e)=>{setServes(e.target.value)}} className="bg-slate-100 appearance-none inline-block w-40 px-3 py-1.5 border border-solid rounded ml-2" />
 
             </label>
             <label className="ml-4">
@@ -139,7 +139,7 @@ export default function Recipe(props) {
               recipe.time.hours + ` hour${recipe.time.hours > 1 ? 's' : ''} `
             : null}{
             (recipe.time.minutes ?
-              recipe.time.minutes + ` minute${recipe.time.minutes > 1 ? 's' : ''}` : null)}
+              recipe.time.minutes + ` minute${recipe.time.minutes > 1 ? 's ' : ' '}` : null)}
              — Serves {recipe.servings}
           </span>
         )}
