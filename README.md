@@ -1,5 +1,13 @@
 # RecipeStore
 
+### Members
+
+* Daniel Blaker - `5Mixer`
+* Jade Siang - `jadesiang`
+* Owen Feik - `OwenFeik`
+* Manu Masson - `manu354`
+* Paul Hutchins - `hutchinsp01`
+
 ### Requirements
 
 1. NodeJS - [Install](https://nodejs.org/en/download/)
