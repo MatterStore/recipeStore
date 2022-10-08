@@ -1,12 +1,12 @@
-import { useState, useEffect } from "react";
-import axios from "../../api/axios";
+import { useState, useEffect } from 'react';
+import axios from '../../api/axios';
 
-import { allRecipesRoute } from "../../api/routes";
+import { allRecipesRoute } from '../../api/routes';
 
-import Header from "../../components/Header";
-import Button from "../../components/Button";
-import Recipe from "../../components/Recipe";
-import Subheader from "../../components/Subheader";
+import Header from '../../components/Header';
+import Button from '../../components/Button';
+import Recipe from '../../components/Recipe';
+import Subheader from '../../components/Subheader';
 
 export default function Listing() {
   // const [CollectionsData, setCollectionsData] = useState(null);
@@ -30,35 +30,6 @@ export default function Listing() {
     fetchRecipes();
   }, []);
 
-  console.log({
-    recipesData: recipesData,
-    recipesLoading: recipesLoading,
-    recipesError: recipesError,
-  });
-
-  // const recipes = fetch(usersRecipesRoute)
-  //   .then((response) => response.json())
-  //   .then((data) => console.log(data));
-  // const recipes = [
-  //   {
-  //     id: "1",
-  //     name: "Gnocchi",
-  //     primaryImage:
-  //       "https://unsplash.com/photos/Zmhi-OMDVbw/download?ixid=MnwxMjA3fDB8MXxzZWFyY2h8MXx8Z25vY2NoaXxlbnwwfHx8fDE2NjE2NzU5NjQ&w=400",
-  //   },
-  //   {
-  //     id: "2",
-  //     name: "Ratatouille",
-  //     primaryImage:
-  //       "https://unsplash.com/photos/3vDJ--i7w88/download?ixid=MnwxMjA3fDB8MXxzZWFyY2h8M3x8cmF0YXRvdWlsbGV8ZW58MHx8fHwxNjYxNjc2MDY0&w=400",
-  //   },
-  // ];
-
-  // const collections = {
-  //   "Your Recipe Collection": [1, 2],
-  //   "Easy Dinners": [1],
-  // };
-
   return (
     <div>
       <main className="p-16 mx-auto container flex flex-col">
@@ -74,10 +45,9 @@ export default function Listing() {
           <>
             <div
               className="mt-4 mb-12 self-center lg:self-start w-full"
-              key={1}
-            >
+              key={1}>
               <Subheader key={1}>
-                {"Your Recipe Collection"}
+                {'Your Recipe Collection'}
                 {/* <Link
                   to={`/collection/${"Your Recipe Collection"}`}
                   className={`ml-8 text-lg underline subpixel-antialiased text-purple-600 whitespace-pre-wrap`}
@@ -89,8 +59,7 @@ export default function Listing() {
                 {recipesData.map((recipe) => (
                   <div
                     className="mx-auto inline-block"
-                    key={recipe.title + `-${recipe._id}`}
-                  >
+                    key={recipe.title + `-${recipe._id}`}>
                     <Recipe {...recipe} />
                   </div>
                 ))}
