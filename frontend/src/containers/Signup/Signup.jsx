@@ -79,7 +79,7 @@ export default function Signup() {
           navigate('/login');
         })
         .catch(function (error) {
-          setSignupError(error.response.data.message);
+          setSignupError(error.response.data.msg);
         });
     }
   };
