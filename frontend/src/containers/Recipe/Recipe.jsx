@@ -14,6 +14,7 @@ import {
   ListUnorderedIcon
 } from '@primer/octicons-react'
 import ListTextArea from "../../components/ListTextArea";
+import Ellipsis from "../../components/Ellipsis";
 
 export default function Recipe(props) {
   let params = useParams();
@@ -107,68 +108,77 @@ export default function Recipe(props) {
           <Header inline>{recipe.name}</Header>
         )
       }
-      <span>
-        { editing ? (
-          <span>
-            <label className="">
-              <ClockIcon size={16} />
-              <input type="number" value={recipe.time.hours} min="0" onChange={(e)=>{setTimeHours(e.target.value)}} className="bg-slate-100 appearance-none inline-block w-16 px-3 py-1.5 border border-solid rounded mx-2" />
-              hours
-              <input type="number" value={recipe.time.minutes} min="0" onChange={(e)=>{setTimeMinutes(e.target.value)}} className="bg-slate-100 appearance-none inline-block w-16 px-3 py-1.5 border border-solid rounded mx-2" />
-              minutes
-            </label>
-            <label className="ml-4">
-              <PersonIcon size={16} />
+      <div className="flex flex-row w-full">
+        <span>
+          { editing ? (
+            <span>
+              <label className="">
+                <ClockIcon size={16} />
+                <input type="number" value={recipe.time.hours} min="0" onChange={(e)=>{setTimeHours(e.target.value)}} className="bg-slate-100 appearance-none inline-block w-16 px-3 py-1.5 border border-solid rounded mx-2" />
+                hours
+                <input type="number" value={recipe.time.minutes} min="0" onChange={(e)=>{setTimeMinutes(e.target.value)}} className="bg-slate-100 appearance-none inline-block w-16 px-3 py-1.5 border border-solid rounded mx-2" />
+                minutes
+              </label>
+              <label className="ml-4">
+                <PersonIcon size={16} />
 
-              <input type="number" value={recipe.servings} min="1" onChange={(e)=>{setServes(e.target.value)}} className="bg-slate-100 appearance-none inline-block w-40 px-3 py-1.5 border border-solid rounded ml-2" />
+                <input type="number" value={recipe.servings} min="1" onChange={(e)=>{setServes(e.target.value)}} className="bg-slate-100 appearance-none inline-block w-40 px-3 py-1.5 border border-solid rounded ml-2" />
 
-            </label>
-            <label className="ml-4">
-              { props.public ? (<GlobeIcon size={16} />) : (<LockIcon size={16} />)}
+              </label>
+              <label className="ml-4">
+                { props.public ? (<GlobeIcon size={16} />) : (<LockIcon size={16} />)}
+                
+                <select name="publicity" id="publicity" className="bg-slate-100 appearance-none inline-block w-40 px-3 py-1.5 border border-solid rounded ml-2">
+                  <option value="public">Public</option>
+                  <option value="private">Private</option>
+                </select>
+              </label>
               
-              <select name="publicity" id="publicity" className="bg-slate-100 appearance-none inline-block w-40 px-3 py-1.5 border border-solid rounded ml-2">
-                <option value="public">Public</option>
-                <option value="private">Private</option>
-              </select>
-            </label>
-            
-          </span>
-        ) : (
-          <span className="appearance-none inline-block w-96 py-1.5">
-            {recipe.time.hours > 0 ? 
-              recipe.time.hours + ` hour${recipe.time.hours > 1 ? 's' : ''} `
-            : null}{
-            (recipe.time.minutes ?
-              recipe.time.minutes + ` minute${recipe.time.minutes > 1 ? 's ' : ' '}` : null)}
-             — Serves {recipe.servings}
-          </span>
-        )}
-      </span>
-      <span className="float-right">
-        { editing ? (
-          <Button primary={false} to={`/recipe/${params.recipeId}/`} className="leading-3 w-24">
-            Save
-          </Button>
-        ) : (
-          <Button primary={false} to="edit" className="leading-3 min-w-96">
-            Edit
-          </Button>
-        )}
-      </span>
-      <span className="block mt-4 lg:mt-0 lg:inline lg:float-right">
-        {editing ? (
-          recipe.tags.map((tag, i) => (
-            <Tag key={i} className="cursor-pointer select-none">
-              <TrashIcon size={24} className={`pt-1.5 pb-0.5`}/>  
-              {tag}
-            </Tag>
-          ))
-        ) : (
-          recipe.tags.map((tag, i) => (
-            <Tag key={i}>{tag}</Tag>
-          ))
-        )}
-      </span>
+            </span>
+          ) : (
+            <span className="appearance-none inline-block py-1.5">
+              {recipe.time.hours > 0 ? 
+                recipe.time.hours + ` hour${recipe.time.hours > 1 ? 's' : ''} `
+              : null}{
+              (recipe.time.minutes ?
+                recipe.time.minutes + ` minute${recipe.time.minutes > 1 ? 's ' : ' '}` : null)}
+              — Serves {recipe.servings}
+            </span>
+          )}
+        </span>
+        <span className="ml-auto">
+          { editing ? (
+            <Button primary={false} to={`/recipe/${params.recipeId}/`} className="leading-3 w-24">
+              Save
+            </Button>
+          ) : (
+            <></>
+            // <Button primary={false} to="edit" className="leading-3 min-w-96">
+            //   Edit
+            // </Button>
+          )}
+        </span>
+        <div>
+          {editing ? (
+            recipe.tags.map((tag, i) => (
+              <Tag key={i} className="cursor-pointer select-none">
+                <TrashIcon size={24} className={`pt-1.5 pb-0.5`}/>  
+                {tag}
+              </Tag>
+            ))
+          ) : (
+            recipe.tags.map((tag, i) => (
+              <Tag key={i}>{tag}</Tag>
+            ))
+              //  <span primary={false} to="" className="leading-3 font-bold mb-4 text-slate-600 cursor-pointer select-none rounded hover:bg-slate-200">
+              //   Save to collection
+              // </span>
+          )}
+        </div>
+        <div>
+          <Ellipsis />
+        </div>
+      </div>
 
       <hr className="my-8" />
       <main className="grid grid-cols-1 lg:grid-cols-2">
