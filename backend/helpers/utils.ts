@@ -25,7 +25,7 @@ export function withRecord<T>(
   model: Model<T>,
   matchUser = false
 ): (req: AuthenticatedRequest, res: Response, next: NextFunction) => void {
-  return async (req: AuthenticatedRequest, res: Response, next: NextFunction) =>
+  return (req: AuthenticatedRequest, res: Response, next: NextFunction) =>
     model.findById(req.params.id, (err, record) => {
       if (err) {
         res.status(422).json({ success: false, msg: 'Something went wrong.' });
