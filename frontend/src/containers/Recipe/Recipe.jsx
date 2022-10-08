@@ -17,7 +17,7 @@ import {
   ListUnorderedIcon,
 } from '@primer/octicons-react';
 import ListTextArea from '../../components/ListTextArea';
-import { recipeRoute } from '../../api/routes';
+import { recipesRoute } from '../../api/routes';
 
 export default function Recipe(props) {
   let params = useParams();
@@ -29,9 +29,9 @@ export default function Recipe(props) {
   useEffect(() => {
     async function fetchRecipes() {
       axios
-        .get(recipeRoute(params.recipeId))
+        .get(recipesRoute(params.recipeId))
         .then((response) => {
-          setRecipe(response.data);
+          setRecipe(response.data.recipe);
           setRecipeLoading(false);
         })
         .catch((error) => setRecipeError(error));
@@ -56,9 +56,9 @@ export default function Recipe(props) {
     clone.steps = steps;
     setRecipe(clone);
   };
-  const setRecipeName = (name) => {
+  const setRecipeTitle = (title) => {
     let clone = cloneRecipe();
-    clone.name = name;
+    clone.title = title;
     setRecipe(clone);
   };
   const setTimeHours = (hours) => {
@@ -88,15 +88,15 @@ export default function Recipe(props) {
           <div className="max-w-xl mt-4">
             <Textfield
               params={{
-                value: recipe.name,
+                value: recipe.title,
                 onChange: (e) => {
-                  setRecipeName(e.target.value);
+                  setRecipeTitle(e.target.value);
                 },
               }}
               className="text-3xl"></Textfield>
           </div>
         ) : (
-          <Header inline>{recipe.name}</Header>
+          <Header inline>{recipe.title}</Header>
         )}
         <span>
           {editing ? (
@@ -155,11 +155,11 @@ export default function Recipe(props) {
             </span>
           ) : (
             <span className="appearance-none inline-block w-96 py-1.5">
-              {recipe.time.hours > 0
+              {recipe.time?.hours && recipe.time.hours > 0
                 ? recipe.time.hours +
                   ` hour${recipe.time.hours > 1 ? 's' : ''} `
                 : null}
-              {recipe.time.minutes
+              {recipe.time?.minutes && recipe.time.minutes
                 ? recipe.time.minutes +
                   ` minute${recipe.time.minutes > 1 ? 's ' : ' '}`
                 : null}
@@ -195,7 +195,7 @@ export default function Recipe(props) {
         <hr className="my-8" />
         <main className="grid grid-cols-1 lg:grid-cols-2">
           <article>
-            <ListTextArea
+            {/* <ListTextArea
               title={'Ingredients'}
               listElementsIcon={<ListUnorderedIcon size={24} />}
               listMode={ingredientMode}
@@ -214,7 +214,7 @@ export default function Recipe(props) {
               setItems={setSteps}
               editing={editing}
               ordered={true}
-            />
+            /> */}
           </article>
           <div>
             {editing ? (
