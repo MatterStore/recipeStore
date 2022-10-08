@@ -15,11 +15,14 @@ import {
 } from '@primer/octicons-react'
 import ListTextArea from "../../components/ListTextArea";
 import Ellipsis from "../../components/Ellipsis";
+import FloatingMenu from "../../components/FloatingMenu";
+import { useNavigate } from "react-router-dom";
 
 export default function Recipe(props) {
   let params = useParams();
 
   const editing = props.edit;
+  const navigate = useNavigate()
 
   const recipeDummyData = [
     {
@@ -151,12 +154,7 @@ export default function Recipe(props) {
             <Button primary={false} to={`/recipe/${params.recipeId}/`} className="leading-3 w-24">
               Save
             </Button>
-          ) : (
-            <></>
-            // <Button primary={false} to="edit" className="leading-3 min-w-96">
-            //   Edit
-            // </Button>
-          )}
+          ) : null }
         </span>
         <div>
           {editing ? (
@@ -170,14 +168,16 @@ export default function Recipe(props) {
             recipe.tags.map((tag, i) => (
               <Tag key={i}>{tag}</Tag>
             ))
-              //  <span primary={false} to="" className="leading-3 font-bold mb-4 text-slate-600 cursor-pointer select-none rounded hover:bg-slate-200">
-              //   Save to collection
-              // </span>
           )}
         </div>
-        <div>
-          <Ellipsis />
-        </div>
+        { !editing ? <div>
+          <Ellipsis>
+            <FloatingMenu
+              onDeleteRecipe={() => { }}
+              onEditRecipe={() => { navigate("edit") }}
+            />
+          </Ellipsis>
+        </div> : null }
       </div>
 
       <hr className="my-8" />
