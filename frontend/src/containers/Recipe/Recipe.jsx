@@ -149,14 +149,8 @@ export default function Recipe(props) {
             </span>
           )}
         </span>
-        <span className="ml-auto">
-          { editing ? (
-            <Button primary={false} to={`/recipe/${params.recipeId}/`} className="leading-3 w-24">
-              Save
-            </Button>
-          ) : null }
-        </span>
-        <div>
+        
+        <div className="ml-auto">
           {editing ? (
             recipe.tags.map((tag, i) => (
               <Tag key={i} className="cursor-pointer select-none">
@@ -169,6 +163,13 @@ export default function Recipe(props) {
               <Tag key={i}>{tag}</Tag>
             ))
           )}
+        </div>
+        <div>
+          { editing ? (
+            <Button primary={false} to={`/recipe/${params.recipeId}/`} className="align-bottom leading-3">
+              Save
+            </Button>
+          ) : null }
         </div>
         { !editing ? <div>
           <Ellipsis>
