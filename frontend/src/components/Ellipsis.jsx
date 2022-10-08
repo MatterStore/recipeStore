@@ -1,4 +1,3 @@
-import FloatingMenu from "./FloatingMenu";
 import { useState } from "react";
 
 export default function Ellipsis(props) {
@@ -18,7 +17,7 @@ export default function Ellipsis(props) {
         ...
         </span>
         {
-          open ? <FloatingMenu /> : null
+          open ? props.children : null
         }
         
     </span>

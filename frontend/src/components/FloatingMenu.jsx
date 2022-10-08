@@ -2,7 +2,7 @@ import { useState } from "react";
 
 export default function FloatingMenu(props) {
   function MenuEntry(props) {
-    return <li className={`p-4 hover:bg-slate-200`}>
+    return <li className={`p-4 hover:bg-slate-200`} onClick={props.onClick}>
       {props.children}
     </li>
   } 
@@ -16,9 +16,9 @@ export default function FloatingMenu(props) {
       {props.name}
       {
         open ? (
-          <div className="absolute shadow-lg rounded right-[calc(10rem+1px)] w-40 top-0 z-50 bg-slate-50 ring-1 ring-slate-300">
+          <ul className="absolute shadow-lg rounded right-[calc(10rem+1px)] w-40 top-0 z-50 bg-slate-50 ring-1 ring-slate-300">
             {props.children}
-          </div>
+          </ul>
         ) : null
       }
     </li>
@@ -27,7 +27,7 @@ export default function FloatingMenu(props) {
     return (
       <div className="absolute shadow rounded right-0 top-8 z-50 bg-slate-50 ring-1 ring-slate-300 w-40">
         <ul>
-          <MenuEntry>
+          <MenuEntry onClick={() => { props.onEditRecipe() }}>
             Edit Recipe
           </MenuEntry>
           <ParentMenuEntry name="Add to Collection">
@@ -35,15 +35,12 @@ export default function FloatingMenu(props) {
             <hr />
             {
               ['🇬🇷 Greek', '🍕 Pizzas', '🥩 Meat lovers', '🇹🇭 Thai'].map(name => {return (
-                <MenuEntry>{name}</MenuEntry>
+                <MenuEntry key={name}>{name}</MenuEntry>
               )})
             }
           </ParentMenuEntry>
-          <MenuEntry>
+          <MenuEntry onClick={props.onDeleteRecipe}>
             Delete Recipe
-          </MenuEntry>
-          <MenuEntry>
-            Play Recipe Radio
           </MenuEntry>
         </ul>
       </div>
