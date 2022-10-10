@@ -60,7 +60,8 @@ here to avoid duplication.
       ],
       steps: [string],
       tags: [string],
-      public: boolean
+      public: boolean,
+      image: string?,
   }
   ```
 - **Collection**
@@ -166,7 +167,8 @@ here to avoid duplication.
           ],
           steps: [string],
           tags: [string],
-          public: bool?
+          public: bool?,
+          image: string?,
       }
       ```
   - `GET /recipes/all`
