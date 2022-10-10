@@ -1,21 +1,21 @@
-import { useContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useContext, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-import { AuthContext } from "../../contexts/AuthContext";
-import validator from "validator";
-import axios from "../../api/axios";
-import { loginRoute } from "../../api/routes";
+import { AuthContext } from '../../contexts/AuthContext';
+import validator from 'validator';
+import axios from '../../api/axios';
+import { loginRoute } from '../../api/routes';
 
-import SubmitButton from "../../components/SubmitButton";
-import Header from "../../components/Header";
-import FormField from "../../components/FormField";
+import SubmitButton from '../../components/SubmitButton';
+import Header from '../../components/Header';
+import FormField from '../../components/FormField';
 
 export default function Login() {
-  const [password, setPassword] = useState("");
-  const [email, setEmail] = useState("");
-  const [passwordError, setPasswordError] = useState("");
-  const [emailError, setEmailError] = useState("");
-  const [loginError, setLoginError] = useState("");
+  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [loginError, setLoginError] = useState('');
   const [formValid, setFormValid] = useState(false);
 
   const { setIsLoggedIn, setUser } = useContext(AuthContext);
@@ -26,10 +26,10 @@ export default function Login() {
 
     if (!validator.isEmail(email)) {
       formIsValid = false;
-      setEmailError("Email Not Valid");
+      setEmailError('Email Not Valid');
       return false;
     } else {
-      setEmailError("");
+      setEmailError('');
       formIsValid = true;
     }
 
@@ -43,10 +43,10 @@ export default function Login() {
       })
     ) {
       formIsValid = false;
-      setPasswordError("Must contain 8 characters");
+      setPasswordError('Must contain 8 characters');
       return false;
     } else {
-      setPasswordError("");
+      setPasswordError('');
       formIsValid = true;
     }
     setFormValid(formIsValid);
@@ -65,11 +65,11 @@ export default function Login() {
         .then(function (response) {
           setIsLoggedIn(true);
           setUser(response.data.user);
-          localStorage.setItem("token", response.data.token);
-          navigate("/listing/");
+          localStorage.setItem('token', response.data.token);
+          navigate('/listing/');
         })
         .catch(function (error) {
-          setLoginError("Invalid Password or Email");
+          setLoginError('Invalid Password or Email');
         });
     }
   };

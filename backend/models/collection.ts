@@ -1,4 +1,4 @@
-import pkg, { ObjectId } from "mongoose";
+import pkg, { ObjectId } from 'mongoose';
 const { Schema, Types, model } = pkg;
 
 export interface ICollection {
@@ -34,7 +34,7 @@ const collectionSchema = new Schema({
   },
 });
 
-const Collection = model("Collection", collectionSchema);
+const Collection = model('Collection', collectionSchema);
 export default Collection;
 
 export function getByUser(user: string | ObjectId, callback) {
@@ -43,7 +43,7 @@ export function getByUser(user: string | ObjectId, callback) {
 
 export function getById(
   id: string,
-  callback: (err: any, collection?: ICollection) => void
+  callback: (err: unknown, collection?: ICollection) => void
 ) {
   Collection.findOne({ _id: id }, callback);
 }
