@@ -22,8 +22,18 @@ import { recipesRoute } from '../../api/routes';
 export default function Recipe(props) {
   let params = useParams();
 
-  const [recipe, setRecipe] = useState(null);
-  const [recipeLoading, setRecipeLoading] = useState(true);
+  const defaultRecipe = {
+    tags: [],
+    servings: 1,
+    time: {
+      hours: 0,
+      minutes: 0
+    },
+    primaryImage: null
+  };
+
+  const [recipe, setRecipe] = useState(props.new ? defaultRecipe: null);
+  const [recipeLoading, setRecipeLoading] = useState(!props.new);
   const [recipeError, setRecipeError] = useState(null);
 
   useEffect(() => {
@@ -36,10 +46,12 @@ export default function Recipe(props) {
         })
         .catch((error) => setRecipeError(error));
     }
-    fetchRecipes();
+    if (!props.new) {
+      fetchRecipes();
+    }
   }, [params.recipeId]);
 
-  const editing = props.edit;
+  const editing = props.edit || props.new;
 
   // Inefficient but good enough.
   const cloneRecipe = () => {
@@ -155,11 +167,11 @@ export default function Recipe(props) {
             </span>
           ) : (
             <span className="appearance-none inline-block w-96 py-1.5">
-              {recipe.time?.hours && recipe.time.hours > 0
+              {recipe.time.hours && recipe.time.hours > 0
                 ? recipe.time.hours +
                   ` hour${recipe.time.hours > 1 ? 's' : ''} `
                 : null}
-              {recipe.time?.minutes && recipe.time.minutes
+              {recipe.time.minutes && recipe.time.minutes
                 ? recipe.time.minutes +
                   ` minute${recipe.time.minutes > 1 ? 's ' : ' '}`
                 : null}
