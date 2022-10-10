@@ -1,7 +1,6 @@
 import express from 'express';
 import Joi from 'joi';
 
-import validateParams from '../helpers/params-validator.js';
 import {
   authenticate,
   AuthenticatedRequest,
