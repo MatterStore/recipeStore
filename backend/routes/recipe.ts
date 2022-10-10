@@ -1,16 +1,11 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import express from 'express';
 import Joi from 'joi';
-import passport from 'passport';
 
-import validateParams from '../helpers/params-validator.js';
 import {
+  authenticate,
   AuthenticatedRequest,
-  cmpObjectIds,
-  RecordRequest,
-  withRecord,
-} from '../helpers/utils.js';
-
+} from '../helpers/authentication.js';
+import validateParams from '../helpers/params-validator.js';
 import Recipe, {
   deleteById,
   getAllPublic,
@@ -18,6 +13,7 @@ import Recipe, {
   IRecipe,
 } from '../models/recipe.js';
 import Tag from '../models/tag.js';
+import { cmpObjectIds, RecordRequest, withRecord } from '../helpers/utils.js';
 
 type RecipeRequest = RecordRequest<IRecipe>;
 
@@ -26,7 +22,7 @@ export default router;
 
 router.post(
   '/new',
-  passport.authenticate('user', { session: false }),
+  authenticate(),
   validateParams({
     title: Joi.string().required(),
     cooking_time: Joi.string(),
@@ -67,37 +63,29 @@ router.post(
   }
 );
 
-router.get(
-  '/all',
-  passport.authenticate('user', { session: false }),
-  (req: AuthenticatedRequest, res, next) => {
-    getByUser(req.user._id, (err, list) => {
-      if (err) {
-        res.status(422).json({ success: false, msg: 'Something went wrong.' });
-      } else {
-        res.status(200).json({ success: true, msg: 'Recipes found.', list });
-      }
-    });
-  }
-);
+router.get('/all', authenticate(), (req: AuthenticatedRequest, res, next) => {
+  getByUser(req.user._id, (err, list) => {
+    if (err) {
+      res.status(422).json({ success: false, msg: 'Something went wrong.' });
+    } else {
+      res.status(200).json({ success: true, msg: 'Recipes found.', list });
+    }
+  });
+});
 
-router.get(
-  '/all/public',
-  passport.authenticate('user', { session: false }),
-  (req, res, next) => {
-    getAllPublic((err, list: IRecipe[]) => {
-      if (err) {
-        res.status(422).json({ success: false, msg: 'Something went wrong.' });
-      } else {
-        res.status(200).json({ success: true, msg: 'Recipes found.', list });
-      }
-    });
-  }
-);
+router.get('/all/public', authenticate(), (req, res, next) => {
+  getAllPublic((err, list: IRecipe[]) => {
+    if (err) {
+      res.status(422).json({ success: false, msg: 'Something went wrong.' });
+    } else {
+      res.status(200).json({ success: true, msg: 'Recipes found.', list });
+    }
+  });
+});
 
 router.get(
   '/:id',
-  passport.authenticate('user', { session: false }),
+  authenticate(),
   withRecord(Recipe),
   (req: RecipeRequest, res, next) => {
     const recipe = req.record;
@@ -114,7 +102,7 @@ router.get(
 
 router.delete(
   '/:id',
-  passport.authenticate('user', { session: false }),
+  authenticate(),
   withRecord(Recipe, true),
   (req: RecipeRequest, res, next) => {
     const recipe = req.record;
@@ -140,7 +128,7 @@ router.delete(
 
 router.patch(
   '/:id',
-  passport.authenticate('user', { session: false }),
+  authenticate(),
   validateParams({
     title: Joi.string(),
     cooking_time: Joi.string(),

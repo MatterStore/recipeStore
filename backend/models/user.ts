@@ -1,6 +1,8 @@
 import mongoose, { ObjectId } from 'mongoose';
 import bcrypt from 'bcryptjs';
 
+const BCRYPT_CONST = 10;
+
 export interface IUser {
   _id: ObjectId;
   email: string;
@@ -51,7 +53,7 @@ export function getUserByEmail(email, callback) {
 }
 
 export function addUser(newUser, callback) {
-  bcrypt.genSalt(10, (err, salt) => {
+  bcrypt.genSalt(BCRYPT_CONST, (err, salt) => {
     bcrypt.hash(newUser.password, salt, (err, hash) => {
       if (err) throw err;
       newUser.password = hash;
@@ -61,26 +63,33 @@ export function addUser(newUser, callback) {
 }
 
 export function comparePassword(candidatePassword, hash, callback) {
-  if (!candidatePassword) {
-    return false;
+  if (candidatePassword) {
+    bcrypt.compare(candidatePassword, hash, callback);
+  } else {
+    callback('Invalid password', false);
   }
-  bcrypt.compare(candidatePassword, hash, (err, isMatch) => {
-    if (err) throw err;
-    callback(null, isMatch);
-  });
 }
 
-export function updatePassword(newUser, callback) {
-  bcrypt.genSalt(10, (err, salt) => {
-    if (err) throw err;
-    bcrypt.hash(newUser.newPassword, salt, (err, hash) => {
-      if (err) throw err;
-      newUser.newPassword = hash;
-      User.updateOne(
-        { email: newUser.email },
-        { $set: { password: newUser.newPassword } },
-        callback
-      );
-    });
+export function updatePassword(
+  userId: ObjectId,
+  newPassword: string,
+  callback: (err: any, ok: boolean) => void
+) {
+  bcrypt.genSalt(BCRYPT_CONST, (err, salt) => {
+    if (err) {
+      callback(err, false);
+    } else {
+      bcrypt.hash(newPassword, salt, (err, hash) => {
+        if (err) {
+          callback(err, false);
+        } else {
+          User.updateOne(
+            { _id: userId },
+            { $set: { password: hash } },
+            callback
+          );
+        }
+      });
+    }
   });
 }
