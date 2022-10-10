@@ -1,7 +1,7 @@
-import { NextFunction, Response } from "express";
-import { Model, ObjectId } from "mongoose";
+import { NextFunction, Response } from 'express';
+import { Model, ObjectId } from 'mongoose';
 
-import { AuthenticatedRequest } from "./authentication";
+import { AuthenticatedRequest } from './authentication';
 
 export interface RecordRequest<T> extends AuthenticatedRequest {
   record: T;
@@ -19,18 +19,18 @@ export interface RecordRequest<T> extends AuthenticatedRequest {
  */
 export function withRecord<T>(
   model: Model<T>,
-  matchUser: boolean = false
+  matchUser = false
 ): (req: AuthenticatedRequest, res: Response, next: NextFunction) => void {
-  return async (req: AuthenticatedRequest, res: Response, next: NextFunction) =>
+  return (req: AuthenticatedRequest, res: Response, next: NextFunction) =>
     model.findById(req.params.id, (err, record) => {
       if (err) {
-        res.status(422).json({ success: false, msg: "Something went wrong." });
+        res.status(422).json({ success: false, msg: 'Something went wrong.' });
       } else if (!record) {
-        res.status(404).json({ success: false, msg: "Record not found." });
+        res.status(404).json({ success: false, msg: 'Record not found.' });
       } else if (matchUser && !cmpObjectIds(req.user._id, record.user)) {
         res.status(403).json({
           success: false,
-          msg: "Recipe belongs to another user.",
+          msg: 'Recipe belongs to another user.',
         });
       } else {
         (req as RecordRequest<T>).record = record;

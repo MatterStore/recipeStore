@@ -1,5 +1,5 @@
-import mongoose, { ObjectId } from "mongoose";
-import bcrypt from "bcryptjs";
+import mongoose, { ObjectId } from 'mongoose';
+import bcrypt from 'bcryptjs';
 
 const BCRYPT_CONST = 10;
 
@@ -35,7 +35,7 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-const User = mongoose.model("User", userSchema);
+const User = mongoose.model('User', userSchema);
 
 export default User;
 
@@ -66,7 +66,7 @@ export function comparePassword(candidatePassword, hash, callback) {
   if (candidatePassword) {
     bcrypt.compare(candidatePassword, hash, callback);
   } else {
-    callback("Invalid password", false);
+    callback('Invalid password', false);
   }
 }
 

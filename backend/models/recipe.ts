@@ -1,4 +1,4 @@
-import pkg, { ObjectId } from "mongoose";
+import pkg, { ObjectId } from 'mongoose';
 const { Schema, Types, model } = pkg;
 
 export interface IRecipe {
@@ -72,7 +72,7 @@ const recipeSchema = new Schema({
   },
 });
 
-const Recipe = model("Recipe", recipeSchema);
+const Recipe = model('Recipe', recipeSchema);
 
 export default Recipe;
 
