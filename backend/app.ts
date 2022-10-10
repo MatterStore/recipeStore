@@ -38,7 +38,7 @@ if (
   process.env.NODE_ENV === 'staging'
 ) {
   app.use(express.static(path.resolve(__dirname, 'frontend/build')));
-  app.get('*', (req, res) => {
+  app.get('/', (req, res) => {
     const buildPath = path.join(
       path.resolve(__dirname, 'frontend/build/index.html')
     );
