@@ -2,11 +2,11 @@
 
 ### Members
 
-* Daniel Blaker - `5Mixer`
-* Jade Siang - `jadesiang`
-* Owen Feik - `OwenFeik`
-* Manu Masson - `manu354`
-* Paul Hutchins - `hutchinsp01`
+- Daniel Blaker - `5Mixer`
+- Jade Siang - `jadesiang`
+- Owen Feik - `OwenFeik`
+- Manu Masson - `manu354`
+- Paul Hutchins - `hutchinsp01`
 
 ### Requirements
 
