@@ -26,7 +26,7 @@ export default router;
 
 router.post(
   '/new',
-  passport.authenticate('user', { session: false }),
+  authenticate(),
   validateParams({
     name: Joi.string().max(255).required(),
     tags: Joi.array().items(Tag.validator).required(),
@@ -148,7 +148,7 @@ router.post(
   validateParams({
     recipes: Joi.array().items(objectId()),
   }),
-  passport.authenticate('user', { session: false }),
+  authenticate(),
   withRecord(Collection, true),
   (req: CollectionRequest, res) => {
     const collection = req.record;
