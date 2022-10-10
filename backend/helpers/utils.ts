@@ -1,11 +1,7 @@
-import { NextFunction, Request, Response } from 'express';
+import { NextFunction, Response } from 'express';
 import { Model, ObjectId } from 'mongoose';
 
-import { IUser } from '../models/user';
-
-export interface AuthenticatedRequest extends Request {
-  user: IUser;
-}
+import { AuthenticatedRequest } from './authentication';
 
 export interface RecordRequest<T> extends AuthenticatedRequest {
   record: T;
