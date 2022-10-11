@@ -48,7 +48,10 @@ here to avoid duplication.
       id: string,
       user: string,
       title: string,
-      cooking_time: string?,
+      time: {
+        minutes: number?,
+        hours: number?
+      },
       servings: number?,
       ingredients: [
           {
@@ -154,7 +157,10 @@ here to avoid duplication.
       ```
       {
           title: string,
-          cooking_time: string,
+          time: {
+            hours: number,
+            minutes: number
+          },
           servings: number,
           ingredients: [
               {
