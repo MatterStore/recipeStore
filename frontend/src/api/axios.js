@@ -2,15 +2,18 @@ import axiosDefault from 'axios';
 
 const isProduction = process.env.NODE_ENV === 'production';
 
-const baseURL = isProduction
-  ? window.location.hostname
-  : 'http://localhost:5000';
-
-const defaultOptions = {
+let defaultOptions = {
   headers: {
     'Content-Type': 'application/json',
   },
 };
+
+if (isProduction) {
+  defaultOptions = {
+    baseURL: 'http://localhost:5000',
+    ...defaultOptions,
+  };
+}
 
 const axios = axiosDefault.create(defaultOptions);
 
