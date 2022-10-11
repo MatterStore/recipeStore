@@ -7,8 +7,9 @@ let defaultOptions = {
     'Content-Type': 'application/json',
   },
 };
+console.log(isProduction);
 
-if (isProduction) {
+if (!isProduction) {
   defaultOptions = {
     baseURL: 'http://localhost:5000',
     ...defaultOptions,
