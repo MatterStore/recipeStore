@@ -1,11 +1,7 @@
-import { NextFunction, Request, Response } from 'express';
+import { NextFunction, Response } from 'express';
 import { Model, ObjectId } from 'mongoose';
 
-import { IUser } from '../models/user';
-
-export interface AuthenticatedRequest extends Request {
-  user: IUser;
-}
+import { AuthenticatedRequest } from './authentication';
 
 export interface RecordRequest<T> extends AuthenticatedRequest {
   record: T;
@@ -25,7 +21,7 @@ export function withRecord<T>(
   model: Model<T>,
   matchUser = false
 ): (req: AuthenticatedRequest, res: Response, next: NextFunction) => void {
-  return async (req: AuthenticatedRequest, res: Response, next: NextFunction) =>
+  return (req: AuthenticatedRequest, res: Response, next: NextFunction) =>
     model.findById(req.params.id, (err, record) => {
       if (err) {
         res.status(422).json({ success: false, msg: 'Something went wrong.' });

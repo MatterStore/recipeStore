@@ -8,8 +8,7 @@ export default function Button(props) {
         props.primary
           ? `text-white bg-indigo-600`
           : `text-indigo-900 ring-inset ring-indigo-400 ring-2`
-      } ${props.className}`}
-    >
+      } ${props.className}`}>
       {props.children}
     </Link>
   );
