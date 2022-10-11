@@ -4,7 +4,7 @@ const { Schema, Types, model } = pkg;
 export interface IRecipe {
   user: ObjectId;
   title: string;
-  cooking_time?: string;
+  time?: string;
   servings?: number;
   ingredients: {
     text: string;
@@ -26,8 +26,17 @@ const recipeSchema = new Schema({
     type: String,
     required: true,
   },
-  cooking_time: {
-    type: String,
+  time: {
+    type: {
+      minutes: {
+        type: Number,
+        required: false,
+      },
+      hours: {
+        type: Number,
+        required: false,
+      },
+    },
     required: false,
   },
   servings: {
