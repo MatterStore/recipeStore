@@ -7,7 +7,6 @@ let defaultOptions = {
     'Content-Type': 'application/json',
   },
 };
-console.log(isProduction)
 
 if (!isProduction) {
   defaultOptions = {
