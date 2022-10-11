@@ -32,7 +32,7 @@ describe('POST /recipes/new', () => {
       .set('Authorization', token)
       .send({
         title: 'Pancakes',
-        cooking_time: '15 minutes',
+        time: { hours: '0', minutes: '15' },
         servings: 4,
       })
       .then((res) => assertFailed(res, 'Bad recipe succeeded.'))
