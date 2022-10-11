@@ -25,7 +25,7 @@ router.post(
   authenticate(),
   validateParams({
     title: Joi.string().required(),
-    cooking_time: Joi.string(),
+    cooking_time: Joi.object({ hours: Joi.string(), minutes: Joi.string() }),
     servings: Joi.number(),
     ingredients: Joi.array()
       .items(
@@ -45,7 +45,7 @@ router.post(
     const recipe = new Recipe({
       user: req.user._id,
       title: req.body.title,
-      cooking_time: req.body.cooking_time,
+      time: req.body.time,
       servings: req.body.servings,
       ingredients: req.body.ingredients,
       steps: req.body.steps,
@@ -131,7 +131,7 @@ router.patch(
   authenticate(),
   validateParams({
     title: Joi.string(),
-    cooking_time: Joi.string(),
+    time: Joi.object({ hours: Joi.string(), minutes: Joi.string() }),
     servings: Joi.number(),
     ingredients: Joi.array().items(
       Joi.object({
@@ -149,7 +149,7 @@ router.patch(
   (req: RecipeRequest, res) => {
     const updateableKeys = [
       'title',
-      'cooking_time',
+      'time',
       'servings',
       'ingredients',
       'steps',
