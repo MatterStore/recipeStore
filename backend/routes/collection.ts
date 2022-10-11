@@ -1,17 +1,18 @@
-import express from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import Joi from 'joi';
-import passport from 'passport';
 
-import validateParams, { objectId } from '../helpers/params-validator.js';
-
+import {
+  AuthenticatedRequest,
+  authenticate,
+} from '../helpers/authentication.js';
 import Collection, {
   deleteById,
   getByUser,
   ICollection,
 } from '../models/collection.js';
+import validateParams, { objectId } from '../helpers/params-validator.js';
 import Tag from '../models/tag.js';
 import {
-  AuthenticatedRequest,
   cmpObjectIds,
   includesObjectId,
   RecordRequest,
@@ -25,7 +26,7 @@ export default router;
 
 router.post(
   '/new',
-  passport.authenticate('user', { session: false }),
+  authenticate(),
   validateParams({
     name: Joi.string().max(255).required(),
     tags: Joi.array().items(Tag.validator).required(),
@@ -51,21 +52,15 @@ router.post(
   }
 );
 
-router.get(
-  '/all',
-  passport.authenticate('user', { session: false }),
-  (req: AuthenticatedRequest, res) => {
-    getByUser(req.user._id, (err, list) => {
-      if (err) {
-        res.status(500).json({ success: false, msg: 'Something went wrong.' });
-      } else {
-        res
-          .status(200)
-          .json({ success: true, msg: 'Collections found.', list });
-      }
-    });
-  }
-);
+router.get('/all', authenticate(), (req: AuthenticatedRequest, res) => {
+  getByUser(req.user._id, (err, list) => {
+    if (err) {
+      res.status(500).json({ success: false, msg: 'Something went wrong.' });
+    } else {
+      res.status(200).json({ success: true, msg: 'Collections found.', list });
+    }
+  });
+});
 
 router.get('/all/public', (req, res) =>
   Collection.find({ public: true }, (err, list) => {
@@ -79,7 +74,7 @@ router.get('/all/public', (req, res) =>
 
 router.get(
   '/:id',
-  passport.authenticate('user', { session: false }),
+  authenticate(),
   withRecord(Collection),
   (req: CollectionRequest, res) => {
     const collection = req.record;
@@ -95,7 +90,7 @@ router.get(
 
 router.delete(
   '/:id',
-  passport.authenticate('user', { session: false }),
+  authenticate(),
   withRecord(Collection, true),
   (req: CollectionRequest, res) => {
     deleteById(req.params.id, (err) => {
@@ -116,7 +111,7 @@ router.delete(
 
 router.patch(
   '/:id',
-  passport.authenticate('user', { session: false }),
+  authenticate(),
   validateParams({
     name: Joi.string().max(255),
     tags: Joi.array().items(Tag.validator),
@@ -153,7 +148,7 @@ router.post(
   validateParams({
     recipes: Joi.array().items(objectId()),
   }),
-  passport.authenticate('user', { session: false }),
+  authenticate(),
   withRecord(Collection, true),
   (req: CollectionRequest, res) => {
     const collection = req.record;
@@ -197,7 +192,7 @@ router.post(
   validateParams({
     recipes: Joi.array().items(objectId()),
   }),
-  passport.authenticate('user', { session: false }),
+  authenticate(),
   withRecord(Collection, true),
   (req: CollectionRequest, res) => {
     const collection = req.record;

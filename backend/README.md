@@ -254,14 +254,11 @@ here to avoid duplication.
     - Accepts a JSON body of the form
       ```
       {
-          email: string,
-          currentPassword: string,
-          newPassword: string,
-          newConfirmPassword: string
+          password: string,
+          confirmPassword: string
       }
       ```
-    - `email` is the users email address, must be a valid email.
-    - `currentPassword` is the users existing password.
-    - `newPassword` and `newConfirmPassword` must be the same string and
+    - Updates the authenticated user's password.
+    - `password` and `newConfirmPassword` must be the same string and
       must be 8-20 characters.
     - Returns a **Simple Response**.
