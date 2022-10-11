@@ -26,8 +26,17 @@ const recipeSchema = new Schema({
     type: String,
     required: true,
   },
-  cooking_time: {
-    type: String,
+  time: {
+    type: {
+      minutes: {
+        type: String,
+        required: false,
+      },
+      hours: {
+        type: String,
+        required: false,
+      },
+    },
     required: false,
   },
   servings: {
