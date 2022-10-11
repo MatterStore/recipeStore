@@ -31,6 +31,10 @@ app.use(passport.session());
 import execPassport from './config/passport.js';
 execPassport(passport);
 
+app.use('/user', users_route.router);
+app.use('/collections', collectionsRoute);
+app.use('/recipes', recipesRoute);
+
 const __filename = fileURLToPath(import.meta.url + '/../../');
 const __dirname = path.dirname(__filename);
 if (
@@ -38,18 +42,14 @@ if (
   process.env.NODE_ENV === 'staging'
 ) {
   app.use(express.static(path.resolve(__dirname, 'frontend/build')));
-  app.get('/', (req, res) => {
+  app.get('*', (req, res) => {
     const buildPath = path.join(
       path.resolve(__dirname, 'frontend/build/index.html')
     );
     res.sendFile(buildPath);
-    console.log(buildPath);
+    console.log(req, buildPath);
   });
 }
-
-app.use('/user', users_route.router);
-app.use('/collections', collectionsRoute);
-app.use('/recipes', recipesRoute);
 
 // default case for unmatched routes
 app.use(function (req, res) {
