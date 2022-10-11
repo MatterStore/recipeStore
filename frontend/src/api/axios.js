@@ -7,6 +7,7 @@ const baseURL = isProduction
   : 'http://localhost:5000';
 
 const defaultOptions = {
+  baseURL,
   headers: {
     'Content-Type': 'application/json',
   },
