@@ -81,7 +81,7 @@ export default function ListTextArea(props) {
                 className={
                   'block mt-2 py-3 text-lg whitespace-nowrap cursor-pointer select-none font-bold text-gray-700 hover:text-gray-900'
                 }>
-                Add Ingredient
+                {props.addText}
               </span>
             </div>
           ) : (
