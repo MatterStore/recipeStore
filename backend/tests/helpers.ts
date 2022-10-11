@@ -30,7 +30,7 @@ export const TestRecipes = {
     id: null,
     user: null,
     title: 'Pancakes',
-    cooking_time: '15 minutes',
+    time: { hours: '0', minutes: '15' },
     servings: 4,
     ingredients: [
       { text: '2 eggs', name: 'eggs', quantity: '2' },
@@ -63,7 +63,7 @@ export const TestRecipes = {
     id: null,
     user: null,
     title: 'Plain Rice',
-    cooking_time: '10 minutes',
+    time: { hours: '0', minutes: '10' },
     servings: 4,
     ingredients: [
       {
