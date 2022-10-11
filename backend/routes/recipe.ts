@@ -25,7 +25,7 @@ router.post(
   authenticate(),
   validateParams({
     title: Joi.string().required(),
-    cooking_time: Joi.object({ hours: Joi.string(), minutes: Joi.string() }),
+    time: Joi.object({ hours: Joi.number(), minutes: Joi.number() }),
     servings: Joi.number(),
     ingredients: Joi.array()
       .items(
@@ -131,7 +131,7 @@ router.patch(
   authenticate(),
   validateParams({
     title: Joi.string(),
-    time: Joi.object({ hours: Joi.string(), minutes: Joi.string() }),
+    time: Joi.object({ hours: Joi.number(), minutes: Joi.number() }),
     servings: Joi.number(),
     ingredients: Joi.array().items(
       Joi.object({

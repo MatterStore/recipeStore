@@ -21,7 +21,6 @@ import Ellipsis from '../../components/Ellipsis';
 import FloatingMenu from '../../components/FloatingMenu';
 import { useNavigate } from 'react-router-dom';
 import { recipesRoute } from '../../api/routes';
-import SubmitButton from '../../components/SubmitButton';
 
 export default function Recipe(props) {
   let params = useParams();
@@ -31,19 +30,6 @@ export default function Recipe(props) {
   const [recipeLoading, setRecipeLoading] = useState(true);
   const [recipeError, setRecipeError] = useState(null);
   const [formValid, setFormValid] = useState(false);
-
-  useEffect(() => {
-    async function fetchRecipes() {
-      axios
-        .get(recipesRoute(params.recipeId))
-        .then((response) => {
-          setRecipe(response.data.recipe);
-          setRecipeLoading(false);
-        })
-        .catch((error) => setRecipeError(error));
-    }
-    fetchRecipes();
-  }, [params.recipeId]);
 
   const editing = props.edit;
 
@@ -82,6 +68,11 @@ export default function Recipe(props) {
     clone.servings = parseInt(serves);
     setRecipe(clone);
   };
+  const setPublic = (state) => {
+    let clone = cloneRecipe();
+    state === 'public' ? (clone.public = true) : (clone.public = false);
+    setRecipe(clone);
+  };
 
   let [stepMode, setStepMode] = useState(true);
   let [ingredientMode, setIngredientMode] = useState(true);
@@ -91,6 +82,23 @@ export default function Recipe(props) {
     setFormValid(formIsValid);
   };
 
+  useEffect(() => {
+    async function fetchRecipes() {
+      axios
+        .get(recipesRoute(params.recipeId))
+        .then((response) => {
+          response.data.recipe.ingredients =
+            response.data.recipe.ingredients.map(
+              (ingredient) => ingredient.text
+            );
+          setRecipe(response.data.recipe);
+          setRecipeLoading(false);
+        })
+        .catch((error) => setRecipeError(error));
+    }
+    fetchRecipes();
+  }, [params.recipeId]);
+
   const recipeSubmit = (e) => {
     // e.preventDefault();
     handleValidation();
@@ -99,6 +107,13 @@ export default function Recipe(props) {
       axios
         .patch(recipesRoute(params.recipeId), {
           title: recipe.title,
+          time: { hours: recipe.time.hours, minutes: recipe.time.minutes },
+          servings: recipe.servings,
+          ingredients: recipe.ingredients.map((ingredient) => ({
+            text: ingredient,
+          })),
+          steps: recipe.steps,
+          public: recipe.public,
         })
         .then(function (response) {
           navigate(`/recipe/${params.recipeId}`);
@@ -166,7 +181,7 @@ export default function Recipe(props) {
                   />
                 </label>
                 <label className="ml-4">
-                  {props.public ? (
+                  {recipe.public ? (
                     <GlobeIcon size={16} />
                   ) : (
                     <LockIcon size={16} />
@@ -175,7 +190,11 @@ export default function Recipe(props) {
                   <select
                     name="publicity"
                     id="publicity"
-                    className="bg-slate-100 appearance-none inline-block w-40 px-3 py-1.5 border border-solid rounded ml-2">
+                    onChange={(e) => {
+                      setPublic(e.target.value);
+                    }}
+                    className="bg-slate-100 appearance-none inline-block w-40 px-3 py-1.5 border border-solid rounded ml-2"
+                    defaultValue={recipe.public ? 'public' : 'private'}>
                     <option value="public">Public</option>
                     <option value="private">Private</option>
                   </select>
@@ -208,7 +227,9 @@ export default function Recipe(props) {
           </div>
           <div>
             {editing ? (
-              <button onClick={() => recipeSubmit()}>Click me</button>
+              <Button to="" primary={true} onClick={() => recipeSubmit()}>
+                Save
+              </Button>
             ) : null}
           </div>
           {!editing ? (
@@ -233,7 +254,7 @@ export default function Recipe(props) {
               listElementsIcon={<ListUnorderedIcon size={24} />}
               listMode={ingredientMode}
               setListMode={setIngredientMode}
-              items={recipe.ingredients.map((ingredient) => ingredient.text)}
+              items={recipe.ingredients}
               setItems={setIngredients}
               editing={editing}
               ordered={false}
