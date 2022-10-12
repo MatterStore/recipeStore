@@ -36,6 +36,8 @@ export default function Recipe(props) {
       hours: 0,
       minutes: 0,
     },
+    ingredients: [],
+    steps: [],
     primaryImage: null,
   };
 
@@ -150,7 +152,7 @@ export default function Recipe(props) {
           })),
           steps: recipe.steps,
           public: recipe.public,
-          tags: [],
+          tags: recipe.tags,
         })
         .then(function (response) {
           navigate(`/recipe/${response.data.id}`);
@@ -294,7 +296,7 @@ export default function Recipe(props) {
               listElementsIcon={<ListUnorderedIcon size={24} />}
               listMode={ingredientMode}
               setListMode={setIngredientMode}
-              items={recipe.ingredients || []}
+              items={recipe.ingredients}
               setItems={setIngredients}
               editing={editing}
               ordered={false}
@@ -305,7 +307,7 @@ export default function Recipe(props) {
               listElementsIcon={<ListOrderedIcon size={24} />}
               listMode={stepMode}
               setListMode={setStepMode}
-              items={recipe.steps || []}
+              items={recipe.steps}
               setItems={setSteps}
               editing={editing}
               ordered={true}
