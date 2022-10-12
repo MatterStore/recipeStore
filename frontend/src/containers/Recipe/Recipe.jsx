@@ -20,18 +20,29 @@ import ListTextArea from '../../components/ListTextArea';
 import Ellipsis from '../../components/Ellipsis';
 import FloatingMenu from '../../components/FloatingMenu';
 import { useNavigate } from 'react-router-dom';
-import { recipesRoute } from '../../api/routes';
+import { newRecipeRoute, recipesRoute } from '../../api/routes';
 
 export default function Recipe(props) {
   let params = useParams();
 
   const navigate = useNavigate();
-  const [recipe, setRecipe] = useState(null);
-  const [recipeLoading, setRecipeLoading] = useState(true);
   const [recipeError, setRecipeError] = useState(null);
   const [formValid, setFormValid] = useState(false);
 
-  const editing = props.edit;
+  const defaultRecipe = {
+    tags: [],
+    servings: 1,
+    time: {
+      hours: 0,
+      minutes: 0,
+    },
+    primaryImage: null,
+  };
+
+  const [recipe, setRecipe] = useState(props.new ? defaultRecipe : null);
+  const [recipeLoading, setRecipeLoading] = useState(!props.new);
+
+  const editing = props.edit || props.new;
 
   // Inefficient but good enough.
   const cloneRecipe = () => {
@@ -96,7 +107,9 @@ export default function Recipe(props) {
         })
         .catch((error) => setRecipeError(error));
     }
-    fetchRecipes();
+    if (!props.new) {
+      fetchRecipes();
+    }
   }, [params.recipeId]);
 
   const recipeSubmit = (e) => {
@@ -117,6 +130,30 @@ export default function Recipe(props) {
         })
         .then(function (response) {
           navigate(`/recipe/${params.recipeId}`);
+        })
+        .catch(function (error) {});
+    }
+  };
+
+  const newRecipe = (e) => {
+    // e.preventDefault();
+    handleValidation();
+
+    if (formValid) {
+      axios
+        .post(newRecipeRoute, {
+          title: recipe.title,
+          time: { hours: recipe.time.hours, minutes: recipe.time.minutes },
+          servings: recipe.servings,
+          ingredients: recipe.ingredients.map((ingredient) => ({
+            text: ingredient,
+          })),
+          steps: recipe.steps,
+          public: recipe.public,
+          tags: [],
+        })
+        .then(function (response) {
+          navigate(`/recipe/${response.data.id}`);
         })
         .catch(function (error) {});
     }
@@ -227,7 +264,10 @@ export default function Recipe(props) {
           </div>
           <div>
             {editing ? (
-              <Button to="" primary={true} onClick={() => recipeSubmit()}>
+              <Button
+                to=""
+                primary={true}
+                onClick={() => (props.edit ? recipeSubmit() : newRecipe())}>
                 Save
               </Button>
             ) : null}
@@ -254,7 +294,7 @@ export default function Recipe(props) {
               listElementsIcon={<ListUnorderedIcon size={24} />}
               listMode={ingredientMode}
               setListMode={setIngredientMode}
-              items={recipe.ingredients}
+              items={recipe.ingredients || []}
               setItems={setIngredients}
               editing={editing}
               ordered={false}
@@ -265,7 +305,7 @@ export default function Recipe(props) {
               listElementsIcon={<ListOrderedIcon size={24} />}
               listMode={stepMode}
               setListMode={setStepMode}
-              items={recipe.steps}
+              items={recipe.steps || []}
               setItems={setSteps}
               editing={editing}
               ordered={true}
