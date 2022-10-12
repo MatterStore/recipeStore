@@ -22,6 +22,10 @@ function App() {
         <Route path="/listing" element={<Listing />} />
         <Route path="/recipe/:recipeId" element={<Recipe edit={false} />} />
         <Route path="/recipe/:recipeId/edit" element={<Recipe edit={true} />} />
+        <Route
+          path="/recipe/new"
+          element={<Recipe new="true" edit={false} />}
+        />
       </Routes>
     </div>
   );

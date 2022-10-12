@@ -55,11 +55,13 @@ router.post(
       image: req.body.image,
     });
 
-    recipe.save((err) => {
+    recipe.save((err, resp) => {
       if (err) {
         res.status(422).json({ success: false, msg: 'Something went wrong.' });
       } else {
-        res.status(200).json({ success: true, msg: 'Recipe saved.' });
+        res
+          .status(200)
+          .json({ success: true, msg: 'Recipe saved.', id: resp._id });
       }
     });
   }
