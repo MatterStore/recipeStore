@@ -40,6 +40,7 @@ router.post(
     steps: Joi.array().items(Joi.string()).required(),
     tags: Joi.array().items(Tag.validator).required(),
     public: Joi.boolean(),
+    image: Joi.string(),
   }),
   (req: AuthenticatedRequest, res, next) => {
     const recipe = new Recipe({
@@ -51,6 +52,7 @@ router.post(
       steps: req.body.steps,
       tags: req.body.tags,
       public: req.body.public,
+      image: req.body.image,
     });
 
     recipe.save((err) => {
@@ -144,6 +146,7 @@ router.patch(
     steps: Joi.array().items(Joi.string()),
     tags: Joi.array().items(Tag.validator),
     public: Joi.boolean(),
+    image: Joi.string(),
   }),
   withRecord(Recipe, true),
   (req: RecipeRequest, res) => {
@@ -155,6 +158,7 @@ router.patch(
       'steps',
       'tags',
       'public',
+      'image',
     ];
 
     // Create object with the changes provided in the request.
