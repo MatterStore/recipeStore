@@ -22,7 +22,7 @@ import FloatingMenu from '../../components/floating-menu/FloatingMenu';
 import MenuEntry from '../../components/floating-menu/MenuEntry';
 import ParentMenuEntry from '../../components/floating-menu/ParentMenuEntry';
 import { useNavigate } from 'react-router-dom';
-import { newRecipeRoute, recipesRoute } from '../../api/routes';
+import { newRecipeRoute, recipesRoute, listingRoute } from '../../api/routes';
 
 export default function Recipe(props) {
   let params = useParams();
@@ -114,7 +114,7 @@ export default function Recipe(props) {
     if (!props.new) {
       fetchRecipes();
     }
-  }, [params.recipeId]);
+  }, [params.recipeId, props.new]);
 
   const recipeSubmit = (e) => {
     // e.preventDefault();
@@ -161,6 +161,15 @@ export default function Recipe(props) {
         })
         .catch(function (error) {});
     }
+  };
+
+  const deleteRecipe = () => {
+    axios
+      .delete(recipesRoute(params.recipeId))
+      .then(function (response) {
+        navigate(listingRoute);
+      })
+      .catch(function (error) {});
   };
 
   return (
@@ -279,14 +288,10 @@ export default function Recipe(props) {
           {!editing ? (
             <div>
               <FloatingMenuParent label={'...'}>
-                <FloatingMenu
-                  onDeleteRecipe={() => {}}
-                  onEditRecipe={() => {
-                    navigate('edit');
-                  }}>
+                <FloatingMenu>
                   <MenuEntry
                     onClick={() => {
-                      props.onEditRecipe();
+                      navigate('edit');
                     }}>
                     Edit Recipe
                   </MenuEntry>
@@ -299,9 +304,7 @@ export default function Recipe(props) {
                       }
                     )}
                   </ParentMenuEntry>
-                  <MenuEntry onClick={props.onDeleteRecipe}>
-                    Delete Recipe
-                  </MenuEntry>
+                  <MenuEntry onClick={deleteRecipe}>Delete Recipe</MenuEntry>
                 </FloatingMenu>
               </FloatingMenuParent>
             </div>
