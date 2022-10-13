@@ -4,21 +4,19 @@ import { useNavigate } from 'react-router-dom';
 import validator from 'validator';
 import axios from '../../api/axios';
 
-import { signupRoute } from '../../api/routes';
+import { changePasswordRoute } from '../../api/routes';
 
 import SubmitButton from '../../components/SubmitButton';
 import Header from '../../components/Header';
 import FormField from '../../components/FormField';
 
 export default function Signup() {
-  const [email, setEmail] = useState('');
-  const [name, setName] = useState('');
-  const [password, setPassword] = useState('');
+  const [, setOldPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmNewPassword, setConfirmNewPassword] = useState('');
 
-  const [nameError, setNameError] = useState('');
-  const [emailError, setEmailError] = useState('');
-  const [passwordError, setPasswordError] = useState('');
-  const [signupError, setSignupError] = useState('');
+  const [newPasswordError, setNewPasswordError] = useState('');
+  const [changePasswordError, setChangePasswordError] = useState('');
 
   const [formValid, setFormValid] = useState(false);
 
@@ -27,24 +25,11 @@ export default function Signup() {
   const handleValidation = (event) => {
     let formIsValid = true;
 
-    if (!validator.isAscii(name)) {
+    if (newPassword !== confirmNewPassword) {
       formIsValid = false;
-      setNameError('Name is Not Valid');
-    } else {
-      setNameError('');
-      formIsValid = true;
-    }
-
-    if (!validator.isEmail(email)) {
-      formIsValid = false;
-      setEmailError('Email is Not Valid');
-    } else {
-      setEmailError('');
-      formIsValid = true;
-    }
-
-    if (
-      !validator.isStrongPassword(password, {
+      setNewPasswordError('Passwords do not match');
+    } else if (
+      !validator.isStrongPassword(newPassword, {
         minLength: 8,
         minLowercase: 0,
         minUppercase: 0,
@@ -53,30 +38,30 @@ export default function Signup() {
       })
     ) {
       formIsValid = false;
-      setPasswordError('Must contain 8 characters');
+      setNewPasswordError('Must contain 8 characters');
     } else {
-      setPasswordError('');
+      setNewPasswordError('');
       formIsValid = true;
     }
     setFormValid(formIsValid);
   };
 
-  const loginSubmit = (e) => {
+  const changePasswordSubmit = (e) => {
     e.preventDefault();
     handleValidation();
 
     if (formValid) {
       axios
-        .post(signupRoute, {
-          name: name,
-          email: email,
-          password: password,
+        .post(changePasswordRoute, {
+          // oldPassword: oldPassword,
+          password: newPassword,
+          confirmPassword: confirmNewPassword,
         })
         .then(function (response) {
-          navigate('/login');
+          navigate('/listing');
         })
         .catch(function (error) {
-          setSignupError(error.response.data.msg);
+          setChangePasswordError(error.response.data.msg);
         });
     }
   };
@@ -86,29 +71,33 @@ export default function Signup() {
       <main className="min-h-screen w-screen flex flex-column items-center container">
         <div className="flex flex-col md:flex-row justify-around flex-grow">
           <div className="p-8 self-center md:mb-32">
-            <form id="loginform" onSubmit={loginSubmit} className="login-form">
-              <Header>Sign Up</Header>
+            <form
+              id="changepasswordform"
+              onSubmit={changePasswordSubmit}
+              className="change-password-form">
+              <Header>Change Password</Header>
               <div className="flex flex-col min-w-full">
                 <FormField
-                  type="name"
-                  placeholder="Enter Name"
-                  setFunc={setName}
-                  error={nameError}
-                />
-                <FormField
-                  type="email"
-                  placeholder="Enter Email"
-                  setFunc={setEmail}
-                  error={emailError}
-                />
+                  type="password"
+                  placeholder="Enter old password ..."
+                  setFunc={setOldPassword}>
+                  Old Password
+                </FormField>
                 <FormField
                   type="password"
-                  placeholder="Enter Password"
-                  setFunc={setPassword}
-                  error={signupError || passwordError}
-                />
+                  placeholder="Enter new password ..."
+                  setFunc={setNewPassword}>
+                  New Password
+                </FormField>
+                <FormField
+                  type="password"
+                  placeholder="Re-enter new password ..."
+                  setFunc={setConfirmNewPassword}
+                  error={newPasswordError || changePasswordError}>
+                  Confirm New Password
+                </FormField>
                 <SubmitButton primary={true} type="submit">
-                  Sign Up
+                  Change Password
                 </SubmitButton>
               </div>
             </form>
