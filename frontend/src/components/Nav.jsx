@@ -3,7 +3,6 @@ import { useLocation, Link, useNavigate } from 'react-router-dom';
 
 import FloatingMenu from './floating-menu/FloatingMenu';
 import MenuEntry from './floating-menu/MenuEntry';
-import ParentMenuEntry from './floating-menu/ParentMenuEntry';
 
 export default function Nav(props) {
   const location = useLocation();
