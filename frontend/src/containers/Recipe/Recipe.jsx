@@ -17,8 +17,10 @@ import {
   ListUnorderedIcon,
 } from '@primer/octicons-react';
 import ListTextArea from '../../components/ListTextArea';
-import Ellipsis from '../../components/Ellipsis';
-import FloatingMenu from '../../components/FloatingMenu';
+import FloatingMenuParent from '../../components/floating-menu/FloatingMenuParent';
+import FloatingMenu from '../../components/floating-menu/FloatingMenu';
+import MenuEntry from '../../components/floating-menu/MenuEntry';
+import ParentMenuEntry from '../../components/floating-menu/ParentMenuEntry';
 import { useNavigate } from 'react-router-dom';
 import { newRecipeRoute, recipesRoute } from '../../api/routes';
 
@@ -276,14 +278,32 @@ export default function Recipe(props) {
           </div>
           {!editing ? (
             <div>
-              <Ellipsis>
+              <FloatingMenuParent label={'...'}>
                 <FloatingMenu
                   onDeleteRecipe={() => {}}
                   onEditRecipe={() => {
                     navigate('edit');
-                  }}
-                />
-              </Ellipsis>
+                  }}>
+                  <MenuEntry
+                    onClick={() => {
+                      props.onEditRecipe();
+                    }}>
+                    Edit Recipe
+                  </MenuEntry>
+                  <ParentMenuEntry name="Add to Collection">
+                    <MenuEntry>New Collection</MenuEntry>
+                    <hr />
+                    {['🇬🇷 Greek', '🍕 Pizzas', '🥩 Meat lovers', '🇹🇭 Thai'].map(
+                      (name) => {
+                        return <MenuEntry key={name}>{name}</MenuEntry>;
+                      }
+                    )}
+                  </ParentMenuEntry>
+                  <MenuEntry onClick={props.onDeleteRecipe}>
+                    Delete Recipe
+                  </MenuEntry>
+                </FloatingMenu>
+              </FloatingMenuParent>
             </div>
           ) : null}
         </div>
