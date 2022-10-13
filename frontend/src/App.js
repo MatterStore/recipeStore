@@ -4,6 +4,7 @@ import Home from './containers/Home/Home';
 import Listing from './containers/Listing/Listing';
 import Login from './containers/Login/Login';
 import Signup from './containers/Signup/Signup';
+import ChangePassword from './containers/ChangePassword/ChangePassword';
 import { useEffect } from 'react';
 import Nav from './components/Nav';
 
@@ -19,6 +20,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/profile/change-password" element={<ChangePassword />} />
         <Route path="/listing" element={<Listing />} />
         <Route path="/recipe/:recipeId" element={<Recipe edit={false} />} />
         <Route path="/recipe/:recipeId/edit" element={<Recipe edit={true} />} />
