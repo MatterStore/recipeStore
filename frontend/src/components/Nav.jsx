@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useLocation, Link } from 'react-router-dom';
+import { useLocation, Link, useNavigate } from 'react-router-dom';
 
 import FloatingMenu from './floating-menu/FloatingMenu';
 import MenuEntry from './floating-menu/MenuEntry';
@@ -7,10 +7,10 @@ import ParentMenuEntry from './floating-menu/ParentMenuEntry';
 
 export default function Nav(props) {
   const location = useLocation();
+  const navigate = useNavigate();
   const navigationRoutes = [
     ['Home', '/listing'],
     ['My Recipes', '/collection/Your%20Recipe%20Collection'],
-    // ['Sign Out', '/'],
   ];
   const doNotDisplayNavOn = ['/', '/login', '/signup'];
 
@@ -26,8 +26,11 @@ export default function Nav(props) {
             <li key="logout">
               <FloatingMenuParent label={'Profile'}>
                 <FloatingMenu>
-                  <MenuEntry>Logout</MenuEntry>
-                  <MenuEntry>Change Password</MenuEntry>
+                  <MenuEntry onClick={() => navigate('/')}>Log Out</MenuEntry>
+                  <MenuEntry
+                    onClick={() => navigate('/profile/change-password')}>
+                    Change Password
+                  </MenuEntry>
                 </FloatingMenu>
               </FloatingMenuParent>
             </li>
