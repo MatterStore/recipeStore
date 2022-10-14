@@ -16,6 +16,8 @@ export default function Listing() {
   const [recipesData, setRecipesData] = useState(null);
   const [recipesLoading, setRecipesLoading] = useState(true);
   const [recipesError, setRecipesError] = useState(null);
+  const [availableTags, setAvailableTags] = useState([]);
+  const [tagFilters, setTagFilters] = useState([]);
 
   useEffect(() => {
     async function fetchRecipes() {
@@ -23,6 +25,10 @@ export default function Listing() {
         .get(allRecipesRoute)
         .then((response) => {
           setRecipesData(response.data.list);
+          setAvailableTags([
+            ...new Set(response.data.list.flatMap((recipe) => recipe.tags)),
+          ]);
+          console.log(availableTags);
           setRecipesLoading(false);
         })
         .catch((error) => setRecipesError(error));
@@ -41,6 +47,19 @@ export default function Listing() {
             </Button>
           </span>
         </Header>
+        <span>
+          Select tags to filter by clicking on them!
+          {availableTags.map((tag) => (
+            <div
+              onClick={() =>
+                tagFilters.includes(tag)
+                  ? setTagFilters(tagFilters.filter((t) => t != tag))
+                  : setTagFilters([...tagFilters, tag])
+              }>
+              {tag}
+            </div>
+          ))}
+        </span>
         {!recipesLoading && !recipesError && (
           <>
             <div
@@ -56,13 +75,19 @@ export default function Listing() {
                 </Link> */}
               </Subheader>
               <div className="self-center lg:self-start">
-                {recipesData.map((recipe) => (
-                  <div
-                    className="mx-auto inline-block"
-                    key={recipe.title + `-${recipe._id}`}>
-                    <Recipe {...recipe} />
-                  </div>
-                ))}
+                {recipesData
+                  .filter(
+                    (recipe) =>
+                      tagFilters.length < 1 ||
+                      recipe.tags.some((tag) => tagFilters.includes(tag))
+                  )
+                  .map((recipe) => (
+                    <div
+                      className="mx-auto inline-block"
+                      key={recipe.title + `-${recipe._id}`}>
+                      <Recipe {...recipe} />
+                    </div>
+                  ))}
               </div>
             </div>
             {/* {Object.entries(collections).map(
