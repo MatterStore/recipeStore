@@ -79,7 +79,8 @@ export default function Listing() {
                   .filter(
                     (recipe) =>
                       tagFilters.length < 1 ||
-                      recipe.tags.some((tag) => tagFilters.includes(tag))
+                      //every tag in filters is included in this recipe, i.e AND functionality
+                      tagFilters.every((fltr) => recipe.tags.includes(fltr))
                   )
                   .map((recipe) => (
                     <div
