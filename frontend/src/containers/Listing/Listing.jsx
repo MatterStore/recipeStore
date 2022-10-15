@@ -47,19 +47,25 @@ export default function Listing() {
             </Button>
           </span>
         </Header>
-        <span>
-          Select tags to filter by clicking on them!
+        <div>
           {availableTags.map((tag) => (
-            <div
+            <span
+              className={`text-xs inline-block box-content py-1.5 px-4 mr-4 text-md text-slate-900 rounded-full whitespace-nowrap max-w-fit undefined hover:cursor-pointer
+                              ${
+                                tagFilters.includes(tag)
+                                  ? 'bg-amber-400'
+                                  : 'bg-gray-100 '
+                              }
+                              `}
               onClick={() =>
                 tagFilters.includes(tag)
                   ? setTagFilters(tagFilters.filter((t) => t != tag))
                   : setTagFilters([...tagFilters, tag])
               }>
               {tag}
-            </div>
+            </span>
           ))}
-        </span>
+        </div>
         {!recipesLoading && !recipesError && (
           <>
             <div
