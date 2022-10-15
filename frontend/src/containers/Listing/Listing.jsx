@@ -16,6 +16,8 @@ export default function Listing() {
   const [recipesData, setRecipesData] = useState(null);
   const [recipesLoading, setRecipesLoading] = useState(true);
   const [recipesError, setRecipesError] = useState(null);
+  const [availableTags, setAvailableTags] = useState([]);
+  const [tagFilters, setTagFilters] = useState([]);
 
   useEffect(() => {
     async function fetchRecipes() {
@@ -23,6 +25,10 @@ export default function Listing() {
         .get(allRecipesRoute)
         .then((response) => {
           setRecipesData(response.data.list);
+          setAvailableTags([
+            ...new Set(response.data.list.flatMap((recipe) => recipe.tags)),
+          ]);
+          console.log(availableTags);
           setRecipesLoading(false);
         })
         .catch((error) => setRecipesError(error));
@@ -41,6 +47,25 @@ export default function Listing() {
             </Button>
           </span>
         </Header>
+        <div>
+          {availableTags.map((tag) => (
+            <span
+              className={`text-xs inline-block box-content py-1.5 px-4 mr-4 text-md text-slate-900 rounded-full whitespace-nowrap max-w-fit hover:cursor-pointer
+                              ${
+                                tagFilters.includes(tag)
+                                  ? 'bg-amber-400'
+                                  : 'bg-gray-100 '
+                              }
+                              `}
+              onClick={() =>
+                tagFilters.includes(tag)
+                  ? setTagFilters(tagFilters.filter((t) => t != tag))
+                  : setTagFilters([...tagFilters, tag])
+              }>
+              {tag}
+            </span>
+          ))}
+        </div>
         {!recipesLoading && !recipesError && (
           <>
             <div
@@ -56,13 +81,20 @@ export default function Listing() {
                 </Link> */}
               </Subheader>
               <div className="self-center lg:self-start">
-                {recipesData.map((recipe) => (
-                  <div
-                    className="mx-auto inline-block"
-                    key={recipe.title + `-${recipe._id}`}>
-                    <Recipe {...recipe} />
-                  </div>
-                ))}
+                {recipesData
+                  .filter(
+                    (recipe) =>
+                      tagFilters.length < 1 ||
+                      //every tag in filters is included in this recipe, i.e AND functionality
+                      tagFilters.every((fltr) => recipe.tags.includes(fltr))
+                  )
+                  .map((recipe) => (
+                    <div
+                      className="mx-auto inline-block"
+                      key={recipe.title + `-${recipe._id}`}>
+                      <Recipe {...recipe} />
+                    </div>
+                  ))}
               </div>
             </div>
             {/* {Object.entries(collections).map(
