@@ -50,7 +50,7 @@ export default function Listing() {
         <div>
           {availableTags.map((tag) => (
             <span
-              className={`text-xs inline-block box-content py-1.5 px-4 mr-4 text-md text-slate-900 rounded-full whitespace-nowrap max-w-fit undefined hover:cursor-pointer
+              className={`text-xs inline-block box-content py-1.5 px-4 mr-4 text-md text-slate-900 rounded-full whitespace-nowrap max-w-fit hover:cursor-pointer
                               ${
                                 tagFilters.includes(tag)
                                   ? 'bg-amber-400'
