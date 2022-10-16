@@ -101,7 +101,7 @@ describe('GET /recipes/:id', async () => {
           "Response didn't have recipe."
         );
         assert(
-          atob(res.body.recipe?.image) == 'An image of pancakes.',
+          atob(res.body.recipe?.images?.[0]) == 'An image of pancakes.',
           "Response image didn't decode correctly."
         );
       })
