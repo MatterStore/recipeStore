@@ -46,21 +46,8 @@ export default function Listing() {
           <span className="block mt-8 lg:mt-0 lg:inline-block lg:float-right">
             <input
               type="search"
-              className="
-        form-control
-        inline-block
-        w-50
-        px-3
-        py-3
-        text-xl
-        font-normal
-        text-gray-700
-        bg-white bg-clip-padding
-        border border-solid border-gray-300
-        rounded
-        transition
-        ease-in-out
-        mr-5
+              className="form-control inline-block w-50 px-3 py-3 text-xl font-normal text-gray-700 bg-white bg-clip-padding 
+              border border-solid border-gray-300 rounded transition ease-in-out mr-5
         focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
               placeholder="Search for a recipe"
               onChange={(event) => {
