@@ -41,11 +41,22 @@ export default function Recipe(props) {
     },
     ingredients: [],
     steps: [],
-    primaryImage: null,
+    images: [],
   };
 
   const [recipe, setRecipe] = useState(props.new ? defaultRecipe : null);
   const [recipeLoading, setRecipeLoading] = useState(!props.new);
+
+  const selectImageUpload = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      let reader = new FileReader();
+      reader.readAsDataURL(e.target.files[0]);
+
+      reader.onload = function () {
+        addImage(reader.result);
+      };
+    }
+  };
 
   const editing = props.edit || props.new;
 
@@ -86,8 +97,14 @@ export default function Recipe(props) {
   };
   const setPublic = (state) => {
     let clone = cloneRecipe();
-    state === 'public' ? (clone.public = true) : (clone.public = false);
+    clone.public = state === 'public';
     setRecipe(clone);
+  };
+  const addImage = (image) => {
+    let clone = cloneRecipe();
+    clone.images.push(image);
+    setRecipe(clone);
+    console.log(clone);
   };
 
   let [stepMode, setStepMode] = useState(true);
@@ -130,6 +147,7 @@ export default function Recipe(props) {
           ingredients: recipe.ingredients.map((ingredient) => ({
             text: ingredient,
           })),
+          images: recipe.images,
           steps: recipe.steps,
           public: recipe.public,
         })
@@ -153,6 +171,7 @@ export default function Recipe(props) {
           ingredients: recipe.ingredients.map((ingredient) => ({
             text: ingredient,
           })),
+          images: recipe.images,
           steps: recipe.steps,
           public: recipe.public,
           tags: recipe.tags,
@@ -280,6 +299,7 @@ export default function Recipe(props) {
             {editing ? (
               <Button
                 to=""
+                className="mr-0"
                 primary={true}
                 onClick={() => (props.edit ? recipeSubmit() : newRecipe())}>
                 Save
@@ -339,14 +359,25 @@ export default function Recipe(props) {
             />
           </article>
           <div className="grid gap-4 pl-4 grid-cols-2 justify-center">
-            <div className="border-gray-700 border-2 box-border rounded-xl aspect-square bg-gray-100 border-dashed flex justify-center items-center">
+            <label className="border-gray-700 border-2 box-border rounded-xl aspect-square bg-gray-100 border-dashed flex justify-center items-center">
               <DeviceCameraIcon size="32" className="text-gray-700" />
-            </div>
-            <img
-              className="rounded box-border"
-              src="https://images.unsplash.com/photo-1466637574441-749b8f19452f?ixlib=rb-1.2.1&w=640&q=80&fm=jpg&crop=entropy&cs=tinysrgb"
-              alt="food lol"
-            />
+              <input
+                className="hidden"
+                onInput={selectImageUpload}
+                type="file"
+                accept="image/*;capture=camera"
+              />
+            </label>
+            {recipe.images.map((image, i) => {
+              return (
+                <img
+                  key={i}
+                  className="rounded box-border"
+                  src={image}
+                  alt="Food photo"
+                />
+              );
+            })}
           </div>
         </main>
       </div>
