@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from '../../api/axios';
 
-import { allRecipesRoute } from '../../api/routes';
+import { allRecipesRoute, allCollectionsRoute } from '../../api/routes';
 
 import Header from '../../components/Header';
 import Button from '../../components/Button';
@@ -9,9 +9,9 @@ import Recipe from '../../components/Recipe';
 import Subheader from '../../components/Subheader';
 
 export default function Listing() {
-  // const [CollectionsData, setCollectionsData] = useState(null);
-  // const [CollectionsLoading, setCollectionsLoading] = useState(true);
-  // const [CollectionsError, setCollectionsError] = useState(null);
+  const [CollectionsData, setCollectionsData] = useState(null);
+  const [CollectionsLoading, setCollectionsLoading] = useState(true);
+  const [CollectionsError, setCollectionsError] = useState(null);
 
   const [recipesData, setRecipesData] = useState(null);
   const [recipesLoading, setRecipesLoading] = useState(true);
@@ -35,6 +35,21 @@ export default function Listing() {
     }
     fetchRecipes();
   }, []);
+
+  useEffect(() => {
+    async function fetchCollections() {
+      axios
+        .get(allCollectionsRoute)
+        .then((response) => {
+          setCollectionsData(response.data.list);
+          setCollectionsLoading(false);
+        })
+        .catch((error) => setCollectionsError(error));
+    }
+    fetchCollections();
+  }, []);
+
+  console.log(CollectionsData);
 
   return (
     <div>
