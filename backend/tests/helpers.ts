@@ -58,7 +58,7 @@ export const TestRecipes = {
     ],
     tags: ['breakfast', 'quick', 'sweet'],
     public: false,
-    image: btoa('An image of pancakes.'),
+    images: [btoa('An image of pancakes.')],
   },
   Rice: {
     id: null,
@@ -88,7 +88,7 @@ export const TestRecipes = {
     ],
     tags: ['side', 'quick', 'savoury'],
     public: true,
-    image: btoa('An image of rice.'),
+    images: [btoa('An image of rice.')],
   },
 };
 
