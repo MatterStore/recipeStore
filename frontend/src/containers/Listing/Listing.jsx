@@ -19,6 +19,8 @@ export default function Listing() {
   const [availableTags, setAvailableTags] = useState([]);
   const [tagFilters, setTagFilters] = useState([]);
 
+  const [searchKeys, setSearchKeys] = useState([]);
+
   useEffect(() => {
     async function fetchRecipes() {
       axios
@@ -42,11 +44,29 @@ export default function Listing() {
         <Header>
           Recipes
           <span className="block mt-8 lg:mt-0 lg:inline-block lg:float-right">
+            <input
+              type="search"
+              className="form-control inline-block w-50 px-3 py-3 text-xl font-normal text-gray-700 bg-white bg-clip-padding 
+              border border-solid border-gray-300 rounded transition ease-in-out mr-5
+            focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+              placeholder="Search for a recipe"
+              onChange={(event) => {
+                setSearchKeys(
+                  event.target.value
+                    .toLowerCase()
+                    .split(' ')
+                    .filter((searchKey) => searchKey.trim() != '')
+                );
+              }}
+            />
+
             <Button to="/recipe/new" primary={true} className="mr-0">
               New Recipe
             </Button>
           </span>
         </Header>
+        <div></div>
+
         <div>
           {availableTags.map((tag) => (
             <span
@@ -87,6 +107,20 @@ export default function Listing() {
                       tagFilters.length < 1 ||
                       //every tag in filters is included in this recipe, i.e AND functionality
                       tagFilters.every((fltr) => recipe.tags.includes(fltr))
+                  )
+                  .filter(
+                    (recipe) =>
+                      searchKeys.length < 1 ||
+                      searchKeys.some(
+                        (key) =>
+                          recipe.title.toLowerCase().includes(key) ||
+                          recipe.steps.join(' ').toLowerCase().includes(key) ||
+                          recipe.ingredients
+                            .map((ingred) => ingred.text)
+                            .join(' ')
+                            .toLowerCase()
+                            .includes(key)
+                      )
                   )
                   .map((recipe) => (
                     <div
