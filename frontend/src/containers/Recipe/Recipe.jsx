@@ -15,6 +15,7 @@ import {
   TrashIcon,
   ListOrderedIcon,
   ListUnorderedIcon,
+  DeviceCameraIcon,
 } from '@primer/octicons-react';
 import ListTextArea from '../../components/ListTextArea';
 import FloatingMenuParent from '../../components/floating-menu/FloatingMenuParent';
@@ -337,6 +338,16 @@ export default function Recipe(props) {
               addText={'Add step'}
             />
           </article>
+          <div className="grid gap-4 pl-4 grid-cols-2 justify-center">
+            <div className="border-gray-700 border-2 box-border rounded-xl aspect-square bg-gray-100 border-dashed flex justify-center items-center">
+              <DeviceCameraIcon size="32" className="text-gray-700" />
+            </div>
+            <img
+              className="rounded box-border"
+              src="https://images.unsplash.com/photo-1466637574441-749b8f19452f?ixlib=rb-1.2.1&w=640&q=80&fm=jpg&crop=entropy&cs=tinysrgb"
+              alt="food lol"
+            />
+          </div>
         </main>
       </div>
     )
