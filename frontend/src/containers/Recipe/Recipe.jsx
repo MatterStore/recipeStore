@@ -22,7 +22,13 @@ import FloatingMenu from '../../components/floating-menu/FloatingMenu';
 import MenuEntry from '../../components/floating-menu/MenuEntry';
 import ParentMenuEntry from '../../components/floating-menu/ParentMenuEntry';
 import { useNavigate } from 'react-router-dom';
-import { newRecipeRoute, recipesRoute, listingRoute } from '../../api/routes';
+import {
+  newRecipeRoute,
+  recipesRoute,
+  listingRoute,
+  allCollectionsRoute,
+  addToCollectionsRoute,
+} from '../../api/routes';
 
 export default function Recipe(props) {
   let params = useParams();
@@ -30,6 +36,7 @@ export default function Recipe(props) {
   const navigate = useNavigate();
   const [recipeError, setRecipeError] = useState(null);
   const [formValid, setFormValid] = useState(false);
+  const [collectionsData, setCollectionsData] = useState(null);
 
   const defaultRecipe = {
     tags: [],
@@ -88,6 +95,27 @@ export default function Recipe(props) {
     state === 'public' ? (clone.public = true) : (clone.public = false);
     setRecipe(clone);
   };
+
+  const addToCollection = (id) => {
+    axios
+      .post(addToCollectionsRoute(id), { recipes: [recipe._id] })
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => console.log(error));
+  };
+
+  useEffect(() => {
+    async function fetchCollections() {
+      axios
+        .get(allCollectionsRoute)
+        .then((response) => {
+          setCollectionsData(response.data.list);
+        })
+        .catch((error) => console.log(error));
+    }
+    fetchCollections();
+  }, []);
 
   let [stepMode, setStepMode] = useState(true);
   let [ingredientMode, setIngredientMode] = useState(true);
@@ -298,11 +326,17 @@ export default function Recipe(props) {
                   <ParentMenuEntry name="Add to Collection">
                     <MenuEntry>New Collection</MenuEntry>
                     <hr />
-                    {['🇬🇷 Greek', '🍕 Pizzas', '🥩 Meat lovers', '🇹🇭 Thai'].map(
-                      (name) => {
-                        return <MenuEntry key={name}>{name}</MenuEntry>;
-                      }
-                    )}
+                    {collectionsData.map((collection) => {
+                      return (
+                        <MenuEntry
+                          key={collection._id}
+                          onClick={() => {
+                            addToCollection(collection._id);
+                          }}>
+                          {collection.name}
+                        </MenuEntry>
+                      );
+                    })}
                   </ParentMenuEntry>
                   <MenuEntry onClick={deleteRecipe}>Delete Recipe</MenuEntry>
                 </FloatingMenu>
