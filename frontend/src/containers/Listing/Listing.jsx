@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import axios from '../../api/axios';
 
-import { allRecipesRoute } from '../../api/routes';
+import { allRecipesRoute, allCollectionsRoute } from '../../api/routes';
 
 import Header from '../../components/Header';
 import Button from '../../components/Button';
@@ -9,9 +10,9 @@ import Recipe from '../../components/Recipe';
 import Subheader from '../../components/Subheader';
 
 export default function Listing() {
-  // const [CollectionsData, setCollectionsData] = useState(null);
-  // const [CollectionsLoading, setCollectionsLoading] = useState(true);
-  // const [CollectionsError, setCollectionsError] = useState(null);
+  const [collectionsData, setCollectionsData] = useState(null);
+  const [collectionsLoading, setCollectionsLoading] = useState(true);
+  const [collectionsError, setCollectionsError] = useState(null);
 
   const [recipesData, setRecipesData] = useState(null);
   const [recipesLoading, setRecipesLoading] = useState(true);
@@ -30,13 +31,27 @@ export default function Listing() {
           setAvailableTags([
             ...new Set(response.data.list.flatMap((recipe) => recipe.tags)),
           ]);
-          console.log(availableTags);
           setRecipesLoading(false);
         })
         .catch((error) => setRecipesError(error));
     }
     fetchRecipes();
   }, []);
+
+  useEffect(() => {
+    async function fetchCollections() {
+      axios
+        .get(allCollectionsRoute)
+        .then((response) => {
+          setCollectionsData(response.data.list);
+          setCollectionsLoading(false);
+        })
+        .catch((error) => setCollectionsError(error));
+    }
+    fetchCollections();
+  }, []);
+
+  console.log(collectionsData);
 
   return (
     <div>
@@ -131,40 +146,38 @@ export default function Listing() {
                   ))}
               </div>
             </div>
-            {/* {Object.entries(collections).map(
-              ([collectionName, collectionRecipes], i) => {
+            {!collectionsLoading &&
+              collectionsData.map((collection) => {
                 return (
                   <div
                     className="mt-4 mb-12 self-center lg:self-start w-full"
-                    key={i}
-                  >
-                    <Subheader key={i}>
-                      {collectionName}
+                    key={collection._id}>
+                    <Subheader key={collection._id}>
+                      {collection.name}
                       <Link
-                        to={`/collection/${collectionName}`}
-                        className={`ml-8 text-lg underline subpixel-antialiased text-purple-600 whitespace-pre-wrap`}
-                      >
+                        to={`/collection/${collection.name}`}
+                        className={`ml-8 text-lg underline subpixel-antialiased text-purple-600 whitespace-pre-wrap`}>
                         View All
                       </Link>
                     </Subheader>
                     <div className="self-center lg:self-start">
-                      {collectionRecipes
-                        .map((index) => recipesData[index - 1])
-                        .map((recipe, j) => {
-                          return (
-                            <div
-                              className="mx-auto inline-block"
-                              key={recipe.name + ` ${i} ${j}`}
-                            >
-                              <Recipe {...recipe} />
-                            </div>
-                          );
-                        })}
+                      {collection.recipes.map((collectionRecipe) =>
+                        recipesData
+                          .filter((recipe) => recipe._id === collectionRecipe)
+                          .map((recipe) => {
+                            return (
+                              <div
+                                className="mx-auto inline-block"
+                                key={recipe.name + ``}>
+                                <Recipe {...recipe} />
+                              </div>
+                            );
+                          })
+                      )}
                     </div>
                   </div>
                 );
-              }
-            )} */}
+              })}
           </>
         )}
       </main>
