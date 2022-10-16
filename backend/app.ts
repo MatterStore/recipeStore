@@ -18,7 +18,7 @@ import recipesRoute from './routes/recipe.js';
 const app = express();
 
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '2gb' }));
 app.use(
   expressSession({
     secret: process.env.JWT_SECRET,
