@@ -103,6 +103,12 @@ export default function Recipe(props) {
         console.log(response);
       })
       .catch((error) => console.log(error));
+
+    const collectionsDataCopy = JSON.parse(JSON.stringify(collectionsData));
+    collectionsDataCopy
+      .filter((collection) => collection._id == id)[0]
+      .recipes.push(recipe._id);
+    setCollectionsData(collectionsDataCopy);
   };
 
   useEffect(() => {
@@ -334,6 +340,9 @@ export default function Recipe(props) {
                             addToCollection(collection._id);
                           }}>
                           {collection.name}
+                          {collection.recipes.includes(recipe._id)
+                            ? ' 🟢 '
+                            : ''}
                         </MenuEntry>
                       );
                     })}
