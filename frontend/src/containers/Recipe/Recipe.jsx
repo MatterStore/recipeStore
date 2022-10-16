@@ -335,6 +335,7 @@ export default function Recipe(props) {
                     {collectionsData.map((collection) => {
                       return (
                         <MenuEntry
+                          className="text-xs"
                           key={collection._id}
                           onClick={() => {
                             addToCollection(collection._id);
