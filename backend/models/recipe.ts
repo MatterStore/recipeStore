@@ -15,7 +15,7 @@ export interface IRecipe {
   steps: string[];
   tags: string[];
   public?: boolean;
-  images?: string[];
+  images: string[];
 }
 
 const recipeSchema = new Schema({
@@ -82,7 +82,8 @@ const recipeSchema = new Schema({
   },
   images: {
     type: [String],
-    required: false,
+    required: true,
+    default: [],
   },
 });
 

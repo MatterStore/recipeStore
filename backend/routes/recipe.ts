@@ -40,7 +40,7 @@ router.post(
     steps: Joi.array().items(Joi.string()).required(),
     tags: Joi.array().items(Tag.validator).required(),
     public: Joi.boolean(),
-    images: Joi.array().items(Joi.string()),
+    images: Joi.array().items(Joi.string()).required(),
   }),
   (req: AuthenticatedRequest, res, next) => {
     const recipe = new Recipe({
