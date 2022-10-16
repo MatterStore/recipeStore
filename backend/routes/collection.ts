@@ -149,7 +149,7 @@ router.post(
     recipes: Joi.array().items(objectId()),
   }),
   authenticate(),
-  withRecord(Collection, true),
+  withRecord(Collection, false), //TODO: change back to true, so that only owner of collection can modify
   (req: CollectionRequest, res) => {
     const collection = req.record;
 

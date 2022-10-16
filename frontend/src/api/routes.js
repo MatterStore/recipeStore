@@ -6,6 +6,7 @@ export const myRecipesRoute = '/recipes/all/';
 export const allCollectionsRoute = '/collections/all/public';
 export const myCollectionsRoute = '/collections/all/';
 export const collectionsRoute = (id) => `/collections/${id}/`;
+export const addToCollectionsRoute = (id) => `/collections/${id}/add`;
 export const recipesRoute = (id) => `/recipes/${id}/`;
 export const newRecipeRoute = `/recipes/new/`;
 export const changePasswordRoute = '/user/update-password';
