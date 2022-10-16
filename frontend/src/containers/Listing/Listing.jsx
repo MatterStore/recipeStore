@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import axios from '../../api/axios';
 
 import { allRecipesRoute, allCollectionsRoute } from '../../api/routes';
@@ -51,7 +50,29 @@ export default function Listing() {
     fetchCollections();
   }, []);
 
-  console.log(collectionsData);
+  const filterRecipes = (recipes) => {
+    return recipes
+      .filter(
+        (recipe) =>
+          tagFilters.length < 1 ||
+          //every tag in filters is included in this recipe, i.e AND functionality
+          tagFilters.every((fltr) => recipe.tags.includes(fltr))
+      )
+      .filter(
+        (recipe) =>
+          searchKeys.length < 1 ||
+          searchKeys.some(
+            (key) =>
+              recipe.title.toLowerCase().includes(key) ||
+              recipe.steps.join(' ').toLowerCase().includes(key) ||
+              recipe.ingredients
+                .map((ingred) => ingred.text)
+                .join(' ')
+                .toLowerCase()
+                .includes(key)
+          )
+      );
+  };
 
   return (
     <div>
@@ -61,7 +82,7 @@ export default function Listing() {
           <span className="block mt-8 lg:mt-0 lg:inline-block lg:float-right">
             <input
               type="search"
-              className="form-control inline-block w-50 px-3 py-3 text-xl font-normal text-gray-700 bg-white bg-clip-padding 
+              className="form-control inline-block w-50 px-3 py-3 text-xl font-normal text-gray-700 bg-white bg-clip-padding
               border border-solid border-gray-300 rounded transition ease-in-out mr-5
             focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
               placeholder="Search for a recipe"
@@ -70,7 +91,7 @@ export default function Listing() {
                   event.target.value
                     .toLowerCase()
                     .split(' ')
-                    .filter((searchKey) => searchKey.trim() != '')
+                    .filter((searchKey) => searchKey.trim() !== '')
                 );
               }}
             />
@@ -94,9 +115,10 @@ export default function Listing() {
                               `}
               onClick={() =>
                 tagFilters.includes(tag)
-                  ? setTagFilters(tagFilters.filter((t) => t != tag))
+                  ? setTagFilters(tagFilters.filter((t) => t !== tag))
                   : setTagFilters([...tagFilters, tag])
-              }>
+              }
+              key={tag}>
               {tag}
             </span>
           ))}
@@ -116,37 +138,17 @@ export default function Listing() {
                 </Link> */}
               </Subheader>
               <div className="self-center lg:self-start">
-                {recipesData
-                  .filter(
-                    (recipe) =>
-                      tagFilters.length < 1 ||
-                      //every tag in filters is included in this recipe, i.e AND functionality
-                      tagFilters.every((fltr) => recipe.tags.includes(fltr))
-                  )
-                  .filter(
-                    (recipe) =>
-                      searchKeys.length < 1 ||
-                      searchKeys.some(
-                        (key) =>
-                          recipe.title.toLowerCase().includes(key) ||
-                          recipe.steps.join(' ').toLowerCase().includes(key) ||
-                          recipe.ingredients
-                            .map((ingred) => ingred.text)
-                            .join(' ')
-                            .toLowerCase()
-                            .includes(key)
-                      )
-                  )
-                  .map((recipe) => (
-                    <div
-                      className="mx-auto inline-block"
-                      key={recipe.title + `-${recipe._id}`}>
-                      <Recipe {...recipe} />
-                    </div>
-                  ))}
+                {filterRecipes(recipesData).map((recipe) => (
+                  <div
+                    className="mx-auto inline-block"
+                    key={recipe.title + `-${recipe._id}`}>
+                    <Recipe {...recipe} />
+                  </div>
+                ))}
               </div>
             </div>
             {!collectionsLoading &&
+              !collectionsError &&
               collectionsData.map((collection) => {
                 return (
                   <div
@@ -154,21 +156,21 @@ export default function Listing() {
                     key={collection._id}>
                     <Subheader key={collection._id}>
                       {collection.name}
-                      <Link
+                      {/* <Link
                         to={`/collection/${collection.name}`}
                         className={`ml-8 text-lg underline subpixel-antialiased text-purple-600 whitespace-pre-wrap`}>
                         View All
-                      </Link>
+                      </Link> */}
                     </Subheader>
                     <div className="self-center lg:self-start">
                       {collection.recipes.map((collectionRecipe) =>
-                        recipesData
+                        filterRecipes(recipesData)
                           .filter((recipe) => recipe._id === collectionRecipe)
                           .map((recipe) => {
                             return (
                               <div
                                 className="mx-auto inline-block"
-                                key={recipe.name + ``}>
+                                key={recipe.name + collection._id}>
                                 <Recipe {...recipe} />
                               </div>
                             );
