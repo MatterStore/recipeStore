@@ -10,7 +10,7 @@ import Nav from './components/Nav';
 
 function App() {
   useEffect(() => {
-    document.title = 'Recipe Store';
+    document.title = 'FOODIFY';
   });
 
   return (

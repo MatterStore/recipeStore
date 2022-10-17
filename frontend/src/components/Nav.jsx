@@ -17,7 +17,10 @@ export default function Nav(props) {
     return (
       <nav className="py-1 bg-blue-100 fixed w-full z-20">
         <div className="px-16 p-2 flex flex-wrap container justify-between items-center mx-auto">
-          <p className="cursor-default select-none">StoreMyRecipe </p>
+          <div className="flex flex-row items-center">
+            <img src="/logo.svg" className="h-8" alt="" />
+            <p className="cursor-default select-none px-2">Foodify</p>
+          </div>
           <ul className="flex flex-row space-x-8 text-sm">
             {navigationRoutes.map(([title, path]) => (
               <NavItem location={location} title={title} path={path} />
