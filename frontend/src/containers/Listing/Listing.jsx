@@ -151,33 +151,35 @@ export default function Listing() {
               !collectionsError &&
               collectionsData.map((collection) => {
                 return (
-                  <div
-                    className="mt-4 mb-12 self-center lg:self-start w-full"
-                    key={collection._id}>
-                    <Subheader key={collection._id}>
-                      {collection.name}
-                      {/* <Link
+                  collection.recipes.length > 0 && (
+                    <div
+                      className="mt-4 mb-12 self-center lg:self-start w-full"
+                      key={collection._id}>
+                      <Subheader key={collection._id}>
+                        {collection.name}
+                        {/* <Link
                         to={`/collection/${collection.name}`}
                         className={`ml-8 text-lg underline subpixel-antialiased text-purple-600 whitespace-pre-wrap`}>
                         View All
                       </Link> */}
-                    </Subheader>
-                    <div className="self-center lg:self-start">
-                      {collection.recipes.map((collectionRecipe) =>
-                        filterRecipes(recipesData)
-                          .filter((recipe) => recipe._id === collectionRecipe)
-                          .map((recipe) => {
-                            return (
-                              <div
-                                className="mx-auto inline-block"
-                                key={recipe.name + collection._id}>
-                                <Recipe {...recipe} />
-                              </div>
-                            );
-                          })
-                      )}
+                      </Subheader>
+                      <div className="self-center lg:self-start">
+                        {collection.recipes.map((collectionRecipe) =>
+                          filterRecipes(recipesData)
+                            .filter((recipe) => recipe._id === collectionRecipe)
+                            .map((recipe) => {
+                              return (
+                                <div
+                                  className="mx-auto inline-block"
+                                  key={recipe.name + collection._id}>
+                                  <Recipe {...recipe} />
+                                </div>
+                              );
+                            })
+                        )}
+                      </div>
                     </div>
-                  </div>
+                  )
                 );
               })}
           </>
