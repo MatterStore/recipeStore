@@ -68,22 +68,24 @@ export default function ListTextArea(props) {
         {props.editing ? (
           props.listMode ? (
             <div>
-              <ul className="list-disc ml-5 leading-relaxed text-xl">
+              <ul className={`list-disc ml-5 leading-relaxed text-xl`}>
                 {props.items.map((item, i) => (
-                  <li key={i} className="list-item max-w-xl px-5 py-1.5 relative">
-                    <div className='flex flex-row group'>
-                      <textarea
-                        onChange={(e) => setItem(i, e.target.value)}
-                        type="text"
-                        value={item}
-                        rows={1}
-                        className="align-top w-full max-h-32 min-h-[3rem] bg-slate-100 rounded p-2"
-                      />
-                      <span onClick={(e) => deleteStep(i) } className="p-2 ml-2 w-12 h-12 cursor-pointer relative rounded bg-gray-100 hover:!opacity-80 group-hover:opacity-50 opacity-0 float-right flex justify-around">
-                        <TrashIcon size={24} className="self-center" />
-                      </span>
-                    </div>
-                  </li>
+                  <>
+                    <li key={i} className={`list-disc max-w-xl px-5 py-1.5 relative`}>
+                      <div className='flex flex-row group'>
+                        <textarea
+                          onChange={(e) => setItem(i, e.target.value)}
+                          type="text"
+                          value={item}
+                          rows={1}
+                          className="align-top w-full max-h-32 min-h-[3rem] bg-slate-100 rounded p-2"
+                        />
+                        <span onClick={(e) => deleteStep(i) } className="p-2 ml-2 w-12 h-12 cursor-pointer relative rounded bg-gray-100 hover:!opacity-80 group-hover:opacity-50 opacity-0 float-right flex justify-around">
+                          <TrashIcon size={24} className="self-center" />
+                        </span>
+                      </div>
+                    </li>
+                  </>
                 ))}
               </ul>
               <span
@@ -103,7 +105,7 @@ export default function ListTextArea(props) {
             />
           )
         ) : (
-          <ol className="list-disc ml-5 leading-relaxed text-xl">
+          <ol className={`${props.ordered ? 'list-decimal' : 'list-disc'} ml-5 leading-relaxed text-xl`}>
             {props.items.map((item, i) => (
               <li key={i}>{item}</li>
             ))}
