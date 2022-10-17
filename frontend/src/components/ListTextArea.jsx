@@ -68,12 +68,11 @@ export default function ListTextArea(props) {
         {props.editing ? (
           props.listMode ? (
             <div>
-              <ul className={`${props.ordered ? 'list-none' : 'list-disc'} ml-5 leading-relaxed text-xl`}>
+              <ul className={`list-disc ml-5 leading-relaxed text-xl`}>
                 {props.items.map((item, i) => (
                   <>
-                    <li key={i} className={`${props.ordered?'list-none ml-0 pl-0':'list-disc'} max-w-xl px-5 py-1.5 relative`}>
+                    <li key={i} className={`list-disc max-w-xl px-5 py-1.5 relative`}>
                       <div className='flex flex-row group'>
-                        { props.ordered ? <span className='mr-8'>{ props.ordered ? i : null}.</span> : null }
                         <textarea
                           onChange={(e) => setItem(i, e.target.value)}
                           type="text"
@@ -106,7 +105,7 @@ export default function ListTextArea(props) {
             />
           )
         ) : (
-          <ol className="list-disc ml-5 leading-relaxed text-xl">
+          <ol className={`${props.ordered ? 'list-decimal' : 'list-disc'} ml-5 leading-relaxed text-xl`}>
             {props.items.map((item, i) => (
               <li key={i}>{item}</li>
             ))}
