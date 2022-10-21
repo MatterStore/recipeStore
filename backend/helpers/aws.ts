@@ -20,11 +20,12 @@ export function uploadImage(
   dataUrl: string,
   callback: (url: string | null, err: string | null) => void
 ) {
-  let uuid = randomUUID();
+  let ext = dataUrl.substring(dataUrl.indexOf('/') + 1, dataUrl.indexOf(';'));
+  let key = randomUUID() + '.' + ext;
   let request = new PutObjectCommand({
-    Body: Buffer.from(dataUrl, 'base64url'),
+    Body: Buffer.from(dataUrl.split(',')[1], 'base64'),
     Bucket: IMAGE_BUCKET,
-    Key: uuid,
+    Key: key,
   });
 
   client
@@ -33,7 +34,7 @@ export function uploadImage(
       if (resp['$metadata'].httpStatusCode != 200) {
         callback(null, resp['Code']);
       } else {
-        callback(BUCKET_URL + uuid, null);
+        callback(BUCKET_URL + key, null);
       }
     })
     .catch((err) => callback(null, String(err)));
