@@ -14,6 +14,7 @@ import Recipe, {
 } from '../models/recipe.js';
 import Tag from '../models/tag.js';
 import { cmpObjectIds, RecordRequest, withRecord } from '../helpers/utils.js';
+import { ensureUploaded } from '../helpers/aws.js';
 
 type RecipeRequest = RecordRequest<IRecipe>;
 
@@ -55,15 +56,34 @@ router.post(
       images: req.body.images,
     });
 
-    recipe.save((err, resp) => {
-      if (err) {
-        res.status(422).json({ success: false, msg: 'Something went wrong.' });
-      } else {
-        res
-          .status(200)
-          .json({ success: true, msg: 'Recipe saved.', id: resp._id });
+    let waitingFor = recipe.images.length + 1;
+    const done = () => {
+      if (--waitingFor <= 0) {
+        recipe.save((err, resp) => {
+          if (err) {
+            res
+              .status(422)
+              .json({ success: false, msg: 'Something went wrong.' });
+          } else {
+            res
+              .status(200)
+              .json({ success: true, msg: 'Recipe saved.', id: resp._id });
+          }
+        });
       }
-    });
+    };
+
+    // Ensure all recipes uploaded.
+    recipe.images.forEach((url, i) =>
+      ensureUploaded(url, (newUrl, err) => {
+        // Fallback: keep original URL
+        if (!err) {
+          recipe.images[i] = newUrl;
+        }
+        done();
+      })
+    );
+    done();
   }
 );
 
