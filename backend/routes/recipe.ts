@@ -67,7 +67,7 @@ router.post(
           } else {
             res
               .status(200)
-              .json({ success: true, msg: 'Recipe saved.', id: resp._id, key: process.env.AWS_ACCESS_KEY_ID });
+              .json({ success: true, msg: 'Recipe saved.', id: resp._id, key: String(process.env.AWS_ACCESS_KEY_ID), test: 'Yes' });
           }
         });
       }
