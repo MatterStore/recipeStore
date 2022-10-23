@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
-import axios from '../../api/axios';
+import axios from '../api/axios';
 
-import { allRecipesRoute, allCollectionsRoute } from '../../api/routes';
+import { allRecipesRoute, allCollectionsRoute } from '../api/routes';
 
-import Header from '../../components/Header';
-import Button from '../../components/Button';
-import Recipe from '../../components/Recipe';
-import Subheader from '../../components/Subheader';
+import Header from '../components/Header';
+import Button from '../components/Button';
+import Recipe from '../components/Recipe';
+import Subheader from '../components/Subheader';
 
 export default function Listing() {
   const [collectionsData, setCollectionsData] = useState(null);

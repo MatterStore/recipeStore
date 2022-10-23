@@ -1,14 +1,14 @@
 import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { AuthContext } from '../../contexts/AuthContext';
+import { AuthContext } from '../contexts/AuthContext';
 import validator from 'validator';
-import axios from '../../api/axios';
-import { loginRoute } from '../../api/routes';
+import axios from '../api/axios';
+import { loginRoute } from '../api/routes';
 
-import SubmitButton from '../../components/SubmitButton';
-import Header from '../../components/Header';
-import FormField from '../../components/FormField';
+import SubmitButton from '../components/SubmitButton';
+import Header from '../components/Header';
+import FormField from '../components/FormField';
 
 export default function Login() {
   const [password, setPassword] = useState('');
