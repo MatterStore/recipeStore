@@ -3,7 +3,7 @@ import { fireEvent, render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom';
 
 describe("Button tests", () => {
-    it ("should accept additional styles", () => {
+    it("should accept additional styles", () => {
         render(
             <MemoryRouter>
                 <Button
@@ -14,10 +14,10 @@ describe("Button tests", () => {
                 </Button>
             </MemoryRouter>
         );
-        screen.getByText("Test Button").classList.contains("custom-class")
+        expect(screen.getByText("Test Button").classList).toContain("custom-class")
     });
 
-    it ("should call click handler", () => {
+    it("should call click handler", () => {
         const callback = jest.fn()
         render(
             <MemoryRouter>
