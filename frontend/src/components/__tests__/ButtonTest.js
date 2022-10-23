@@ -1,13 +1,19 @@
 import Button from '../Button'
-import { render } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
+import { MemoryRouter } from 'react-router-dom';
 
 describe("Button tests", () => {
     it ("should accept additional styles", () => {
-        const { screen } = render(
-            <Button
-                className="custom-class"
-            />
+        render(
+            <MemoryRouter>
+                <Button
+                    className="custom-class"
+                    to="test"
+                >
+                    Test Button
+                </Button>
+            </MemoryRouter>
         );
-        screen.classList.contains("custom-class")
+        screen.getByText("Test Button").classList.contains("custom-class")
     });
 });
