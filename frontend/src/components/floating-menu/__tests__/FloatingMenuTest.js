@@ -5,7 +5,7 @@ describe("FloatingMenu tests", () => {
     it("should show child elements", () => {
         render(
             <FloatingMenu>
-                <span>Child Element</span>
+                Child Element
             </FloatingMenu>
         );
         expect(screen.getByText("Child Element")).toBeDefined();
