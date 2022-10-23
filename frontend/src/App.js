@@ -1,10 +1,10 @@
 import { Routes, Route } from 'react-router-dom';
-import Recipe from './containers/Recipe/Recipe';
-import Home from './containers/Home/Home';
-import Listing from './containers/Listing/Listing';
-import Login from './containers/Login/Login';
-import Signup from './containers/Signup/Signup';
-import ChangePassword from './containers/ChangePassword/ChangePassword';
+import Recipe from './containers/Recipe';
+import Home from './containers/Home';
+import Listing from './containers/Listing';
+import Login from './containers/Login';
+import Signup from './containers/Signup';
+import ChangePassword from './containers/ChangePassword';
 import { useEffect } from 'react';
 import Nav from './components/Nav';
 

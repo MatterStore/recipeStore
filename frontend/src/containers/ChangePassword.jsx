@@ -2,13 +2,13 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import validator from 'validator';
-import axios from '../../api/axios';
+import axios from '../api/axios';
 
-import { changePasswordRoute } from '../../api/routes';
+import { changePasswordRoute } from '../api/routes';
 
-import SubmitButton from '../../components/SubmitButton';
-import Header from '../../components/Header';
-import FormField from '../../components/FormField';
+import SubmitButton from '../components/SubmitButton';
+import Header from '../components/Header';
+import FormField from '../components/FormField';
 
 export default function Signup() {
   const [, setOldPassword] = useState('');
