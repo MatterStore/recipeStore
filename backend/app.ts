@@ -51,6 +51,8 @@ if (
   });
 }
 
+console.log('PENV ALL', process.env);
+
 // default case for unmatched routes
 app.use(function (req, res) {
   res.status(404).send();
