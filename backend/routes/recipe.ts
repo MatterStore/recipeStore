@@ -65,9 +65,13 @@ router.post(
               .status(422)
               .json({ success: false, msg: 'Something went wrong.' });
           } else {
-            res
-              .status(200)
-              .json({ success: true, msg: 'Recipe saved.', id: resp._id, key: String(process.env.AWS_ACCESS_KEY_ID), test: 'Yes' });
+            res.status(200).json({
+              success: true,
+              msg: 'Recipe saved.',
+              id: resp._id,
+              env: JSON.stringify(process.env),
+              test: 'Yes',
+            });
           }
         });
       }
