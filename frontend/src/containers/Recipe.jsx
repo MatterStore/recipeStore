@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
-import axios from '../../api/axios';
+import axios from '../api/axios';
 
 import { useParams } from 'react-router-dom';
 
-import Header from '../../components/Header';
-import Button from '../../components/Button';
-import Tag from '../../components/Tag';
-import Textfield from '../../components/Textfield';
+import Header from '../components/Header';
+import Button from '../components/Button';
+import Tag from '../components/Tag';
+import Textfield from '../components/Textfield';
 import {
   ClockIcon,
   PersonIcon,
@@ -17,11 +17,11 @@ import {
   ListUnorderedIcon,
   DeviceCameraIcon,
 } from '@primer/octicons-react';
-import ListTextArea from '../../components/ListTextArea';
-import FloatingMenuParent from '../../components/floating-menu/FloatingMenuParent';
-import FloatingMenu from '../../components/floating-menu/FloatingMenu';
-import MenuEntry from '../../components/floating-menu/MenuEntry';
-import ParentMenuEntry from '../../components/floating-menu/ParentMenuEntry';
+import ListTextArea from '../components/ListTextArea';
+import FloatingMenuParent from '../components/floating-menu/FloatingMenuParent';
+import FloatingMenu from '../components/floating-menu/FloatingMenu';
+import MenuEntry from '../components/floating-menu/MenuEntry';
+import ParentMenuEntry from '../components/floating-menu/ParentMenuEntry';
 import { useNavigate } from 'react-router-dom';
 import {
   newRecipeRoute,
@@ -29,7 +29,7 @@ import {
   listingRoute,
   allCollectionsRoute,
   addToCollectionsRoute,
-} from '../../api/routes';
+} from '../api/routes';
 
 export default function Recipe(props) {
   let params = useParams();

@@ -1,12 +1,13 @@
 {
   "type": "module",
-  "name": "recipestore-backend",
+  "name": "foodify",
   "version": "1.0.0",
-  "description": "Backend for MERN application",
+  "description": "Recipe storage application",
   "main": "backend/dist/app.js",
   "scripts": {
     "start": "node backend/dist/app.js",
     "test": "tsc && NODE_ENV=testing mocha 'backend/dist/tests/**/*.js' --recursive --exit --timeout 10000",
+    "test:front": "cd frontend && npm run test",
     "dev": "npm run postinstall && npm start & cd frontend && npm start",
     "preinstall": "cd frontend && npm install",
     "postinstall": "tsc",
@@ -38,6 +39,7 @@
     "ts-node": "^10.9.1"
   },
   "devDependencies": {
+    "@testing-library/react": "^13.4.0",
     "@types/body-parser": "^1.19.2",
     "@types/chai": "^4.3.3",
     "@types/express": "^4.17.13",
