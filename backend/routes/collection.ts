@@ -193,7 +193,7 @@ router.post(
     recipes: Joi.array().items(objectId()),
   }),
   authenticate(),
-  withRecord(Collection, true),
+  withRecord(Collection, false),
   (req: CollectionRequest, res) => {
     const collection = req.record;
 

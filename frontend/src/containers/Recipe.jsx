@@ -29,6 +29,7 @@ import {
   listingRoute,
   allCollectionsRoute,
   addToCollectionsRoute,
+  removeFromCollectionsRoute,
 } from '../api/routes';
 
 export default function Recipe(props) {
@@ -115,18 +116,41 @@ export default function Recipe(props) {
   };
 
   const addToCollection = (id) => {
-    axios
-      .post(addToCollectionsRoute(id), { recipes: [recipe._id] })
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((error) => console.log(error));
+    if (
+      collectionsData
+        .filter((collection) => collection._id == id)[0]
+        .recipes.includes(recipe._id)
+    ) {
+      //REMOVE THE RECIPE
+      axios
+        .post(removeFromCollectionsRoute(id), { recipes: [recipe._id] })
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((error) => console.log(error));
 
-    const collectionsDataCopy = JSON.parse(JSON.stringify(collectionsData));
-    collectionsDataCopy
-      .filter((collection) => collection._id == id)[0]
-      .recipes.push(recipe._id);
-    setCollectionsData(collectionsDataCopy);
+      const collectionsDataCopy = JSON.parse(JSON.stringify(collectionsData));
+      collectionsDataCopy.filter(
+        (collection) => collection._id == id
+      )[0].recipes = collectionsDataCopy
+        .filter((collection) => collection._id == id)[0]
+        .recipes.filter((x) => x != recipe._id);
+      setCollectionsData(collectionsDataCopy);
+    } else {
+      //ADD THE RECIPE TO THE COLLECTION
+      axios
+        .post(addToCollectionsRoute(id), { recipes: [recipe._id] })
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((error) => console.log(error));
+
+      const collectionsDataCopy = JSON.parse(JSON.stringify(collectionsData));
+      collectionsDataCopy
+        .filter((collection) => collection._id == id)[0]
+        .recipes.push(recipe._id);
+      setCollectionsData(collectionsDataCopy);
+    }
   };
 
   useEffect(() => {
