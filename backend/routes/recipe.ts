@@ -69,7 +69,6 @@ router.post(
               success: true,
               msg: 'Recipe saved.',
               id: resp._id,
-              env: JSON.stringify(process.env),
               test: 'Yes',
             });
           }
