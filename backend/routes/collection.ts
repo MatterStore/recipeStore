@@ -207,6 +207,20 @@ router.post(
         success: true,
         msg: 'None of these recipes were in this collection.',
       });
+    } else if (collection.recipes.length <= 0) {
+      deleteById(req.params.id, (err) => {
+        if (err) {
+          res.status(500).json({
+            success: false,
+            msg: 'Something went wrong.',
+          });
+        } else {
+          res.status(200).json({
+            success: true,
+            msg: 'Collection deleted.',
+          });
+        }
+      });
     } else {
       Collection.updateOne(
         { _id: collection._id },

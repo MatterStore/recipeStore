@@ -30,6 +30,7 @@ import {
   allCollectionsRoute,
   addToCollectionsRoute,
   removeFromCollectionsRoute,
+  newCollectionsRoute,
 } from '../api/routes';
 
 export default function Recipe(props) {
@@ -114,6 +115,25 @@ export default function Recipe(props) {
     setRecipe(clone);
     console.log(clone);
   };
+  const addToNewCollection = (name) => {
+    axios
+      .post(newCollectionsRoute, {
+        name,
+        tags: [],
+        recipes: [recipe._id],
+        public: true,
+      })
+      .then((response) => {
+        console.log(response);
+        axios
+          .get(allCollectionsRoute)
+          .then((response) => {
+            setCollectionsData(response.data.list);
+          })
+          .catch((error) => console.log(error));
+      })
+      .catch((error) => console.log(error));
+  };
 
   const addToCollection = (id) => {
     if (
@@ -126,16 +146,11 @@ export default function Recipe(props) {
         .post(removeFromCollectionsRoute(id), { recipes: [recipe._id] })
         .then((response) => {
           console.log(response);
+          axios.get(allCollectionsRoute).then((response) => {
+            setCollectionsData(response.data.list);
+          });
         })
         .catch((error) => console.log(error));
-
-      const collectionsDataCopy = JSON.parse(JSON.stringify(collectionsData));
-      collectionsDataCopy.filter(
-        (collection) => collection._id == id
-      )[0].recipes = collectionsDataCopy
-        .filter((collection) => collection._id == id)[0]
-        .recipes.filter((x) => x != recipe._id);
-      setCollectionsData(collectionsDataCopy);
     } else {
       //ADD THE RECIPE TO THE COLLECTION
       axios
@@ -375,7 +390,13 @@ export default function Recipe(props) {
                     Edit Recipe
                   </MenuEntry>
                   <ParentMenuEntry name="Add to Collection">
-                    <MenuEntry>New Collection</MenuEntry>
+                    <MenuEntry
+                      onClick={() => {
+                        const collectionName = prompt('Enter Collection Name');
+                        addToNewCollection(collectionName);
+                      }}>
+                      New Collection
+                    </MenuEntry>
                     <hr />
                     {collectionsData.map((collection) => {
                       return (
