@@ -193,7 +193,7 @@ router.post(
     recipes: Joi.array().items(objectId()),
   }),
   authenticate(),
-  withRecord(Collection, true),
+  withRecord(Collection, false),
   (req: CollectionRequest, res) => {
     const collection = req.record;
 
@@ -206,6 +206,20 @@ router.post(
       res.status(200).json({
         success: true,
         msg: 'None of these recipes were in this collection.',
+      });
+    } else if (collection.recipes.length <= 0) {
+      deleteById(req.params.id, (err) => {
+        if (err) {
+          res.status(500).json({
+            success: false,
+            msg: 'Something went wrong.',
+          });
+        } else {
+          res.status(200).json({
+            success: true,
+            msg: 'Collection deleted.',
+          });
+        }
       });
     } else {
       Collection.updateOne(
