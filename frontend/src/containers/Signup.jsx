@@ -20,27 +20,21 @@ export default function Signup() {
   const [passwordError, setPasswordError] = useState('');
   const [signupError, setSignupError] = useState('');
 
-  const [formValid, setFormValid] = useState(false);
-
   const navigate = useNavigate();
 
   const handleValidation = (event) => {
-    let formIsValid = true;
-
     if (!validator.isAscii(name)) {
-      formIsValid = false;
       setNameError('Name is Not Valid');
+      return false;
     } else {
       setNameError('');
-      formIsValid = true;
     }
 
     if (!validator.isEmail(email)) {
-      formIsValid = false;
       setEmailError('Email is Not Valid');
+      return false;
     } else {
       setEmailError('');
-      formIsValid = true;
     }
 
     if (
@@ -52,20 +46,18 @@ export default function Signup() {
         minSymbols: 0,
       })
     ) {
-      formIsValid = false;
       setPasswordError('Must contain 8 characters');
+      return false;
     } else {
       setPasswordError('');
-      formIsValid = true;
     }
-    setFormValid(formIsValid);
+    return true;
   };
 
   const loginSubmit = (e) => {
     e.preventDefault();
-    handleValidation();
 
-    if (formValid) {
+    if (handleValidation()) {
       axios
         .post(signupRoute, {
           name: name,

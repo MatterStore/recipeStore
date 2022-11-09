@@ -18,16 +18,12 @@ export default function Signup() {
   const [newPasswordError, setNewPasswordError] = useState('');
   const [changePasswordError, setChangePasswordError] = useState('');
 
-  const [formValid, setFormValid] = useState(false);
-
   const navigate = useNavigate();
 
   const handleValidation = (event) => {
-    let formIsValid = true;
-
     if (newPassword !== confirmNewPassword) {
-      formIsValid = false;
       setNewPasswordError('Passwords do not match');
+      return false;
     } else if (
       !validator.isStrongPassword(newPassword, {
         minLength: 8,
@@ -37,20 +33,18 @@ export default function Signup() {
         minSymbols: 0,
       })
     ) {
-      formIsValid = false;
       setNewPasswordError('Must contain 8 characters');
+      return false;
     } else {
       setNewPasswordError('');
-      formIsValid = true;
     }
-    setFormValid(formIsValid);
+    return true;
   };
 
   const changePasswordSubmit = (e) => {
     e.preventDefault();
-    handleValidation();
 
-    if (formValid) {
+    if (handleValidation()) {
       axios
         .post(changePasswordRoute, {
           // oldPassword: oldPassword,

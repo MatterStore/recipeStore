@@ -16,21 +16,16 @@ export default function Login() {
   const [passwordError, setPasswordError] = useState('');
   const [emailError, setEmailError] = useState('');
   const [loginError, setLoginError] = useState('');
-  const [formValid, setFormValid] = useState(false);
 
   const { setIsLoggedIn, setUser } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleValidation = (event) => {
-    let formIsValid = true;
-
     if (!validator.isEmail(email)) {
-      formIsValid = false;
       setEmailError('Email Not Valid');
       return false;
     } else {
       setEmailError('');
-      formIsValid = true;
     }
 
     if (
@@ -42,21 +37,19 @@ export default function Login() {
         minSymbols: 0,
       })
     ) {
-      formIsValid = false;
       setPasswordError('Must contain 8 characters');
       return false;
     } else {
       setPasswordError('');
-      formIsValid = true;
     }
-    setFormValid(formIsValid);
+    return true;
   };
 
   const loginSubmit = (e) => {
+    console.log('SUBMIT');
     e.preventDefault();
-    handleValidation();
 
-    if (formValid) {
+    if (handleValidation()) {
       axios
         .post(loginRoute, {
           email: email,
@@ -66,6 +59,7 @@ export default function Login() {
           setIsLoggedIn(true);
           setUser(response.data.user);
           localStorage.setItem('token', response.data.token);
+          console.log('NAVIGATE');
           navigate('/listing/');
         })
         .catch(function (error) {
