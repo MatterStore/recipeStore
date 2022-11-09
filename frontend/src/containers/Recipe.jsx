@@ -38,7 +38,6 @@ export default function Recipe(props) {
 
   const navigate = useNavigate();
   const [recipeError, setRecipeError] = useState(null);
-  const [formValid, setFormValid] = useState(false);
   const [collectionsData, setCollectionsData] = useState(null);
 
   const defaultRecipe = {
@@ -113,7 +112,6 @@ export default function Recipe(props) {
     let clone = cloneRecipe();
     clone.images.push(image);
     setRecipe(clone);
-    console.log(clone);
   };
   const addToNewCollection = (name) => {
     axios
@@ -138,7 +136,7 @@ export default function Recipe(props) {
   const addToCollection = (id) => {
     if (
       collectionsData
-        .filter((collection) => collection._id == id)[0]
+        .filter((collection) => collection._id === id)[0]
         .recipes.includes(recipe._id)
     ) {
       //REMOVE THE RECIPE
@@ -162,7 +160,7 @@ export default function Recipe(props) {
 
       const collectionsDataCopy = JSON.parse(JSON.stringify(collectionsData));
       collectionsDataCopy
-        .filter((collection) => collection._id == id)[0]
+        .filter((collection) => collection._id === id)[0]
         .recipes.push(recipe._id);
       setCollectionsData(collectionsDataCopy);
     }
@@ -184,8 +182,7 @@ export default function Recipe(props) {
   let [ingredientMode, setIngredientMode] = useState(true);
 
   const handleValidation = (event) => {
-    let formIsValid = true;
-    setFormValid(formIsValid);
+    return true;
   };
 
   useEffect(() => {
@@ -208,10 +205,7 @@ export default function Recipe(props) {
   }, [params.recipeId, props.new]);
 
   const recipeSubmit = (e) => {
-    // e.preventDefault();
-    handleValidation();
-
-    if (formValid) {
+    if (handleValidation()) {
       axios
         .patch(recipesRoute(params.recipeId), {
           title: recipe.title,
@@ -233,9 +227,7 @@ export default function Recipe(props) {
 
   const newRecipe = (e) => {
     // e.preventDefault();
-    handleValidation();
-
-    if (formValid) {
+    if (handleValidation()) {
       axios
         .post(newRecipeRoute, {
           title: recipe.title,
@@ -465,7 +457,7 @@ export default function Recipe(props) {
                   key={i}
                   className="rounded box-border"
                   src={image}
-                  alt="Food photo"
+                  alt="Food"
                 />
               );
             })}
