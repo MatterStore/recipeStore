@@ -113,6 +113,12 @@ export default function Recipe(props) {
     clone.images.push(image);
     setRecipe(clone);
   };
+  const deleteImage = (index) => {
+    let clone = cloneRecipe();
+    clone.images.splice(index, 1);
+    setRecipe(clone);
+  }
+
   const addToNewCollection = (name) => {
     axios
       .post(newCollectionsRoute, {
@@ -453,12 +459,20 @@ export default function Recipe(props) {
             ) : null}
             {recipe.images.map((image, i) => {
               return (
-                <img
-                  key={i}
-                  className="rounded box-border"
-                  src={image}
-                  alt="Food"
-                />
+                <div className='group relative'>
+                  <img
+                    key={i}
+                    className="rounded box-border"
+                    src={image}
+                    alt="Food"
+                  />
+                  <span onClick={()=>{ deleteImage(i) }}>
+                    <TrashIcon
+                      size={36}
+                      className={`rounded p-2 pt-1.5 pb-0.5 cursor-pointer absolute bg-gray-100 hover:bg-red-500 hover:text-white md:invisible group-hover:visible top-2 right-2 shadow`}
+                    />
+                  </span>
+                </div>
               );
             })}
           </div>
