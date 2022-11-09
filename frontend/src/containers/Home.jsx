@@ -1,3 +1,4 @@
+import { publicListingRoute } from '../api/routes';
 import Button from '../components/Button';
 import Header from '../components/Header';
 
@@ -13,13 +14,23 @@ export default function Home() {
                 <p className="cursor-default select-none px-4">Foodify</p>
               </div>
             </Header>
-            <nav className="flex justify-center md:justify-start">
-              <Button primary={true} to="/signup">
-                Sign Up
-              </Button>
-              <Button primary={false} to="/login">
-                Login
-              </Button>
+            <nav>
+              <div className="flex justify-between">
+                <Button primary={true} to="/signup">
+                  Sign Up
+                </Button>
+                <Button primary={false} to="/login">
+                  Login
+                </Button>
+              </div>
+              <div className="flex">
+                <Button
+                  className="w-full inline-block"
+                  primary={false}
+                  to={publicListingRoute}>
+                  Continue as Guest
+                </Button>
+              </div>
             </nav>
           </div>
           <div className="p-8 self-center">
