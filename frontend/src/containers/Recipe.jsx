@@ -26,7 +26,7 @@ import { useNavigate } from 'react-router-dom';
 import {
   newRecipeRoute,
   recipesRoute,
-  listingRoute,
+  myListingRoute,
   allCollectionsRoute,
   addToCollectionsRoute,
   removeFromCollectionsRoute,
@@ -252,7 +252,7 @@ export default function Recipe(props) {
     axios
       .delete(recipesRoute(params.recipeId))
       .then(function (response) {
-        navigate(listingRoute);
+        navigate(myListingRoute);
       })
       .catch(function (error) {});
   };

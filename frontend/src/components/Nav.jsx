@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useLocation, Link, useNavigate } from 'react-router-dom';
+import { myListingRoute, publicListingRoute } from '../api/routes';
 
 import FloatingMenu from './floating-menu/FloatingMenu';
 import MenuEntry from './floating-menu/MenuEntry';
@@ -8,8 +9,8 @@ export default function Nav(props) {
   const location = useLocation();
   const navigate = useNavigate();
   const navigationRoutes = [
-    ['Home', '/listing'],
-    ['My Recipes', '/collection/Your%20Recipe%20Collection'],
+    ['Home', publicListingRoute],
+    ['My Recipes', myListingRoute],
   ];
   const doNotDisplayNavOn = ['/', '/login', '/signup'];
 
