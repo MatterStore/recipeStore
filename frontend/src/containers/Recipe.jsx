@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import axios from '../api/axios';
 
 import { useParams } from 'react-router-dom';
@@ -32,9 +32,11 @@ import {
   removeFromCollectionsRoute,
   newCollectionsRoute,
 } from '../api/routes';
+import { useAuthContext } from '../contexts/AuthContext';
 
 export default function Recipe(props) {
   let params = useParams();
+  const authContext = useAuthContext();
 
   const navigate = useNavigate();
   const [recipeError, setRecipeError] = useState(null);
@@ -55,6 +57,10 @@ export default function Recipe(props) {
   const [recipe, setRecipe] = useState(props.new ? defaultRecipe : null);
   const [recipeLoading, setRecipeLoading] = useState(!props.new);
 
+  const canEdit = useMemo(() => {
+    return authContext?.user === recipe?.user;
+  }, [authContext?.user, recipe?.user]);
+
   const selectImageUpload = (e) => {
     if (e.target.files && e.target.files[0]) {
       let reader = new FileReader();
@@ -66,7 +72,7 @@ export default function Recipe(props) {
     }
   };
 
-  const editing = props.edit || props.new;
+  const editing = (props.edit && canEdit) || props.new;
 
   // Inefficient but good enough.
   const cloneRecipe = () => {
@@ -371,7 +377,7 @@ export default function Recipe(props) {
               </Button>
             ) : null}
           </div>
-          {!editing ? (
+          {!editing && canEdit ? (
             <div>
               <FloatingMenuParent label={'...'}>
                 <FloatingMenu>

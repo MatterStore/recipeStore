@@ -1,5 +1,7 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useLocation, Link, useNavigate } from 'react-router-dom';
+import { home } from '../api/routes';
+import { useAuthContext } from '../contexts/AuthContext';
 
 import FloatingMenu from './floating-menu/FloatingMenu';
 import MenuEntry from './floating-menu/MenuEntry';
@@ -7,11 +9,19 @@ import MenuEntry from './floating-menu/MenuEntry';
 export default function Nav(props) {
   const location = useLocation();
   const navigate = useNavigate();
-  const navigationRoutes = [
-    ['Home', '/listing'],
-    ['My Recipes', '/collection/Your%20Recipe%20Collection'],
-  ];
+  const authContext = useAuthContext();
+  const loggedIn = useMemo(
+    () => authContext?.isLoggedIn && authContext?.user.id,
+    [authContext]
+  );
+  const navigationRoutes = [['Home', '/listing']];
   const doNotDisplayNavOn = ['/', '/login', '/signup'];
+
+  loggedIn &&
+    navigationRoutes.push([
+      'My Recipes',
+      '/collection/Your%20Recipe%20Collection',
+    ]);
 
   if (!doNotDisplayNavOn.includes(location.pathname)) {
     return (
@@ -25,17 +35,22 @@ export default function Nav(props) {
             {navigationRoutes.map(([title, path]) => (
               <NavItem location={location} title={title} path={path} />
             ))}
-            <li key="logout">
-              <FloatingMenuParent label={'Profile'}>
-                <FloatingMenu>
-                  <MenuEntry onClick={() => navigate('/')}>Log Out</MenuEntry>
-                  <MenuEntry
-                    onClick={() => navigate('/profile/change-password')}>
-                    Change Password
-                  </MenuEntry>
-                </FloatingMenu>
-              </FloatingMenuParent>
-            </li>
+            {loggedIn && (
+              <li key="logout">
+                <FloatingMenuParent label={'Profile'}>
+                  <FloatingMenu>
+                    <MenuEntry onClick={() => navigate('/')}>Log Out</MenuEntry>
+                    <MenuEntry
+                      onClick={() => navigate('/profile/change-password')}>
+                      Change Password
+                    </MenuEntry>
+                  </FloatingMenu>
+                </FloatingMenuParent>
+              </li>
+            )}
+            {!loggedIn && (
+              <NavItem location={location} title={'Log In'} path={home} />
+            )}
           </ul>
         </div>
       </nav>
