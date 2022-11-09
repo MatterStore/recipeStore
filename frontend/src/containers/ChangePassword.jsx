@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import validator from 'validator';
 import axios from '../api/axios';
 
-import { changePasswordRoute } from '../api/routes';
+import { changePasswordRoute, publicListingRoute } from '../api/routes';
 
 import SubmitButton from '../components/SubmitButton';
 import Header from '../components/Header';
@@ -52,7 +52,7 @@ export default function Signup() {
           confirmPassword: confirmNewPassword,
         })
         .then(function (response) {
-          navigate('/listing');
+          navigate(publicListingRoute);
         })
         .catch(function (error) {
           setChangePasswordError(error.response.data.msg);

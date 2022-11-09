@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
 import validator from 'validator';
 import axios from '../api/axios';
-import { loginRoute } from '../api/routes';
+import { loginRoute, publicListingRoute } from '../api/routes';
 
 import SubmitButton from '../components/SubmitButton';
 import Header from '../components/Header';
@@ -59,8 +59,7 @@ export default function Login() {
           setIsLoggedIn(true);
           setUser(response.data.user);
           localStorage.setItem('token', response.data.token);
-          console.log('NAVIGATE');
-          navigate('/listing/');
+          navigate(publicListingRoute);
         })
         .catch(function (error) {
           setLoginError('Invalid Password or Email');
