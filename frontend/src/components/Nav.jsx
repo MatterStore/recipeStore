@@ -11,17 +11,13 @@ export default function Nav(props) {
   const navigate = useNavigate();
   const authContext = useAuthContext();
   const loggedIn = useMemo(
-    () => authContext?.isLoggedIn && authContext?.user.id,
+    () => authContext?.isLoggedIn && authContext?.user,
     [authContext]
   );
   const navigationRoutes = [['Home', publicListingRoute]];
   const doNotDisplayNavOn = ['/', '/login', '/signup'];
 
-  loggedIn &&
-    navigationRoutes.push([
-      'My Recipes',
-      myListingRoute,
-    ]);
+  loggedIn && navigationRoutes.push(['My Recipes', myListingRoute]);
 
   if (!doNotDisplayNavOn.includes(location.pathname)) {
     return (
