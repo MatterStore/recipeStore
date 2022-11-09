@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useLocation, Link, useNavigate } from 'react-router-dom';
-import { home } from '../api/routes';
+import { home, myListingRoute, publicListingRoute } from '../api/routes';
 import { useAuthContext } from '../contexts/AuthContext';
 
 import FloatingMenu from './floating-menu/FloatingMenu';
@@ -14,13 +14,13 @@ export default function Nav(props) {
     () => authContext?.isLoggedIn && authContext?.user.id,
     [authContext]
   );
-  const navigationRoutes = [['Home', '/listing']];
+  const navigationRoutes = [['Home', publicListingRoute]];
   const doNotDisplayNavOn = ['/', '/login', '/signup'];
 
   loggedIn &&
     navigationRoutes.push([
       'My Recipes',
-      '/collection/Your%20Recipe%20Collection',
+      myListingRoute,
     ]);
 
   if (!doNotDisplayNavOn.includes(location.pathname)) {

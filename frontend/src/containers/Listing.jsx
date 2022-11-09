@@ -1,14 +1,19 @@
 import { useState, useEffect } from 'react';
 import axios from '../api/axios';
 
-import { allRecipesRoute, allCollectionsRoute } from '../api/routes';
+import {
+  allRecipesRoute,
+  myRecipesRoute,
+  allCollectionsRoute,
+  myCollectionsRoute,
+} from '../api/routes';
 
 import Header from '../components/Header';
 import Button from '../components/Button';
 import Recipe from '../components/Recipe';
 import Subheader from '../components/Subheader';
 
-export default function Listing() {
+export default function Listing(props) {
   const [collectionsData, setCollectionsData] = useState(null);
   const [collectionsLoading, setCollectionsLoading] = useState(true);
   const [collectionsError, setCollectionsError] = useState(null);
@@ -24,7 +29,7 @@ export default function Listing() {
   useEffect(() => {
     async function fetchRecipes() {
       axios
-        .get(allRecipesRoute)
+        .get(props.public ? allRecipesRoute : myRecipesRoute)
         .then((response) => {
           setRecipesData(response.data.list);
           setAvailableTags([
@@ -35,12 +40,12 @@ export default function Listing() {
         .catch((error) => setRecipesError(error));
     }
     fetchRecipes();
-  }, []);
+  }, [props.public]);
 
   useEffect(() => {
     async function fetchCollections() {
       axios
-        .get(allCollectionsRoute)
+        .get(props.public ? allCollectionsRoute : myCollectionsRoute)
         .then((response) => {
           setCollectionsData(response.data.list);
           setCollectionsLoading(false);
@@ -48,7 +53,7 @@ export default function Listing() {
         .catch((error) => setCollectionsError(error));
     }
     fetchCollections();
-  }, []);
+  }, [props.public]);
 
   const filterRecipes = (recipes) => {
     return recipes
