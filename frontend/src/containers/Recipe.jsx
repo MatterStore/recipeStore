@@ -58,7 +58,7 @@ export default function Recipe(props) {
   const [recipeLoading, setRecipeLoading] = useState(!props.new);
 
   const canEdit = useMemo(() => {
-    return authContext?.user === recipe?.user;
+    return authContext?.user?.id === recipe?.user;
   }, [authContext?.user, recipe?.user]);
 
   const selectImageUpload = (e) => {
@@ -123,7 +123,7 @@ export default function Recipe(props) {
     let clone = cloneRecipe();
     clone.images.splice(index, 1);
     setRecipe(clone);
-  }
+  };
 
   const addToNewCollection = (name) => {
     axios
@@ -260,7 +260,23 @@ export default function Recipe(props) {
     }
   };
 
+  const removeRecipeFromAllCollections = () => {
+    collectionsData.forEach((collection) => {
+      if (collection.recipes.includes(recipe._id)) {
+        axios
+          .post(removeFromCollectionsRoute(collection._id), {
+            recipes: [recipe._id],
+          })
+          .then((response) => {
+            console.log(response);
+          })
+          .catch((error) => console.log(error));
+      }
+    });
+  };
+
   const deleteRecipe = () => {
+    removeRecipeFromAllCollections();
     axios
       .delete(recipesRoute(params.recipeId))
       .then(function (response) {
@@ -465,14 +481,17 @@ export default function Recipe(props) {
             ) : null}
             {recipe.images.map((image, i) => {
               return (
-                <div className='group relative'>
+                <div className="group relative">
                   <img
                     key={i}
                     className="rounded box-border"
                     src={image}
                     alt="Food"
                   />
-                  <span onClick={()=>{ deleteImage(i) }}>
+                  <span
+                    onClick={() => {
+                      deleteImage(i);
+                    }}>
                     <TrashIcon
                       size={36}
                       className={`rounded p-2 pt-1.5 pb-0.5 cursor-pointer absolute bg-gray-100 hover:bg-red-500 hover:text-white md:invisible group-hover:visible top-2 right-2 shadow`}
