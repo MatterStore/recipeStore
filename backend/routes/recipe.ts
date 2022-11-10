@@ -127,6 +127,22 @@ router.get(
   }
 );
 
+router.get(
+  '/public/:id',
+  withRecord(Recipe),
+  (req: RecipeRequest, res, next) => {
+    const recipe = req.record;
+    if (recipe.public) {
+      res.status(200).json({ success: true, msg: 'Recipe found.', recipe });
+    } else {
+      res.status(403).json({
+        success: false,
+        msg: 'Permission not granted.',
+      });
+    }
+  }
+);
+
 router.delete(
   '/:id',
   authenticate(),
