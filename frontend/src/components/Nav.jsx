@@ -14,7 +14,7 @@ export default function Nav(props) {
     () => authContext?.isLoggedIn && authContext?.user,
     [authContext]
   );
-  const navigationRoutes = [['Home', publicListingRoute]];
+  const navigationRoutes = [['Public Recipes', publicListingRoute]];
   const doNotDisplayNavOn = ['/', '/login', '/signup'];
 
   loggedIn && navigationRoutes.push(['My Recipes', myListingRoute]);
