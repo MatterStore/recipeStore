@@ -10,10 +10,15 @@ import {
 
 import Header from '../components/Header';
 import Button from '../components/Button';
+import DeleteButton from '../components/DeleteButton';
 import Recipe from '../components/Recipe';
 import Subheader from '../components/Subheader';
 
+import { useAuthContext } from '../contexts/AuthContext';
+
 export default function Listing(props) {
+  const authContext = useAuthContext();
+
   const [collectionsData, setCollectionsData] = useState(null);
   const [collectionsLoading, setCollectionsLoading] = useState(true);
   const [collectionsError, setCollectionsError] = useState(null);
@@ -54,6 +59,22 @@ export default function Listing(props) {
     }
     fetchCollections();
   }, [props.public]);
+
+  const userOwnsCollection = (collection) => {
+    if (!authContext?.user?.id) return false;
+    return authContext?.user?.id === collection?.user;
+  };
+
+  const deleteCollection = (id) => {
+    axios
+      .delete(`/collections/${id}`)
+      .then((response) => {
+        setCollectionsData(
+          collectionsData.filter((collection) => collection.id !== id)
+        );
+      })
+      .catch((error) => setCollectionsError(error));
+  };
 
   const filterRecipes = (recipes) => {
     return recipes
@@ -162,11 +183,13 @@ export default function Listing(props) {
                       key={collection._id}>
                       <Subheader key={collection._id}>
                         {collection.name}
-                        {/* <Link
-                        to={`/collection/${collection.name}`}
-                        className={`ml-8 text-lg underline subpixel-antialiased text-purple-600 whitespace-pre-wrap`}>
-                        View All
-                      </Link> */}
+                        {userOwnsCollection(collection) && (
+                          <DeleteButton
+                            to=""
+                            onClick={() => deleteCollection(collection._id)}>
+                            Delete
+                          </DeleteButton>
+                        )}
                       </Subheader>
                       <div className="self-center lg:self-start">
                         {collection.recipes.map((collectionRecipe) =>
