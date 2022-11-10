@@ -19,6 +19,11 @@ export default function Nav(props) {
 
   loggedIn && navigationRoutes.push(['My Recipes', myListingRoute]);
 
+  const logOut = () => {
+    authContext.logout();
+    navigate(home);
+  };
+
   if (!doNotDisplayNavOn.includes(location.pathname)) {
     return (
       <nav className="py-1 bg-blue-100 fixed w-full z-20">
@@ -35,7 +40,7 @@ export default function Nav(props) {
               <li key="logout">
                 <FloatingMenuParent label={'Profile'}>
                   <FloatingMenu>
-                    <MenuEntry onClick={() => navigate('/')}>Log Out</MenuEntry>
+                    <MenuEntry onClick={() => logOut()}>Log Out</MenuEntry>
                     <MenuEntry
                       onClick={() => navigate('/profile/change-password')}>
                       Change Password

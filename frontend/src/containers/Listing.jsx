@@ -122,7 +122,7 @@ export default function Listing(props) {
               }}
             />
 
-            {authContext?.loggedIn && (
+            {authContext?.isLoggedIn && (
               <Button to="/recipe/new" primary={true} className="mr-0">
                 New Recipe
               </Button>
