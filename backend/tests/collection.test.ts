@@ -131,16 +131,16 @@ describe('POST /collections/:id/add', () => {
   // Must be function as id is not set initially.
   const body = () => ({ recipes: [TestRecipes.Rice.id] });
 
-  // whenLoggedInIt(
-  //   "Shouldn't work for non-author user",
-  //   (token) =>
-  //     request(app)
-  //       .post(href())
-  //       .set('Authorization', token)
-  //       .send(body())
-  //       .then((res) => assertFailed(res, 'Non-author user allowed to remove.')),
-  //   TestUsers.Beatrice
-  // );
+  whenLoggedInIt(
+    "Shouldn't work for non-author user",
+    (token) =>
+      request(app)
+        .post(href())
+        .set('Authorization', token)
+        .send(body())
+        .then((res) => assertFailed(res, 'Non-author user allowed to remove.')),
+    TestUsers.Beatrice
+  );
 
   whenLoggedInIt('Should work for author user', (token) =>
     request(app)
@@ -180,16 +180,16 @@ describe('POST /collections/:id/remove', () => {
   // Must be function as id is not set initially.
   const body = () => ({ recipes: [TestRecipes.Rice.id] });
 
-  // whenLoggedInIt(
-  //   "Shouldn't work for non-author user",
-  //   (token) =>
-  //     request(app)
-  //       .post(href())
-  //       .set('Authorization', token)
-  //       .send(body())
-  //       .then((res) => assertFailed(res, 'Non-author user allowed.')),
-  //   TestUsers.Beatrice
-  // );
+  whenLoggedInIt(
+    "Shouldn't work for non-author user",
+    (token) =>
+      request(app)
+        .post(href())
+        .set('Authorization', token)
+        .send(body())
+        .then((res) => assertFailed(res, 'Non-author user allowed.')),
+    TestUsers.Beatrice
+  );
 
   whenLoggedInIt('Should work for author user', (token) =>
     request(app)

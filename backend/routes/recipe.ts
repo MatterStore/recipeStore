@@ -100,7 +100,7 @@ router.get('/all', authenticate(), (req: AuthenticatedRequest, res, next) => {
   });
 });
 
-router.get('/all/public', authenticate(), (req, res, next) => {
+router.get('/all/public', (req, res, next) => {
   getAllPublic((err, list: IRecipe[]) => {
     if (err) {
       res.status(422).json({ success: false, msg: 'Something went wrong.' });
@@ -116,7 +116,7 @@ router.get(
   withRecord(Recipe),
   (req: RecipeRequest, res, next) => {
     const recipe = req.record;
-    if (recipe.public || cmpObjectIds(req.user._id, recipe.user)) {
+    if (recipe.public || cmpObjectIds(req?.user?._id, recipe.user)) {
       res.status(200).json({ success: true, msg: 'Recipe found.', recipe });
     } else {
       res.status(403).json({
