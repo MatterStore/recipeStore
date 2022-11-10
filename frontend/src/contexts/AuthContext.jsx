@@ -19,6 +19,12 @@ export function AuthContextProvider({ children }) {
     if (isLogin) setIsLoggedIn(true);
   }, []);
 
+  const logout = () => {
+    localStorage.removeItem('token');
+    setIsLoggedIn(false);
+    setUser(null);
+  };
+
   return (
     <Provider
       value={{
@@ -26,6 +32,7 @@ export function AuthContextProvider({ children }) {
         setIsLoggedIn,
         user,
         setUser,
+        logout,
       }}>
       {children}
     </Provider>
