@@ -1,6 +1,12 @@
 # Foodify
 
+
+<p align="center">
+  <img width="250" height="250" src="/frontend/public/logo.svg">
+</p>
+
 A web application for creating and collating recipes.
+
 
 ### Members
 
