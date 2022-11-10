@@ -27,7 +27,7 @@ export function withRecord<T>(
         res.status(422).json({ success: false, msg: 'Something went wrong.' });
       } else if (!record) {
         res.status(404).json({ success: false, msg: 'Record not found.' });
-      } else if (matchUser && !cmpObjectIds(req.user._id, record.user)) {
+      } else if (matchUser && !cmpObjectIds(req?.user?._id, record.user)) {
         res.status(403).json({
           success: false,
           msg: 'Recipe belongs to another user.',

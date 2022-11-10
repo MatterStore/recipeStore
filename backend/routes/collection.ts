@@ -78,7 +78,7 @@ router.get(
   withRecord(Collection),
   (req: CollectionRequest, res) => {
     const collection = req.record;
-    if (collection.public || cmpObjectIds(req.user._id, collection.user)) {
+    if (collection.public || cmpObjectIds(req?.user?._id, collection.user)) {
       res
         .status(200)
         .json({ success: true, msg: 'Collection found.', collection });
@@ -149,7 +149,7 @@ router.post(
     recipes: Joi.array().items(objectId()),
   }),
   authenticate(),
-  withRecord(Collection, false), //TODO: change back to true, so that only owner of collection can modify
+  withRecord(Collection, true),
   (req: CollectionRequest, res) => {
     const collection = req.record;
 
@@ -193,7 +193,7 @@ router.post(
     recipes: Joi.array().items(objectId()),
   }),
   authenticate(),
-  withRecord(Collection, false),
+  withRecord(Collection, true),
   (req: CollectionRequest, res) => {
     const collection = req.record;
 

@@ -65,8 +65,6 @@ describe('GET /recipes/all', () => {
 });
 
 describe('GET /recipes/all/public', () => {
-  itShouldRequireAuthentication('/recipes/all/public', 'get');
-
   whenLoggedInIt('Should be able to list user recipes', (token) =>
     request(app)
       .get('/recipes/all/public')
