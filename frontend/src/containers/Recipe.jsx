@@ -27,7 +27,7 @@ import {
   newRecipeRoute,
   recipesRoute,
   myListingRoute,
-  allCollectionsRoute,
+  myCollectionsRoute,
   addToCollectionsRoute,
   removeFromCollectionsRoute,
   newCollectionsRoute,
@@ -136,7 +136,7 @@ export default function Recipe(props) {
       .then((response) => {
         console.log(response);
         axios
-          .get(allCollectionsRoute)
+          .get(myCollectionsRoute)
           .then((response) => {
             setCollectionsData(response.data.list);
           })
@@ -156,7 +156,7 @@ export default function Recipe(props) {
         .post(removeFromCollectionsRoute(id), { recipes: [recipe._id] })
         .then((response) => {
           console.log(response);
-          axios.get(allCollectionsRoute).then((response) => {
+          axios.get(myCollectionsRoute).then((response) => {
             setCollectionsData(response.data.list);
           });
         })
@@ -181,7 +181,7 @@ export default function Recipe(props) {
   useEffect(() => {
     async function fetchCollections() {
       axios
-        .get(allCollectionsRoute)
+        .get(myCollectionsRoute)
         .then((response) => {
           setCollectionsData(response.data.list);
         })
@@ -214,7 +214,7 @@ export default function Recipe(props) {
     if (!props.new) {
       fetchRecipes();
     }
-  }, [params.recipeId, props.new]);
+  }, [authContext.isLoggedIn, params.recipeId, props.new]);
 
   const recipeSubmit = (e) => {
     if (handleValidation()) {
