@@ -122,9 +122,11 @@ export default function Listing(props) {
               }}
             />
 
-            <Button to="/recipe/new" primary={true} className="mr-0">
-              New Recipe
-            </Button>
+            {authContext?.isLoggedIn && (
+              <Button to="/recipe/new" primary={true} className="mr-0">
+                New Recipe
+              </Button>
+            )}
           </span>
         </Header>
         <div></div>
