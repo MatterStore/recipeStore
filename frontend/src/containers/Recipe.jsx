@@ -200,7 +200,7 @@ export default function Recipe(props) {
   useEffect(() => {
     async function fetchRecipes() {
       axios
-        .get(recipesRoute(params.recipeId))
+        .get(recipesRoute(params.recipeId, authContext.isLoggedIn))
         .then((response) => {
           response.data.recipe.ingredients =
             response.data.recipe.ingredients.map(
@@ -219,7 +219,7 @@ export default function Recipe(props) {
   const recipeSubmit = (e) => {
     if (handleValidation()) {
       axios
-        .patch(recipesRoute(params.recipeId), {
+        .patch(recipesRoute(params.recipeId, authContext.isLoggedIn), {
           title: recipe.title,
           time: { hours: recipe.time.hours, minutes: recipe.time.minutes },
           servings: recipe.servings,
@@ -278,7 +278,7 @@ export default function Recipe(props) {
   const deleteRecipe = () => {
     removeRecipeFromAllCollections();
     axios
-      .delete(recipesRoute(params.recipeId))
+      .delete(recipesRoute(params.recipeId, authContext.isLoggedIn))
       .then(function (response) {
         navigate(myListingRoute);
       })
