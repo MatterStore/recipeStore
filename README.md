@@ -1,4 +1,6 @@
-# RecipeStore
+# Foodify
+
+A web application for creating and collating recipes.
 
 ### Members
 
